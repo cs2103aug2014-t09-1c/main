@@ -1,7 +1,9 @@
 #pragma once
+#include "ParsedDataPackage.h"
 class BaseClassParser
 {
-public:
+protected:
+	ParsedDataPackage parsedData;
 	BaseClassParser();
 	~BaseClassParser();
 };

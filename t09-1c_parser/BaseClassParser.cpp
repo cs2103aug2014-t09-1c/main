@@ -2,7 +2,7 @@
 #include "BaseClassParser.h"
 
 
-BaseClassParser::BaseClassParser()
+BaseClassParser::BaseClassParser() : parsedData()
 {
 }
 

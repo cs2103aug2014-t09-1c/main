@@ -1,7 +1,7 @@
 #pragma once
 class BaseClassLogic
 {
-public:
+protected:
 	BaseClassLogic();
 	~BaseClassLogic();
 };
