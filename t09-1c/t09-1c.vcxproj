@@ -74,15 +74,31 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AddLogic.h" />
+    <ClInclude Include="BaseClassLogic.h" />
+    <ClInclude Include="DeleteLogic.h" />
+    <ClInclude Include="EditLogic.h" />
+    <ClInclude Include="FileController.h" />
+    <ClInclude Include="ProgramController.h" />
+    <ClInclude Include="SearchLogic.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UndoLogic.h" />
     <ClInclude Include="VariableHelperFunctions.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddLogic.cpp" />
+    <ClCompile Include="BaseClassLogic.cpp" />
+    <ClCompile Include="DeleteLogic.cpp" />
+    <ClCompile Include="EditLogic.cpp" />
+    <ClCompile Include="FileController.cpp" />
+    <ClCompile Include="ProgramController.cpp" />
+    <ClCompile Include="SearchLogic.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UndoLogic.cpp" />
     <ClCompile Include="VariableHelperFunctions.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
