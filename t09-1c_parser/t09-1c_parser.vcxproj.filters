@@ -36,6 +36,12 @@
     <ClInclude Include="DeleteParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EditParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandAndArgumentParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -51,6 +57,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DeleteParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EditParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandAndArgumentParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

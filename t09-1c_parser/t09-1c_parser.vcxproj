@@ -76,7 +76,9 @@
   <ItemGroup>
     <ClInclude Include="AddParser.h" />
     <ClInclude Include="BaseClassParser.h" />
+    <ClInclude Include="CommandAndArgumentParser.h" />
     <ClInclude Include="DeleteParser.h" />
+    <ClInclude Include="EditParser.h" />
     <ClInclude Include="ParsedDataPackage.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -84,7 +86,9 @@
   <ItemGroup>
     <ClCompile Include="AddParser.cpp" />
     <ClCompile Include="BaseClassParser.cpp" />
+    <ClCompile Include="CommandAndArgumentParser.cpp" />
     <ClCompile Include="DeleteParser.cpp" />
+    <ClCompile Include="EditParser.cpp" />
     <ClCompile Include="ParsedDataPackage.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

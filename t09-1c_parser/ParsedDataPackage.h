@@ -19,12 +19,14 @@ public:
 	int endHour;
 	int endMin;
 	int startDate;
-	int StartMonth;
-	int StartYear;
+	int startMonth;
+	int startYear;
 	int endDate;
 	int endMonth;
 	int endYear;
 	list<string> keywords;
+
+
 
 };
 
