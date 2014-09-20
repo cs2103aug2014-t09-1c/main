@@ -6,5 +6,6 @@ class AddParser :
 public:
 	AddParser();
 	~AddParser();
+	static bool checkEntry();
 };
 
