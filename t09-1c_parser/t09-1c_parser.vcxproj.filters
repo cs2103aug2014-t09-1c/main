@@ -33,6 +33,9 @@
     <ClInclude Include="ParsedDataPackage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DeleteParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -45,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ParsedDataPackage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

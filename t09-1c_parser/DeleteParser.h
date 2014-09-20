@@ -1,11 +1,11 @@
 #pragma once
 #include "BaseClassParser.h"
-class AddParser :
+class DeleteParser :
 	public BaseClassParser
 {
 public:
-	AddParser();
-	~AddParser();
+	DeleteParser();
+	~DeleteParser();
 	ParsedDataPackage parseAndReturn(string parseInput);
 };
 
