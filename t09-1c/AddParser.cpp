@@ -10,3 +10,8 @@ AddParser::AddParser()
 AddParser::~AddParser()
 {
 }
+
+bool AddParser::checkEntry()
+{
+
+}
