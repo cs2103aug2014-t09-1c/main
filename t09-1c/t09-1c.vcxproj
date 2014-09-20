@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddLogic.h" />
+    <ClInclude Include="AddParser.h" />
     <ClInclude Include="BaseClassLogic.h" />
     <ClInclude Include="BaseClassParser.h" />
     <ClInclude Include="DeleteLogic.h" />
@@ -89,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddLogic.cpp" />
+    <ClCompile Include="AddParser.cpp" />
     <ClCompile Include="BaseClassLogic.cpp" />
     <ClCompile Include="BaseClassParser.cpp" />
     <ClCompile Include="DeleteLogic.cpp" />
