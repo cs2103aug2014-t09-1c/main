@@ -30,6 +30,9 @@
     <ClInclude Include="ProgramController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParsedDataDeployer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ProgramController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParsedDataDeployer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
