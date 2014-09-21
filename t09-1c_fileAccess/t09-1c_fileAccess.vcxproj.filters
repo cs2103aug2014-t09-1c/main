@@ -27,12 +27,24 @@
     <ClInclude Include="FileController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MemoryController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileEntryFormatter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileEntryFormatter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

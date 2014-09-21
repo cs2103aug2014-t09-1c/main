@@ -83,6 +83,7 @@
     <ClInclude Include="BaseClassLogic.h" />
     <ClInclude Include="DeleteLogic.h" />
     <ClInclude Include="EditLogic.h" />
+    <ClInclude Include="FileLogic.h" />
     <ClInclude Include="LogicHelperFunctions.h" />
     <ClInclude Include="SearchLogic.h" />
     <ClInclude Include="stdafx.h" />
@@ -94,6 +95,7 @@
     <ClCompile Include="BaseClassLogic.cpp" />
     <ClCompile Include="DeleteLogic.cpp" />
     <ClCompile Include="EditLogic.cpp" />
+    <ClCompile Include="FileLogic.cpp" />
     <ClCompile Include="LogicHelperFunctions.cpp" />
     <ClCompile Include="SearchLogic.cpp" />
     <ClCompile Include="stdafx.cpp">
