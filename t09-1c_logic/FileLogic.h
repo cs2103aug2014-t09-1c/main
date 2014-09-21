@@ -29,9 +29,18 @@ public:
 
 	//These are floating file logic functions that will be committed.
 	void floatNewLineEntry(string firstAttribute, string firstAttributeEntry);
+	//Example: currentLineEntry = "<firstAttribute>firstAttributeEntry</firstAttribute>"
 	void addAttributesToFloatEntry(string attribute, string attributeEntry);
+	//Example: currentLineEntry = "<firstAttribute>firstAttributeEntry</firstAttribute><attribute>attributeEntry</attribute>
 	void editAttributedInFloatEntry(string attribute, string newAttributeEntry);
+	//Example:: from "<firstAttribute>firstAttributeEntry</firstAttribute><attribute>attributeEntry</attribute>"
+	//to "<firstAttribute>firstAttributeEntry</firstAttribute><attribute>newAttributeEntry</attribute>"
 	void deleteAttributedFromFloatEntry(string attribute);
+	//Example:: from "<firstAttribute>firstAttributeEntry</firstAttribute><attribute>attributeEntry</attribute>"
+	//to "<firstAttribute>firstAttributeEntry</firstAttribute>"
+	string getAttributeFromFloatEntry(string attribute);
+	//Example:: from "<firstAttribute>firstAttributeEntry</firstAttribute><attribute>attributeEntry</attribute>"
+	//get back string "attributeEntry"
 	void initialiseFloatEntry();
 	
 	//These are floating file logic functions that accesses IO functions

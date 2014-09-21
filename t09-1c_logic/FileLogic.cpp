@@ -68,6 +68,11 @@ void FileLogic::deleteAttributedFromFloatEntry(string attribute)
 	FileEntryFormatter::deleteAttributedEntryFromLineEntry(attribute, currentLineEntry);
 }
 
+string FileLogic::getAttributeFromFloatEntry(string attribute)
+{
+	return FileEntryFormatter::getAttributeEntry(attribute, currentLineEntry);
+}
+
 //These are floating file logic functions that accesses IO functions
 void FileLogic::goToPositionNumber(int position)
 {
