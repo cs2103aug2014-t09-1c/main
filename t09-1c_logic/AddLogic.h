@@ -6,5 +6,6 @@ class AddLogic :
 public:
 	AddLogic();
 	~AddLogic();
+	void addfunction 
 };
 
