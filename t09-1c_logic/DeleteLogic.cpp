@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "DeleteLogic.h"
+#include <string>
 
-
-DeleteLogic::DeleteLogic()
+void DeleteLogic::deleteUserInputRelatedMessage(string userInput, string filename)
 {
+	if ()
 }
 
 

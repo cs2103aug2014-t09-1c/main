@@ -4,8 +4,7 @@ class AddLogic :
 	public BaseClassLogic
 {
 public:
-	AddLogic();
+	string AddUserInputIntoFile(string,string);
 	~AddLogic();
-	void addfunction 
 };
 
