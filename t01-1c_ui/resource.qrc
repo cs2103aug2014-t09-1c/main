@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/Button">
+        <file>Resources/CLOSE_BUTTON.png</file>
+        <file>Resources/CLOSE_BUTTON_HOVER.png</file>
+        <file>Resources/CLOSE_BUTTON_PRESSED.png</file>
+        <file>Resources/MINIMISE_BUTTON.png</file>
+        <file>Resources/MINIMISE_BUTTON_HOVER.png</file>
+        <file>Resources/MINIMISE_BUTTON_PRESSED.png</file>
+        <file>Resources/BORDER.png</file>
+    </qresource>
+</RCC>
