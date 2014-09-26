@@ -16,10 +16,18 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    cmenubar.cpp
+    cmenubar.cpp \
+    ccombobox.cpp \
+    ccompleter.cpp \
+    clineedit.cpp \
+    ctable.cpp
 
 HEADERS  += mainwindow.h \
-    cmenubar.h
+    cmenubar.h \
+    ccombobox.h \
+    ccompleter.h \
+    clineedit.h \
+    ctable.h
 
 FORMS    += mainwindow.ui
 
