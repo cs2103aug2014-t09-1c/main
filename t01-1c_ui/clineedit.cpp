@@ -6,7 +6,7 @@ CLineEdit::CLineEdit(QWidget *parent)
 : QLineEdit(parent), c(0)
 {
     setFont(QFont("Segoe UI", 15));
-    CCompleter * completer = new CCompleter(QStringList() << "oneone" << "Twotwo", this);
+    CCompleter * completer = new CCompleter(QStringList() << "eat food" << "eat steak", this);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     setCompleter(completer);
     connect(this, SIGNAL(returnPressed()),this, SLOT(clear()));

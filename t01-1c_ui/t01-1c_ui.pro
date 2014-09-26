@@ -20,14 +20,16 @@ SOURCES += main.cpp\
     ccombobox.cpp \
     ccompleter.cpp \
     clineedit.cpp \
-    ctable.cpp
+    ctable.cpp \
+    cprogressbar.cpp
 
 HEADERS  += mainwindow.h \
     cmenubar.h \
     ccombobox.h \
     ccompleter.h \
     clineedit.h \
-    ctable.h
+    ctable.h \
+    cprogressbar.h
 
 FORMS    += mainwindow.ui
 
