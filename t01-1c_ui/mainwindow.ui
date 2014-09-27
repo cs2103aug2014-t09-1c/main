@@ -283,16 +283,19 @@ QGroupBox::title {
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>140</x>
        <y>7</y>
-       <width>91</width>
-       <height>16</height>
+       <width>101</width>
+       <height>17</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Segoe UI</family>
        <pointsize>10</pointsize>
+       <weight>75</weight>
+       <italic>false</italic>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">
@@ -303,15 +306,17 @@ QGroupBox::title {
      <property name="geometry">
       <rect>
        <x>380</x>
-       <y>5</y>
-       <width>61</width>
-       <height>21</height>
+       <y>7</y>
+       <width>65</width>
+       <height>17</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Segoe UI</family>
        <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">
@@ -322,15 +327,17 @@ QGroupBox::title {
      <property name="geometry">
       <rect>
        <x>600</x>
-       <y>6</y>
+       <y>7</y>
        <width>51</width>
-       <height>21</height>
+       <height>17</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Segoe UI</family>
        <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">
@@ -350,10 +357,12 @@ QGroupBox::title {
       <font>
        <family>Segoe UI</family>
        <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">
-      <string>Event Name :</string>
+      <string>To-Do Name :</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_5">
@@ -361,14 +370,16 @@ QGroupBox::title {
       <rect>
        <x>10</x>
        <y>53</y>
-       <width>91</width>
-       <height>16</height>
+       <width>41</width>
+       <height>17</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Segoe UI</family>
        <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">
@@ -380,14 +391,16 @@ QGroupBox::title {
       <rect>
        <x>150</x>
        <y>53</y>
-       <width>91</width>
-       <height>16</height>
+       <width>41</width>
+       <height>17</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Segoe UI</family>
        <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">
@@ -400,13 +413,15 @@ QGroupBox::title {
        <x>356</x>
        <y>53</y>
        <width>91</width>
-       <height>16</height>
+       <height>17</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Segoe UI</family>
        <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">
@@ -418,7 +433,85 @@ QGroupBox::title {
       <rect>
        <x>600</x>
        <y>53</y>
-       <width>91</width>
+       <width>81</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Complete ?</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="createDate">
+     <property name="geometry">
+      <rect>
+       <x>235</x>
+       <y>7</y>
+       <width>145</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="category">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>7</y>
+       <width>131</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="rating">
+     <property name="geometry">
+      <rect>
+       <x>650</x>
+       <y>7</y>
+       <width>51</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="name">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>30</y>
+       <width>591</width>
        <height>16</height>
       </rect>
      </property>
@@ -429,7 +522,83 @@ QGroupBox::title {
       </font>
      </property>
      <property name="text">
-      <string>Completed ?</string>
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="type">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>53</y>
+       <width>91</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="start">
+     <property name="geometry">
+      <rect>
+       <x>192</x>
+       <y>53</y>
+       <width>161</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="end">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>53</y>
+       <width>151</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="complete">
+     <property name="geometry">
+      <rect>
+       <x>675</x>
+       <y>53</y>
+       <width>31</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>

@@ -13,6 +13,8 @@ CTable::CTable(QWidget *par)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     initialiseHighlight();
     verticalHeader()->setVisible(false);
+    verticalHeader()->setDefaultSectionSize(20);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setColumnCount(6);
     horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     horizontalHeader()->setFont(QFont("Segoe UI", 8));
@@ -23,12 +25,12 @@ CTable::CTable(QWidget *par)
     setColumnWidth(4,  118);
     setColumnWidth(5,  63);
     QStringList header;
-    header << "Number" << "To-Do" << "Category" << "Start" << "End/Deadline" << "Complete?";
+    header << "Number" << "To-Do" << "Category" << "Start" << "Deadline/End" << "Complete?";
     setHorizontalHeaderLabels(header);
 
     insertRow(0);
     insertRow(1);
-    selectRow(0);
+    selectRow(1);
 
 }
 
