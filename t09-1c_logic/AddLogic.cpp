@@ -7,6 +7,8 @@
 
 AddLogic::AddLogic(string fileName) : fileHandler(fileName)
 {
+	string creationDate = FileEntryFormatter::createAttributedEntry("CreationDate", TimeLogic::getTimeNowInString());
+	lineEntry = FileEntryFormatter::addAttributedEntryToLineEntry(creationDate, lineEntry);
 }
 
 

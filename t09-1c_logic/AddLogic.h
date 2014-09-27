@@ -9,7 +9,6 @@ class AddLogic :
 {
 private:
 	string lineEntry;
-	int positionToPlace = 0;
 
 	FileLogic fileHandler;
 
