@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -14,7 +15,8 @@ protected:
 	~ParserHelperFunctions();
 
 public:
-	string toLowerCaseString(string input);
+	static string toLowerCaseString(string input);
+	static int findMatchingStringIndex(string str, vector<string> lst);
 };
 
 #endif

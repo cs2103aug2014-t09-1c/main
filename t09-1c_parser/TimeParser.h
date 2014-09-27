@@ -3,7 +3,7 @@
 #define TIME_PARSER
 
 #include <iostream>
-#include <list>
+#include <vector>
 #include "time.h"
 
 using namespace std;
@@ -11,8 +11,10 @@ using namespace std;
 class TimeParser
 {
 private:
-	const list<string> longDays = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" };
-	const list<string> shortDays = { "sun", "mon", "tue", "wed", "thu", "fri", "sat" };
+	static struct tm * timeIterator(struct tm* day, int daysToAdd);
+	static int determineDaysToAdd(string day, bool isNextPresent);
+	static string printDate(struct tm* date);
+	static int determineDayIndex(string day);
 
 protected:
 
@@ -20,6 +22,8 @@ protected:
 	~TimeParser();
 
 public:
-	static string parseDayOfWeek(string date); //Enter days of week shown above, "today" or "tomorrow", return day in dd/mm/yyyy format
+	static string parseDayOfWeek(string date); 
+	//Enter days of week shown above, "today" or "tomorrow", return day in dd/mm/yyyy format.
+	//If format error, whole string entered is returned.
 };
 #endif
