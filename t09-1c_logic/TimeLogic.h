@@ -5,6 +5,7 @@
 #include <time.h>
 #include <ctime>
 #include <iostream>
+#include <list>
 
 using namespace std;
 
@@ -49,9 +50,12 @@ public:
 	~TimeLogic();
 	bool getTimeFormatCheck();
 	void declareTimeFormatError();
+
+	//These are functions which controller and logic can access staticlly
 	static bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
 	static bool isTimeBeforeToday(TimeLogic time1);
 	static string getTimeNowInString();
+	static 
 };
 
 #endif
