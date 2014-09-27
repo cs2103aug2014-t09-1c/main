@@ -12,96 +12,67 @@ FileLogic::~FileLogic()
 {
 }
 
-void FileLogic::fileAccess(string fileName)
+bool FileLogic::fileAccess(string fileName)
 {
 	if (FileController::checkFile(fileName))
 	{
 		memoryHandler.setVector(FileController::parseFileToMemoryVector(fileName));
+		return true;
 	}
 	else {
 		//sendToOutput(FileController::declareFileAccessError);
+		return false;
 	}
 }
 void FileLogic::changeFile(string fileName)
 {
-	this->fileName = fileName;
-	fileAccess(fileName);
-}
-
-string FileLogic::getCurrentLineEntry()
-{
-	return currentLineEntry;
-}
-
-int FileLogic::getCurrrentPosition()
-{
-	return currentPosition;
-}
-
-void FileLogic::initialiseFloatEntry()
-{
-	currentLineEntry.clear();
-	currentPosition = -1;
-}
-
-//These are floating file logic functions that will be committed.
-void FileLogic::floatNewLineEntry(string firstAttribute, string firstAttributeEntry)
-{
-	initialiseFloatEntry();
-
-	addAttributesToFloatEntry(firstAttribute, firstAttributeEntry);
-}
-
-void FileLogic::addAttributesToFloatEntry(string attribute, string attributeEntry)
-{
-	string attributedEntry = FileEntryFormatter::createAttributedEntry(attribute, attributedEntry);
-	FileEntryFormatter::addAttributedEntryToLineEntry(attributedEntry, currentLineEntry);
-}
-
-void FileLogic::editAttributedInFloatEntry(string attribute, string newAttributeEntry)
-{
-	FileEntryFormatter::editAttributedEntryFromLineEntry(attribute, newAttributeEntry, currentLineEntry);
-}
-
-void FileLogic::deleteAttributedFromFloatEntry(string attribute)
-{
-	FileEntryFormatter::deleteAttributedEntryFromLineEntry(attribute, currentLineEntry);
-}
-
-string FileLogic::getAttributeFromFloatEntry(string attribute)
-{
-	return FileEntryFormatter::getAttributeEntry(attribute, currentLineEntry);
-}
-
-//These are floating file logic functions that accesses IO functions
-void FileLogic::goToPositionNumber(int position)
-{
-	currentLineEntry = memoryHandler.getLineEntry(position);
-	currentPosition = position;
-}
-
-void FileLogic::commitAdd()
-{
-	memoryHandler.appendLineEntry(getCurrentLineEntry());
-	FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
-	initialiseFloatEntry();
-}
-
-void FileLogic::commitEdit() 
-{
-	if (getCurrrentPosition() > -1) {
-		memoryHandler.deleteLineEntry(getCurrrentPosition());
-		memoryHandler.insertLineEntry(getCurrrentPosition(), currentLineEntry);
-		FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
-		initialiseFloatEntry();
+	if (fileAccess(fileName)) {
+		this->fileName = fileName;
 	}
 }
 
-void FileLogic::commitDelete()
+string FileLogic::getLineFromPositionNumber(int position)
 {
-	if (getCurrrentPosition() > -1) {
-		memoryHandler.deleteLineEntry(getCurrrentPosition());
+	if (fileAccess(fileName)) {
+		return memoryHandler.getLineEntry(position);
+	}
+}
+
+void FileLogic::appendToFile(string lineEntry)
+{
+	if (fileAccess(fileName)) {
+		memoryHandler.appendLineEntry(lineEntry);
 		FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
-		initialiseFloatEntry();
+	}
+}
+
+void FileLogic::addToPositionNumber(int position, string lineEntry)
+{
+	if (fileAccess(fileName)) {
+		if (memoryHandler.getVectorSize() > position) {
+			memoryHandler.insertLineEntry(position, lineEntry);
+			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
+		}
+	}
+}
+
+void FileLogic::editLine(int position, string lineEntry) 
+{
+	if (fileAccess(fileName)) {
+		if (memoryHandler.getVectorSize() > position) {
+			memoryHandler.deleteLineEntry(position);
+			memoryHandler.insertLineEntry(position, lineEntry);
+			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
+		}
+	}
+}
+
+void FileLogic::deleteLine(int position)
+{
+	if (fileAccess(fileName)) {
+		if (memoryHandler.getVectorSize() > position) {
+			memoryHandler.deleteLineEntry(position);
+			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
+		}
 	}
 }

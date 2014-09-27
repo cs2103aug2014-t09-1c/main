@@ -12,19 +12,13 @@ public:
 	~ParsedDataPackage();
 
 	//all data related to event info to be stored are represented here.
-	string event;
-	int priority;
-	int startHour;
-	int startMin;
-	int endHour;
-	int endMin;
-	int startDate;
-	int startMonth;
-	int startYear;
-	int endDate;
-	int endMonth;
-	int endYear;
-	list<string> keywords;
+	string name;
+	int rating;
+	string start; //FORMAT SHOULD BE dd/mm/yy HH:MM. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
+	string end; //FORMAT SHOULD BE dd/mm/yy HH:MM. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
+	string category;
+	string type;
+
 
 
 
