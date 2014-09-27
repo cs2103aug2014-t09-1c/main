@@ -24,6 +24,7 @@ protected:
 public:
 	static string parseDayOfWeek(string date); 
 	//Enter days of week shown above, "today" or "tomorrow", return day in dd/mm/yyyy format.
-	//If format error, whole string entered is returned.
+	//If next is Present i.e. "next Thursday", date will be that of one week later.
+	//If format error (including that of using dd/mm/yyyy), whole string entered is returned.
 };
 #endif
