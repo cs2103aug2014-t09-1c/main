@@ -16,6 +16,11 @@ vector<string> MemoryController::getVector()
 	return vectorInMemory;
 }
 
+int MemoryController::getVectorSize() 
+{
+	return vectorInMemory.size();
+}
+
 void MemoryController::setVector(vector<string> newVector)
 {
 	vectorInMemory = newVector;
