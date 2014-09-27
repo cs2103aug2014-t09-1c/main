@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// Syntax: -eventName- <startDate/startMonth/startYear> <startHour:startMin> <endDate/endMonth/endYear> <endHour:endMin> <Rating>
+// Syntax: [eventName] <start> <end> <rating> <@category@>
 
 class AddParser :
 	public BaseClassParser
@@ -18,7 +18,13 @@ public:
 	~AddParser();
 	ParsedDataPackage parseAndReturn(string parseInput);
 
+	string argumentError();
+
 	void setArguments(string input);
-	void extractEventName(string arguments);
+	string extractEventName(string arguments);
+	string extractStart(string arguments);
+	string extractEnd(string arguments);
+	string extractRating(string arguments);
+	string extractCategory(string arguemts);
 };
 

@@ -59,6 +59,7 @@ string CommandAndArgumentParser::argumentStringParser(string argument)
 string CommandAndArgumentParser::commandArgumentError()
 {
 	string errorMessage = "Unable to Commit. Please refer to \"help\" for guide to input. \n";
+	return errorMessage;
 }
 
 void CommandAndArgumentParser::commandParser(string command, string arguments)
