@@ -5,11 +5,14 @@
 class DeleteParser :
 	public BaseClassParser
 {
+private:
+	string arguments;
+
 public:
 	DeleteParser();
 	~DeleteParser();
 	ParsedDataPackage parseAndReturn(string parseInput);
 
-	void processArguments(string arguments);
+	void setArguments(string arguments);
 };
 

@@ -12,8 +12,13 @@ public:
 	~ParsedDataPackage();
 
 	//all data related to event info to be stored are represented here.
-	string event;
-	int priority;
+	int creationDate;
+	int creationMonth;
+	int creationYear;
+	string catergory;
+	int rating;
+	string eventName;
+	string type;
 	int startHour;
 	int startMin;
 	int endHour;
@@ -25,7 +30,7 @@ public:
 	int endMonth;
 	int endYear;
 	list<string> keywords;
-
+	bool completed;
 
 
 };

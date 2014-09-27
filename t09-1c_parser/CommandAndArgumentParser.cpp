@@ -72,15 +72,15 @@ void CommandAndArgumentParser::commandParser(string command, string arguments)
 
 void CommandAndArgumentParser::moveToAddParser(string arguments)
 {
-	add.processArguments(arguments);
+	add.setArguments(arguments);
 }
 
 void CommandAndArgumentParser::moveToDeleteParser(string arguments)
 {
-	del.processArguments(arguments);
+	del.setArguments(arguments);
 }
 
 void CommandAndArgumentParser::moveToEditParser(string arguments)
 {
-	edit.processArguments(arguments);
+	edit.setArguments(arguments);
 }
