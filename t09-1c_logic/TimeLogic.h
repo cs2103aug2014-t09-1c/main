@@ -51,6 +51,7 @@ public:
 	void declareTimeFormatError();
 	static bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
 	static bool isTimeBeforeToday(TimeLogic time1);
+	static string getTimeNowInString();
 };
 
 #endif

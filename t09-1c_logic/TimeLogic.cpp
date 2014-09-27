@@ -50,11 +50,16 @@ int TimeLogic::convertStringToInt(string argument)
 
 void TimeLogic::convertStringToTimeLogic(string timeString)
 {
-	year = convertStringToYear(timeString.substr(YEAR_POSITION, YEAR_LENGTH_FORMAT));
-	month = convertStringToMonth(timeString.substr(MONTH_POSITION, TIME_DATE_LENGTH_FORMAT));
-	day = convertStringToDay(timeString.substr(DATE_POSITION, TIME_DATE_LENGTH_FORMAT));
-	hour = convertStringToHour(timeString.substr(HOUR_POSITION, TIME_DATE_LENGTH_FORMAT));
-	min = convertStringToMinutes(timeString.substr(MIN_POSITION, TIME_DATE_LENGTH_FORMAT));
+	if (timeString.size() >= 15) {
+		year = convertStringToYear(timeString.substr(YEAR_POSITION, YEAR_LENGTH_FORMAT));
+		month = convertStringToMonth(timeString.substr(MONTH_POSITION, TIME_DATE_LENGTH_FORMAT));
+		day = convertStringToDay(timeString.substr(DATE_POSITION, TIME_DATE_LENGTH_FORMAT));
+		hour = convertStringToHour(timeString.substr(HOUR_POSITION, TIME_DATE_LENGTH_FORMAT));
+		min = convertStringToMinutes(timeString.substr(MIN_POSITION, TIME_DATE_LENGTH_FORMAT));
+	}
+	else {
+		timeFormatCheck = false;
+	}
 }
 
 int TimeLogic::convertStringToYear(string yearString)
@@ -155,4 +160,30 @@ bool TimeLogic::isTimeBeforeToday(TimeLogic time1)
 		}
 	}
 	return boolStore;
+}
+
+string TimeLogic::getTimeNowInString()
+{
+	time_t t = time(0);   // get time now
+	struct tm * now = localtime(&t);
+
+	string year = to_string((now->tm_year + 1900));
+	string month = to_string((now->tm_mon + 1));
+	if (month.size() < 2) {
+		month = "0" + month;
+	}
+	string day = to_string(now->tm_mday);
+	if (day.size() < 2) {
+		day = "0" + day;
+	}
+	string hour = to_string(now->tm_hour);
+	if (hour.size() < 2) {
+		hour = "0" + hour;
+	}
+	string min = to_string(now->tm_min);
+	if (min.size() < 2) {
+		min = "0" + min;
+	}
+	string date = day + "/" + month + "/" + year + " " + hour + ":" + min;
+	return date;
 }

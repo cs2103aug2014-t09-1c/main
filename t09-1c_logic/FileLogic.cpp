@@ -12,6 +12,11 @@ FileLogic::~FileLogic()
 {
 }
 
+int FileLogic::getSize()
+{
+	return memoryHandler.getVectorSize();
+}
+
 bool FileLogic::fileAccess(string fileName)
 {
 	if (FileController::checkFile(fileName))

@@ -3,18 +3,20 @@
 #define ADD_LOGIC
 
 #include "BaseClassLogic.h"
+
 class AddLogic :
 	public BaseClassLogic
 {
 private:
 	string lineEntry;
-	int positionToPlace;
+	int positionToPlace = 0;
+
+	FileLogic fileHandler;
 
 public:
-	AddLogic();
+	AddLogic(string fileName);
 	~AddLogic();
 	void appendToLineEntry(string attribute, string entry);
-	void determinePositionInFile();
 	void commitAdd();
 
 };

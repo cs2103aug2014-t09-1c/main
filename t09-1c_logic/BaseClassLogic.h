@@ -3,14 +3,13 @@
 #define BASE_CLASS_LOGIC
 
 #include "FileLogic.h"
+#include "TimeLogic.h"
 
 class BaseClassLogic
 {
 protected:
 	BaseClassLogic();
 	~BaseClassLogic();
-
-	FileLogic fileHandler;
 };
 
 #endif

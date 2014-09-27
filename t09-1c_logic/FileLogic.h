@@ -20,6 +20,7 @@ public:
 	void changeFile(string fileName);
 	
 	//These are floating file logic functions that accesses IO functions
+	int getSize();
 	string getLineFromPositionNumber(int position);
 	void appendToFile(string lineEntry);
 	void addToPositionNumber(int position, string lineEntry);
