@@ -16,6 +16,7 @@ public:
 	AddLogic(string fileName);
 	~AddLogic();
 	void appendToLineEntry(string attribute, string entry);
+	void determineType();
 	void commitAdd();
 
 };

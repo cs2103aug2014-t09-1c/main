@@ -22,12 +22,11 @@ void AddLogic::appendToLineEntry(string attribute, string entry)
 	lineEntry = FileEntryFormatter::addAttributedEntryToLineEntry(attributedEntry, lineEntry);
 }
 
-
-void AddLogic::commitAdd()
+void AddLogic::determineType()
 {
 	if (FileEntryFormatter::getAttributeEntry("start", lineEntry) == "") {
 		if (FileEntryFormatter::getAttributeEntry("end", lineEntry) == "") {
-			if (FileEntryFormatter::getAttributeEntry("date", lineEntry) == "") {	
+			if (FileEntryFormatter::getAttributeEntry("date", lineEntry) == "") {
 				if (FileEntryFormatter::getAttributeEntry("name", lineEntry) == "") {
 					//empty
 				}
@@ -47,6 +46,10 @@ void AddLogic::commitAdd()
 	else {
 		appendToLineEntry("type", "timed");
 	}
+}
 
+void AddLogic::commitAdd()
+{
+	determineType();
 	fileHandler.appendToFile(lineEntry);
 }
