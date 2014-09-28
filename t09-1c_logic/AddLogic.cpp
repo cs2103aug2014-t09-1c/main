@@ -25,5 +25,28 @@ void AddLogic::appendToLineEntry(string attribute, string entry)
 
 void AddLogic::commitAdd()
 {
+	if (FileEntryFormatter::getAttributeEntry("start", lineEntry) == "") {
+		if (FileEntryFormatter::getAttributeEntry("end", lineEntry) == "") {
+			if (FileEntryFormatter::getAttributeEntry("date", lineEntry) == "") {	
+				if (FileEntryFormatter::getAttributeEntry("name", lineEntry) == "") {
+					//empty
+				}
+				else {
+					appendToLineEntry("type", "float");
+				}
+			}
+			else {
+				lineEntry = FileEntryFormatter::editAttributedEntryFromLineEntry("end", "23:59", lineEntry);
+				appendToLineEntry("type", "deadline");
+			}
+		}
+		else {
+			appendToLineEntry("type", "deadline");
+		}
+	}
+	else {
+		appendToLineEntry("type", "timed");
+	}
+
 	fileHandler.appendToFile(lineEntry);
 }
