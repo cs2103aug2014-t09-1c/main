@@ -17,6 +17,9 @@ protected:
 public:
 	static string toLowerCaseString(string input);
 	static int findMatchingStringIndex(string str, vector<string> lst);
+	static bool isParameterStringEmpty(string parameter);
+	static bool isParameterStringANumber(string parameter);
+	static string removeWhiteSpace(string parameter);
 };
 
 #endif

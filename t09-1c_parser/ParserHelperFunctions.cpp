@@ -28,3 +28,24 @@ int ParserHelperFunctions::findMatchingStringIndex(string str, vector<string> ls
 	}
 	return index;
 }
+
+bool ParserHelperFunctions::isParameterStringEmpty(string parameter)
+{
+	return parameter.find_first_not_of(' ') == std::string::npos;
+}
+
+bool ParserHelperFunctions::isParameterStringANumber(string parameter)
+{
+	if (isParameterStringEmpty(parameter)) {
+		return false;
+	}
+	else {
+		return parameter.find_first_not_of("0123456789") == std::string::npos;
+	}
+}
+
+string ParserHelperFunctions::removeWhiteSpace(string parameter)
+{
+	parameter.erase(remove(parameter.begin(), parameter.end(), ' '), parameter.end());
+	return parameter;
+}

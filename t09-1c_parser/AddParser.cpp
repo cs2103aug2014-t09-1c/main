@@ -1,9 +1,18 @@
 #include "stdafx.h"
 #include "AddParser.h"
+#include "TimeParser.h"
+#include "ParserHelperFunctions.h"
 
-// Syntax: [eventName] <start> <end> <rating> <@category@>
+// Syntax: [eventName][date][start-end][category] - timed
+// Syntax: [eventName][date][deadline][category] - deadline
+// Syntax: [eventName][][][category] - float
+// category is to be made optional. 
+// ie syntax can just be  [eventName][][][]
+// Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
+// eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
+// eg. Watch movie 191014 1700 to 1800
 
-AddParser::AddParser()
+AddParser::AddParser() : parsedData()
 {
 }
 
@@ -14,8 +23,7 @@ AddParser::~AddParser()
 
 string AddParser::argumentError()
 {
-	string errorMessage = "Unable to Commit. Please refer to \"help\" for guide to input. \n";
-	return errorMessage;
+	return ADD_PARSER_ERROR;
 }
 
 void AddParser::setArguments(string input)
@@ -23,117 +31,95 @@ void AddParser::setArguments(string input)
 	arguments = input;
 }
 
-string AddParser::extractEventName(string arguments)
+string AddParser::extractLeadingBracketContent(string arguments)
 {
-	string eventName;
-	size_t position1 = arguments.find('[');
-	size_t position2 = arguments.find(']');
+	string contents = "";
+	size_t position1 = arguments.find("[");
+	size_t position2 = arguments.find("]");
 
-	if (position1 == -1 || position2 == -1) {
-		return argumentError();
-	}
-	else if (position2 - position1 == 1) {
-		eventName = "-";
-		return eventName;
+	if (position1 == string::npos || position2 == string::npos) {
+		return contents;
 	}
 	else {
-		eventName = arguments.substr(position1 + 1, position2 - position1 - 1);
-		return eventName;
+		contents = arguments.substr(position1 + 1, position2 - position1 - 1);
+		return contents;
 	}
 }
 
-string AddParser::extractStart(string arguments)
+string AddParser::nextArguments(string argument)
 {
-	string start;
-	size_t reference1 = arguments.find(']'); // I assume start is behind [eventName] <start>
-	size_t reference2 = arguments.find("/", reference1 + 1, 1); // I'm finding "/" from dd/mm
-	size_t reference3 = arguments.find(":", reference1 + 1, 1); // I'm finding ":" from HH:MM
-
-	// dd/mm/yyyy HH:MM has 16 characters
-	if (reference1 == -1 || reference2 == -1 || reference3 == -1 ||
-		reference3 - reference2 + 5 != 16) {
-		return argumentError();
-	}
-	else {
-		start = arguments.substr(reference2 - 2, 16);
-		return start;
-	}
+	string delimiter = "]";
+	argument.erase(0, argument.find(delimiter) + 1);
+	return argument;
 }
 
-string AddParser::extractEnd(string arguments)
+void AddParser::extractDate(string iterArguments)
 {
-	string end;
-	size_t reference1 = arguments.find(']'); // to start searching key words behind [eventName]
-	size_t reference2 = arguments.find("to", reference1 + 1, 2);
-	size_t reference3 = arguments.find("by", reference1 + 1, 2);
+	string date = extractLeadingBracketContent(iterArguments);
+	string noSpaceDate = ParserHelperFunctions::removeWhiteSpace(date);
+	if (date.size() == 0) {}
+	else if (ParserHelperFunctions::isParameterStringANumber(noSpaceDate)) {
 
-	if (reference1 == -1) {
-		return argumentError();
-	}
-	else if (reference2 == -1 && reference3 == -1) {
-		end = "-";
-		return end;
-	}
-	else {
-		if (reference2 != -1) {
-			end = arguments.substr(reference2 + 3, 16);
-			return end;
+		if (date.length() == 6) {
+			parsedData.date = TimeParser::formatDate(noSpaceDate);
 		}
 		else {
-			end = arguments.substr(reference3 + 3, 16);
-			return end;
+			argumentError();
 		}
-	}
-}
-
-string AddParser::extractRating(string arguments)
-{
-	string rating;
-	size_t reference1 = arguments.find(']'); // to start searching key word "rating" behind [eventName]
-	size_t reference2 = arguments.find("rating", reference1 + 1, 6);
-
-	if (reference1 == -1 || reference2 == -1) {
-		return argumentError();
-	}
-	// catching out of range exception if user ends input with "...rating"
-	else if (reference2 + 6 > arguments.length()) {
-		rating = "1";
-		return rating;
 	}
 	else {
-		rating = arguments.substr(reference2 + 7, 1);
-
-		// if rating parsed white space (e.g user input "rating     ", what will be the value of found?
-		size_t found = rating.find_first_not_of("123");
-
-		if (found == -1) {
-			return rating;
+		string newDateFormat = TimeParser::parseDayOfWeek(date);
+		if (newDateFormat != date) { //parseDayOfWeek returns unchanged if error
+			parsedData.date = date;
 		}
-		// if rating parsed a non-numeric value, put rating default to 1
 		else {
-			rating = "1";
-			return rating;
+			argumentError();
 		}
 	}
 }
 
-string AddParser::extractCategory(string arguments)
+void AddParser::extractTime(string iterArguments)
 {
-	string category;
+	string time = extractLeadingBracketContent(iterArguments);
+	time = ParserHelperFunctions::removeWhiteSpace(time);
 
-	size_t reference1 = arguments.find(']'); // start search after [eventName]
-	size_t reference2 = arguments.find("@", reference1 + 1, 1); // find first occurence of @
-	size_t reference3 = arguments.find("@", reference2 + 1, 1); // find second occurence of @
-
-	if (reference1 == -1) {
-		return argumentError();
+	size_t position1 = arguments.find("-");
+	if (time.size() == 0) {}
+	if (position1 != string::npos  && time.size() == 9) {
+		string start = time.substr(0, 4);
+		string end = time.substr(5, 4);
+		if (ParserHelperFunctions::isParameterStringANumber(start) &&
+			ParserHelperFunctions::isParameterStringANumber(end)) {
+			parsedData.start = start;
+			parsedData.start = end;
+		}
+		else {
+			argumentError();
+		}
 	}
-	else if (reference2 == -1) {
-		category = "";
-		return category;
+	else if (position1 == string::npos  && time.size() == 4) {
+		if (ParserHelperFunctions::isParameterStringANumber(time)) {
+			parsedData.end = time;
+		}
+		else {
+			argumentError();
+		}
 	}
 	else {
-		category = arguments.substr(reference2 + 1, reference3 - reference2 - 1);
-		return category;
+		argumentError();
 	}
+	
+}
+
+ParsedDataPackage AddParser::parseAndReturn(string parseInput) 
+{
+	parsedData.name = extractLeadingBracketContent(parseInput);
+	parseInput = nextArguments(parseInput);
+	extractDate(parseInput);
+	parseInput = nextArguments(parseInput);
+	extractTime(parseInput);
+	parseInput = nextArguments(parseInput);
+	parsedData.category = extractLeadingBracketContent(parseInput);
+
+	return parsedData;
 }

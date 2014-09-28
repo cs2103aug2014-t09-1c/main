@@ -26,5 +26,7 @@ public:
 	//Enter days of week shown above, "today" or "tomorrow", return day in dd/mm/yyyy format.
 	//If next is Present i.e. "next Thursday", date will be that of one week later.
 	//If format error (including that of using dd/mm/yyyy), whole string entered is returned.
+	static string formatDate(string date);
+	//ddmmyy to dd/mm/yyyy
 };
 #endif

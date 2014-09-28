@@ -15,8 +15,7 @@ void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, string fileNam
 {
 	AddLogic newAdd(fileName);
 	newAdd.appendToLineEntry("name", addPackage.name);
-	newAdd.appendToLineEntry("rating", addPackage.rating);
-	newAdd.appendToLineEntry("type", addPackage.type);
+	newAdd.appendToLineEntry("date", addPackage.date);
 	newAdd.appendToLineEntry("category", addPackage.category);
 	newAdd.appendToLineEntry("start", addPackage.start);
 	newAdd.appendToLineEntry("end", addPackage.end);

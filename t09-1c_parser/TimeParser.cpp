@@ -89,3 +89,16 @@ string TimeParser::parseDayOfWeek(string date)
 		return date;
 	}
 }
+
+string TimeParser::formatDate(string date)
+{
+	date.insert(2, "/");
+	date.insert(5, "/");
+
+	time_t t = time(0);   // get time now
+	struct tm * time = localtime(&t);
+	int year = time->tm_year + 1900;
+	string hundredsyear = to_string(year / 100);
+	date.insert(6, hundredsyear);
+	return date;
+}

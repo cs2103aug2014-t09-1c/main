@@ -13,6 +13,7 @@ public:
 	LogicHelperFunctions();
 	~LogicHelperFunctions();
 	static string toLowerCaseString(string input);
+
 };
 
 #endif
