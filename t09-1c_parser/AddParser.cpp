@@ -90,6 +90,8 @@ void AddParser::extractTime(string iterArguments)
 		string end = time.substr(5, 4);
 		if (ParserHelperFunctions::isParameterStringANumber(start) &&
 			ParserHelperFunctions::isParameterStringANumber(end)) {
+			start.insert(2, ":");
+			end.insert(2, ":");
 			parsedData.start = start;
 			parsedData.start = end;
 		}
@@ -99,6 +101,7 @@ void AddParser::extractTime(string iterArguments)
 	}
 	else if (position1 == string::npos  && time.size() == 4) {
 		if (ParserHelperFunctions::isParameterStringANumber(time)) {
+			time.insert(2, ":");
 			parsedData.end = time;
 		}
 		else {

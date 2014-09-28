@@ -87,4 +87,6 @@ string FileEntryFormatter::editAttributedEntryFromLineEntry(string attribute, st
 
 		lineEntry.insert(attributeEntryStartAt, newAttributeEntry);
 	}
+
+	return lineEntry;
 }

@@ -3,10 +3,11 @@
 #include <sstream>
 
 
-TimeLogic::TimeLogic(string time)
+TimeLogic::TimeLogic(string date, string time)
 {
+	stringDate = date;
 	stringTime = time;
-	convertStringToTimeLogic(stringTime);
+	convertStringToTimeLogic(stringDate, stringTime);
 }
 
 
@@ -19,110 +20,70 @@ bool TimeLogic::getTimeFormatCheck()
 	return timeFormatCheck;
 }
 
-bool TimeLogic::isParameterStringEmpty(string parameter)
+void TimeLogic::convertStringToTimeLogic(string dateString, string timeString)
 {
-	return parameter.find_first_not_of(' ') == std::string::npos;
-}
-
-bool TimeLogic::isParameterStringANumber(string parameter)
-{
-	if (isParameterStringEmpty(parameter)) {
-		return false;
-	}
-	else {
-		return parameter.find_first_not_of("0123456789") == std::string::npos;
-	}
-}
-
-int TimeLogic::convertStringToInt(string argument)
-{
-	if (isParameterStringANumber(argument)) {
-		while (argument.substr(0, 1) == "0") {
-			argument = argument.erase(0, 1);
-		}
-		int stringInInt = stoi(argument);
-		return stringInInt;
-	}
-	else {
-		return -1;
-	}
-}
-
-void TimeLogic::convertStringToTimeLogic(string timeString)
-{
-	if (timeString.size() >= 15) {
-		year = convertStringToYear(timeString.substr(YEAR_POSITION, YEAR_LENGTH_FORMAT));
-		month = convertStringToMonth(timeString.substr(MONTH_POSITION, TIME_DATE_LENGTH_FORMAT));
-		day = convertStringToDay(timeString.substr(DATE_POSITION, TIME_DATE_LENGTH_FORMAT));
-		hour = convertStringToHour(timeString.substr(HOUR_POSITION, TIME_DATE_LENGTH_FORMAT));
-		min = convertStringToMinutes(timeString.substr(MIN_POSITION, TIME_DATE_LENGTH_FORMAT));
-	}
-	else {
-		timeFormatCheck = false;
-	}
-}
-
-int TimeLogic::convertStringToYear(string yearString)
-{
-	int year = convertStringToInt(yearString);
-	if (year < 0) {
-		timeFormatCheck = false;
-	}
-	return year;
-}
-
-int TimeLogic::convertStringToMonth(string monthString) 
-{
-	int month = convertStringToInt(monthString);
-	if (month < 1 || month > MONTHS_IN_YEAR) {
-		timeFormatCheck = false;
-	}
-	return month;
-}
-
-int TimeLogic::convertStringToDay(string dayString)
-{
-	int day = convertStringToInt(dayString);
-	if (day < 0 || day > DAYS_IN_31MONTH) {
-		timeFormatCheck = false;
-	}
-	if (month == 4 || month == 6 || month == 9 || month == 11) {
-		if (day > DAYS_IN_30MONTH) {
-			timeFormatCheck = false;
-		}
-	}
-	if (month == 2) {
-		bool isLeap = 0;
-		if ((year % 100 != 0 && year % 4 == 0) || (year % 100 == 0 && year % 400 == 0)) {
-			isLeap = true;
-			if (day > DAYS_IN_FEB_LEAP) {
+	if (timeString.size() == 5 && dateString.size() == 10) {
+		convertAndInsertDate(dateString);
+		if (isDateValid(day, month, year))
+		{
+			convertAndInsertTime(timeString);
+			if (!isTimeValid(hour, min)) {
 				timeFormatCheck = false;
 			}
 		}
-		if (!isLeap && day > DAYS_IN_FEB) {
+		else {
 			timeFormatCheck = false;
 		}
 	}
-	
-	return day;
-}
-
-int TimeLogic::convertStringToHour(string hourString)
-{
-	int hour = convertStringToInt(hourString);
-	if (hour < 0 || hour > HOURS_IN_DAY) {
+	else {
 		timeFormatCheck = false;
 	}
-	return hour;
+}
+void TimeLogic::convertAndInsertDate(string date) 
+{
+	const char* str = date.c_str();
+	sscanf(str, "%2d/%2d/%4d", &day, &month, &year);
 }
 
-int TimeLogic::convertStringToMinutes(string minuteString)
+void TimeLogic::convertAndInsertTime(string time)
 {
-	int minute = convertStringToInt(minuteString);
-	if (minute < 0 || minute > MINUTES_IN_HOUR) {
-		timeFormatCheck = false;
+	const char* str = time.c_str();
+	sscanf(str, "%2d:%2d", &hour, &min);
+}
+
+bool TimeLogic::isDateValid(int day, int mon, int year)
+{
+	if (!(1582 <= year))
+		return false;
+	if (!(1 <= mon && mon <= 12))
+		return false;
+	if (!(1 <= day && day <= 31))
+		return false;
+	if ((day == 31) && (mon == 2 || mon == 4 || mon == 6 || mon == 9 || mon == 11))
+		return false;
+	if ((day == 30) && (mon == 2))
+		return false;
+	if ((mon == 2) && (day == 29) && (year % 4 != 0))
+		return false;
+	if ((mon == 2) && (day == 29) && (year % 400 == 0))
+		return true;
+	if ((mon == 2) && (day == 29) && (year % 100 == 0))
+		return false;
+	if ((mon == 2) && (day == 29) && (year % 4 == 0))
+		return true;
+
+	return true;
+}
+
+bool TimeLogic::isTimeValid(int hour, int min) 
+{
+	if (hour >= 24 || hour < 0) {
+		return false;
 	}
-	return minute;
+	if (min >= 60 || min < 0) {
+		return false;
+	}
+	return true;
 }
 
 void TimeLogic::declareTimeFormatError() 
