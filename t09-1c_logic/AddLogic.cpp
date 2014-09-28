@@ -127,6 +127,7 @@ void AddLogic::commitAdd()
 				//no slots
 			}
 			else {
+				appendToLineEntry("complete", "no");
 				fileHandler.appendToFile(lineEntry);
 			}
 		}
