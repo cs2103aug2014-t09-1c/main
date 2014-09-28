@@ -1,21 +1,15 @@
 #pragma once
-#include <string>
-#include <sstream>
-#include "CommandAndArgumentParser.h"
+#ifndef PARSE_DATA_DEPLOYER
+#define PARSE_DATA_DEPLOYER
 
-
-using namespace std;
+#include <ParsedDataPackage.h>
+#include <AddLogic.h>
 
 class ParsedDataDeployer
 {
-private:
-	string command;
 public:
 	ParsedDataDeployer();
 	~ParsedDataDeployer();
-
-	string ParsedDataDeployer::SendToParser(string input);
-
-	
+	static void executeAdd(ParsedDataPackage addPackage, string fileName);
 };
-
+#endif

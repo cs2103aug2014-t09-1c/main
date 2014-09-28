@@ -5,11 +5,14 @@
 class EditParser :
 	public BaseClassParser
 {
+private:
+	string arguments;
+
 public:
 	EditParser();
 	~EditParser();
 	ParsedDataPackage parseAndReturn(string parseInput);
 
-	void processArguments(string arguments);
+	void setArguments(string arguments);
 };
 

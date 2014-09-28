@@ -19,6 +19,7 @@ public:
 	MemoryController();
 	~MemoryController();
 	vector<string> getVector();
+	int getVectorSize();
 	void setVector(vector<string> newVector);
 	string getLineEntry(int position);
 	void appendLineEntry(string lineEntry);

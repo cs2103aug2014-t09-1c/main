@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ParsedDataDeployer.h"
-#include "CommandAndArgumentParser.h"
 
 
 ParsedDataDeployer::ParsedDataDeployer()
@@ -12,9 +11,13 @@ ParsedDataDeployer::~ParsedDataDeployer()
 {
 }
 
-string ParsedDataDeployer::SendToParser(string input)
+void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, string fileName)
 {
-	return CommandAndArgumentParser::commandParser(input);
+	AddLogic newAdd(fileName);
+	newAdd.appendToLineEntry("name", addPackage.name);
+	newAdd.appendToLineEntry("date", addPackage.date);
+	newAdd.appendToLineEntry("category", addPackage.category);
+	newAdd.appendToLineEntry("start", addPackage.start);
+	newAdd.appendToLineEntry("end", addPackage.end);
+	newAdd.commitAdd;
 }
-
-
