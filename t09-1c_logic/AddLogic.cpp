@@ -100,7 +100,8 @@ bool AddLogic::isSlotFree() {
 				
 				if (startTime2.getTimeFormatCheck() && endTime2.getTimeFormatCheck()) {
 					if (!TimeLogic::isFirstEarlierThanSecond(end,startTime2) &&
-						!TimeLogic::isFirstEarlierThanSecond(endTime2, start)) {
+						!TimeLogic::isFirstEarlierThanSecond(endTime2, start) &&
+						TimeLogic::isFirstEarlierThanSecond(startTime2, endTime2)) {
 						slotFree = false;
 					}
 				}
