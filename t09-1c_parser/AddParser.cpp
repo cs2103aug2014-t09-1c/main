@@ -26,7 +26,7 @@ string AddParser::argumentError()
 	return ADD_PARSER_ERROR;
 }
 
-void AddParser::setArguments(string input)
+void AddParser::setArguments(string input) 
 {
 	arguments = input;
 }
