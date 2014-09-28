@@ -15,6 +15,9 @@ private:
 public:
 	AddLogic(string fileName);
 	~AddLogic();
+	string getLineEntry();
+	bool isDateAndTimeCorrect();
+	bool isSlotFree();
 	void appendToLineEntry(string attribute, string entry);
 	void determineType();
 	void commitAdd();

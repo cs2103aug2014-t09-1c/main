@@ -28,7 +28,6 @@ void AddLogic::determineType()
 		if (FileEntryFormatter::getAttributeEntry("end", lineEntry) == "") {
 			if (FileEntryFormatter::getAttributeEntry("date", lineEntry) == "") {
 				if (FileEntryFormatter::getAttributeEntry("name", lineEntry) == "") {
-					//empty
 				}
 				else {
 					appendToLineEntry("type", "float");
@@ -48,8 +47,87 @@ void AddLogic::determineType()
 	}
 }
 
+bool AddLogic::isDateAndTimeCorrect()
+{
+	if (FileEntryFormatter::getAttributeEntry("start", lineEntry) == "") {
+		if (FileEntryFormatter::getAttributeEntry("end", lineEntry) == "") {
+			if (FileEntryFormatter::getAttributeEntry("date", lineEntry) == "") {
+				return true;
+			}
+			else {
+				TimeLogic check(FileEntryFormatter::getAttributeEntry("date", lineEntry), "23:59");
+				
+				return check.getTimeFormatCheck();
+			}
+		}
+		else {
+			TimeLogic check(FileEntryFormatter::getAttributeEntry("date", lineEntry), 
+				FileEntryFormatter::getAttributeEntry("end", lineEntry));
+			
+			return check.getTimeFormatCheck();
+		}
+	}
+	else {
+		TimeLogic checkStart(FileEntryFormatter::getAttributeEntry("date", lineEntry),
+			FileEntryFormatter::getAttributeEntry("start", lineEntry));
+		TimeLogic checkEnd(FileEntryFormatter::getAttributeEntry("date", lineEntry),
+			FileEntryFormatter::getAttributeEntry("end", lineEntry));
+		
+		return (checkStart.getTimeFormatCheck() && checkEnd.getTimeFormatCheck()
+			&& TimeLogic::isFirstEarlierThanSecond(checkStart,checkEnd));
+	}
+}
+bool AddLogic::isSlotFree() {
+	bool slotFree = true;
+	string startTime = FileEntryFormatter::getAttributeEntry("start", lineEntry);
+	string endTime = FileEntryFormatter::getAttributeEntry("end", lineEntry);
+	string date = FileEntryFormatter::getAttributeEntry("date", lineEntry);
+	
+	if (startTime != "" && endTime != "" && date != "") {
+		TimeLogic start(date, startTime);
+		TimeLogic end(date, endTime);
+		int size = fileHandler.getSize();
+		
+		for (int i = 0; i < size; ++i) {
+			string line = fileHandler.getLineFromPositionNumber(i);
+			
+			if (FileEntryFormatter::getAttributeEntry("type", line) == "timed") {
+				string start2 = FileEntryFormatter::getAttributeEntry("start", line);
+				string end2 = FileEntryFormatter::getAttributeEntry("end", line);
+				string date2 = FileEntryFormatter::getAttributeEntry("date", line);
+				TimeLogic startTime2(date2, start2);
+				TimeLogic endTime2(date2, end2);
+				
+				if (startTime2.getTimeFormatCheck() && endTime2.getTimeFormatCheck()) {
+					if (!TimeLogic::isFirstEarlierThanSecond(end,startTime2) &&
+						!TimeLogic::isFirstEarlierThanSecond(endTime2, start)) {
+						slotFree = false;
+					}
+				}
+			}
+		}
+	}
+	return slotFree;
+}
+
 void AddLogic::commitAdd()
 {
-	determineType();
-	fileHandler.appendToFile(lineEntry);
+	if (!isDateAndTimeCorrect) {
+		//Time error
+	}
+	else {
+		determineType();
+		string type = FileEntryFormatter::getAttributeEntry("type", lineEntry);
+		if (type == "") {
+			//format error
+		}
+		else {
+			if (type == "timed" && !isSlotFree()) {
+				//no slots
+			}
+			else {
+				fileHandler.appendToFile(lineEntry);
+			}
+		}
+	}
 }
