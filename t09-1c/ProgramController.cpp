@@ -17,24 +17,66 @@ ProgramController::~ProgramController()
 
 
 
-string ProgramController::SendToParser(string input)//placeholder input for scanned input from UI
+void ProgramController::SendToParser(string input)//placeholder input for scanned input from UI
 {
 	//if command = add, delete, or edit, use parseAndReturn accordingly
-	command = CommandAndArgumentParser::getCommand(input); //constructor needed or just static?
-	arguments = CommandAndArgumentParser::getArguments(input);
-	CommandAndArgumentParser::commandParser(command, arguments);
+
+	command = comdAndArgParserObj.getCommand(input); //constructor needed or just static?
+	arguments = comdAndArgParserObj.getArguments(input);
+	comdAndArgParserObj.commandParser(command, arguments);
 
 	if (command == "add"){
-		parseOutput = AddParser::parseAndReturn(string arguments);
+		parseOutput = addParserObj.parseAndReturn(arguments);
 	}
 	else if (command == "edit"){
-		parseOutput = EditParser::parseAndReturn(string arguments);
+		parseOutput = editParserObj.parseAndReturn(arguments);
 	}
 	else if (command == "delete"){
-		parseOutput = DeleteParser::parseAndReturn(string arguments);
+		parseOutput = deleteParserObj.parseAndReturn(arguments);
+	}
+
+}
+
+void ProgramController::SendToLogic(string filename)
+{
+	if (command == "add"){
+		parsDataDeployerObj.executeAdd(parseOutput, filename);
+	}
+	else if (command == "edit"){
+		parsDataDeployerObj.executeEdit(parseOutput, filename);
+	}
+	else if (command == "delete"){
+		parsDataDeployerObj.executeDelete(parseOutput, filename);
 	}
 }
-void ProgramController::SendToLogic() 
+
+void ProgramController::ConnectToCommandFeedback(string input)
+{
+
+	
+}
+
+void ProgramController::ConnectToDoListOutput(string newLineEntry)//input from other logic class a string lineEntry with attributes tags
+{
+	if (command == "add"){//with condition of = today's date
+		fileLogicObj.appendToFile(newLineEntry);
+	}
+	//else depending on date, use addToPositionNumber method to insert line (SearchLogic to find date?)
+	
+}
+void ProgramController::ConnectToDoListOutput(int position, string newLineEntry)//input from other logic class a string lineEntry with attributes tags
+{
+	if (command == "edit"){
+		fileLogicObj.editLine(position,newLineEntry);
+	}
+	else if (command == "delete"){
+		fileLogicObj.deleteLine(position);
+	}
+	//else return error
+
+
+}
+/*void ProgramController::SendToLogic() //now that deployer does this instead
 {
 	if (command == "add"){	
 		BaseClassLogic::addParsedOutput(parseOutput);
@@ -46,8 +88,8 @@ void ProgramController::SendToLogic()
 		BaseClassLogic::deleteParsedOutput(parseOutput);
 	}
 	
-}
-void ProgramController::getOutput(string)
+}*/
+/*void ProgramController::getOutput(string)//now that logic does this instead.
 {
 	FileOutput::returnOutput();
-}
+}*/
