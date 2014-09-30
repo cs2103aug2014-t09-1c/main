@@ -4,11 +4,14 @@
 
 #include "BaseClassParser.h"
 #include "ParsedDataPackage.h"
-
+#include "AddParser.h"
 #include <string>
 
 #define DELETE_PARSER_ERROR \
 	"Unable to Commit. Please refer to \"help\" for guide to input."
+
+using namespace std;
+
 // Syntax: [eventName][date][start-end][category] - timed
 // Syntax: [eventName][date][deadline][category] - deadline
 // Syntax: [eventName][][][category] - float
@@ -18,24 +21,23 @@
 // eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
 // eg. Watch movie 191014 1700 to 1800
 
-
-using namespace std;
+// Delete Syntax: delete [010914][2]
 
 class DeleteParser :
 	public BaseClassParser
 {
 private:
 	string arguments;
+	AddParser add;
 
 public:
 	DeleteParser();
 	~DeleteParser();
 	ParsedDataPackage parseAndReturn(string parseInput);
+
 	string argumentError();
-	void setArguments(string arguments);
-	string extractLeadingBracketContent(string arguments);
-	string nextArguments(string argument);
-	void extractDate(string arguments);
+
+	void setArguments(string input);
 	void extractLine(string iterArguments);
 	
 };

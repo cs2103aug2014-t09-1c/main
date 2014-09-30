@@ -4,6 +4,9 @@
 
 #include "BaseClassParser.h"
 #include "ParsedDataPackage.h"
+#include "AddParser.h"
+#include "DeleteParser.h"
+#include <vector>
 
 #include <string>
 
@@ -18,10 +21,10 @@
 // Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
 // eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
 // eg. Watch movie 191014 1700 to 1800
-// delete 01/09/2014 1   will search for date variable, which can be used to locate file location with numbered tasks
 
-// edit [01/09/2014][2] [event][newInput][date][newInput][time][newInput][category][newInput]
-// I assume the codes written are only meant to read user input in blocks of []?
+// Delete Syntax: delete [010914][2]
+
+// Edit Syntax: edit [010914][3] [eventName][date][start-end][category]
 
 using namespace std;
 
@@ -30,18 +33,16 @@ class EditParser :
 {
 private:
 	string arguments;
+	AddParser add;
+	DeleteParser del;
 
 public:
 	EditParser();
 	~EditParser();
-	ParsedDataPackage parseAndReturn(string parseInput);
+	vector<ParsedDataPackage> parseAndReturn(string parseInput);
 
+	void setArguments(string input);
 	string argumentError();
-	string extractLeadingBracketContent(string arguments);
-	string nextArguments(string argument);
-	void extractDate(string arguments);
-	void extractTime(string iterArguments);
-	string extractLine(string iterArguments);
 };
 
 #endif

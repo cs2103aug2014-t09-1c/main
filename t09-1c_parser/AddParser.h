@@ -23,7 +23,6 @@ class AddParser :
 {
 private:
 	string arguments;
-
 	ParsedDataPackage parsedData;
 
 public:
