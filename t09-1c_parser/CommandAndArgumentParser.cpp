@@ -59,6 +59,7 @@ string CommandAndArgumentParser::argumentStringParser(string argument)
 string CommandAndArgumentParser::commandArgumentError()
 {
 	string errorMessage = "Unable to Commit. Please refer to \"help\" for guide to input. \n";
+	return errorMessage;
 }
 
 void CommandAndArgumentParser::commandParser(string command, string arguments)
@@ -72,15 +73,15 @@ void CommandAndArgumentParser::commandParser(string command, string arguments)
 
 void CommandAndArgumentParser::moveToAddParser(string arguments)
 {
-	add.processArguments(arguments);
+	add.setArguments(arguments);
 }
 
 void CommandAndArgumentParser::moveToDeleteParser(string arguments)
 {
-	del.processArguments(arguments);
+	del.setArguments(arguments);
 }
 
 void CommandAndArgumentParser::moveToEditParser(string arguments)
 {
-	edit.processArguments(arguments);
+	edit.setArguments(arguments);
 }

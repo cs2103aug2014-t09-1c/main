@@ -10,3 +10,14 @@ ParsedDataDeployer::ParsedDataDeployer()
 ParsedDataDeployer::~ParsedDataDeployer()
 {
 }
+
+void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, string fileName)
+{
+	AddLogic newAdd(fileName);
+	newAdd.appendToLineEntry("name", addPackage.name);
+	newAdd.appendToLineEntry("date", addPackage.date);
+	newAdd.appendToLineEntry("category", addPackage.category);
+	newAdd.appendToLineEntry("start", addPackage.start);
+	newAdd.appendToLineEntry("end", addPackage.end);
+	newAdd.commitAdd;
+}

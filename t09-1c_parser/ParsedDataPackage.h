@@ -1,7 +1,6 @@
 #pragma once
 #include "stdafx.h"
 #include <string>
-#include <list>
 
 using namespace std;
 
@@ -12,21 +11,11 @@ public:
 	~ParsedDataPackage();
 
 	//all data related to event info to be stored are represented here.
-	string event;
-	int priority;
-	int startHour;
-	int startMin;
-	int endHour;
-	int endMin;
-	int startDate;
-	int startMonth;
-	int startYear;
-	int endDate;
-	int endMonth;
-	int endYear;
-	list<string> keywords;
-
-
-
+	string name; //event name
+	string date; //date should be in dd/mm/yyyy or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
+	string start; //FORMAT SHOULD BE "HH:MM" or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
+	string end; //FORMAT SHOULD BE "HH:MM" or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
+	string category; // Empty string for uncategorised
+	string lineNum; //line to delete or edit
 };
 
