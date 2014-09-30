@@ -7,7 +7,8 @@
 
 string AddLogic::AddUserInputIntoFile(string userInput, string filename)
 {
-	FileLogic.addAttributesToFloadEntry(string userInput, string filename);
+	currentLineEntry = floatNewLineEntry(userInput, filename);
+	addAttributesToFloatEntry(string userInput, string filename);
 }
 
 
