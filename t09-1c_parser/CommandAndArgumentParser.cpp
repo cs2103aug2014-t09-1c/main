@@ -7,7 +7,6 @@ CommandAndArgumentParser::CommandAndArgumentParser(string input)
 {
 	setCommand(input);
 	setArguments(input);
-
 }
 
 
@@ -50,7 +49,7 @@ string CommandAndArgumentParser::getArguments(string input)
 
 string CommandAndArgumentParser::argumentStringParser(string argument)
 {
-	if (ParserHelperFunctions::isParameterStringEmpty(argument)) {  // I don't know how to use the VariableHelperFunction class from t09-1c project.
+	if (ParserHelperFunctions::isParameterStringEmpty(argument)) {
 		argument = ""; // empty string
 	}
 	else {
@@ -62,30 +61,29 @@ string CommandAndArgumentParser::argumentStringParser(string argument)
 
 string CommandAndArgumentParser::commandArgumentError()
 {
-	string errorMessage = "Unable to Commit. Please refer to \"help\" for guide to input. \n";
-	return errorMessage;
+	return COMMANDANDARGUMENT_PARSER_ERROR;
 }
 
-void CommandAndArgumentParser::commandParser(string command, string arguments)
-{
-	if (command == "add") moveToAddParser(arguments);
-	else if (command == "delete") moveToDeleteParser(arguments);
-	else if (command == "edit") moveToEditParser(arguments);
+// void CommandAndArgumentParser::commandParser(string command, string arguments)
+//{
+//	if (command == "add") moveToAddParser(arguments);
+//	else if (command == "delete") moveToDeleteParser(arguments);
+//	else if (command == "edit") moveToEditParser(arguments);
+//
+//	else commandArgumentError();
+//}
 
-	else commandArgumentError();
-}
+//void CommandAndArgumentParser::moveToAddParser(string arguments)
+//{
+//	setArguments(arguments);
+//}
 
-void CommandAndArgumentParser::moveToAddParser(string arguments)
-{
-	setArguments(arguments);
-}
-
-void CommandAndArgumentParser::moveToDeleteParser(string arguments)
-{
-	setArguments(arguments);
-}
-
-void CommandAndArgumentParser::moveToEditParser(string arguments)
-{
-	setArguments(arguments);
-}
+//void CommandAndArgumentParser::moveToDeleteParser(string arguments)
+//{
+//	setArguments(arguments);
+//}
+//
+//void CommandAndArgumentParser::moveToEditParser(string arguments)
+//{
+//	setArguments(arguments);
+//}
