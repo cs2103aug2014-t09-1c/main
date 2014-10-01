@@ -1,13 +1,23 @@
 #pragma once
+#ifndef DELETE_LOGIC
+#define DELETE_LOGIC
 #include "BaseClassLogic.h"
-#define IMPT_MSG_ALARM \
-	"Reconfirm your deletion."
+#include "ArrangeLogic.h"
+
 
 class DeleteLogic :
 	public BaseClassLogic
 {
+private:
+	ArrangeLogic arranger;
+	FileLogic fileHandler;
+
 public:
-	void deleteUserInputRelatedMessage(string userInput, string filename);
+	DeleteLogic(string fileName);
 	~DeleteLogic();
+
+	void deleteEntry(string date, int position);
 };
+
+#endif
 

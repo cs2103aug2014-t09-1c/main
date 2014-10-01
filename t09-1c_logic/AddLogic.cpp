@@ -16,6 +16,16 @@ AddLogic::~AddLogic()
 {
 }
 
+string AddLogic::getLineEntry()
+{
+	return lineEntry;
+}
+
+void AddLogic::setLineEntry(string newLineEntry)
+{
+	lineEntry = newLineEntry;
+}
+
 void AddLogic::appendToLineEntry(string attribute, string entry)
 {
 	string attributedEntry = FileEntryFormatter::createAttributedEntry(attribute, entry);

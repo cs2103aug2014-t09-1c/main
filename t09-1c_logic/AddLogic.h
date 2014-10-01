@@ -16,6 +16,7 @@ public:
 	AddLogic(string fileName);
 	~AddLogic();
 	string getLineEntry();
+	void setLineEntry(string newLineEntry);
 	bool isDateAndTimeCorrect();
 	bool isSlotFree();
 	void appendToLineEntry(string attribute, string entry);

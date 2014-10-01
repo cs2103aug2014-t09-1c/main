@@ -51,6 +51,9 @@
     <ClInclude Include="TimeLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ArrangeLogic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TimeLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrangeLogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

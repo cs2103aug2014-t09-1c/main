@@ -22,7 +22,6 @@ class AddParser :
 	public BaseClassParser
 {
 private:
-	string arguments;
 	ParsedDataPackage parsedData;
 
 public:
@@ -32,7 +31,6 @@ public:
 
 	string argumentError();
 
-	void setArguments(string input);
 	string extractLeadingBracketContent(string arguments);
 	string nextArguments(string arguments);
 	void extractDate(string arguments);

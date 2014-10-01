@@ -27,7 +27,6 @@ class DeleteParser :
 	public BaseClassParser
 {
 private:
-	string arguments;
 	AddParser add;
 
 public:
@@ -37,7 +36,6 @@ public:
 
 	string argumentError();
 
-	void setArguments(string input);
 	void extractLine(string iterArguments);
 	
 };

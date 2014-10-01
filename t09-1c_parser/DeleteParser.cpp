@@ -27,10 +27,6 @@ string DeleteParser::argumentError()
 	return DELETE_PARSER_ERROR;
 }
 
-void DeleteParser::setArguments(string input)
-{
-	arguments = input;
-}
 
 void DeleteParser::extractLine(string iterArguments)
 {

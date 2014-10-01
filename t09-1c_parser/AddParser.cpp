@@ -26,11 +26,6 @@ string AddParser::argumentError()
 	return ADD_PARSER_ERROR;
 }
 
-void AddParser::setArguments(string input)
-{
-	arguments = input;
-}
-
 string AddParser::extractLeadingBracketContent(string arguments)
 {
 	string contents = "";
@@ -60,7 +55,7 @@ void AddParser::extractDate(string iterArguments)
 	if (date.size() == 0) {}
 	else if (ParserHelperFunctions::isParameterStringANumber(noSpaceDate)) {
 
-		if (date.length() == 6) {
+		if (noSpaceDate.length() == 6) {
 			parsedData.date = TimeParser::formatDate(noSpaceDate);
 		}
 		else {
@@ -83,7 +78,7 @@ void AddParser::extractTime(string iterArguments)
 	string time = extractLeadingBracketContent(iterArguments);
 	time = ParserHelperFunctions::removeWhiteSpace(time);
 
-	size_t position1 = arguments.find("-");
+	size_t position1 = time.find("-");
 	if (time.size() == 0) {}
 	if (position1 != string::npos  && time.size() == 9) {
 		string start = time.substr(0, 4);
