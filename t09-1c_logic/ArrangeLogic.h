@@ -12,7 +12,7 @@ class ArrangeLogic
 private:
 	FileLogic fileHandler;
 public:
-	ArrangeLogic(string fileName);
+	ArrangeLogic(FileLogic fileHandler);
 	~ArrangeLogic();
 
 	pair<vector<string>, vector<int>> getListOfDate(string date);

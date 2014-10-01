@@ -4,8 +4,9 @@
 #include "FileLogic.h"
 #include "FileEntryFormatter.h"
 
-ArrangeLogic::ArrangeLogic(string fileName) : fileHandler(fileName)
+ArrangeLogic::ArrangeLogic(FileLogic fileHandler) : fileHandler("")
 {
+	this->fileHandler = fileHandler;
 }
 
 

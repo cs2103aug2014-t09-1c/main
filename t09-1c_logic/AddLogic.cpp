@@ -5,8 +5,9 @@
 #include <iostream>
 
 
-AddLogic::AddLogic(string fileName) : fileHandler(fileName)
+AddLogic::AddLogic(FileLogic fileHandler) : fileHandler("")
 {
+	this->fileHandler = fileHandler;
 	string creationDate = FileEntryFormatter::createAttributedEntry("CreationDate", TimeLogic::getTimeNowInString());
 	lineEntry = FileEntryFormatter::addAttributedEntryToLineEntry(creationDate, lineEntry);
 }
@@ -121,25 +122,37 @@ bool AddLogic::isSlotFree() {
 	return slotFree;
 }
 
-void AddLogic::commitAdd()
+bool AddLogic::isEntryValid() 
 {
+	bool isValid = false;
 	if (!isDateAndTimeCorrect) {
 		//Time error
+		return isValid;
 	}
 	else {
 		determineType();
 		string type = FileEntryFormatter::getAttributeEntry("type", lineEntry);
 		if (type == "") {
 			//format error
+			return isValid;
 		}
 		else {
 			if (type == "timed" && !isSlotFree()) {
 				//no slots
+				return isValid;
 			}
 			else {
-				appendToLineEntry("complete", "no");
-				fileHandler.appendToFile(lineEntry);
+				isValid = true;
+				return isValid;
 			}
 		}
+	}
+}
+
+void AddLogic::commitAdd()
+{
+	if (isEntryValid()) {
+		appendToLineEntry("complete", "no");
+		fileHandler.appendToFile(lineEntry);
 	}
 }

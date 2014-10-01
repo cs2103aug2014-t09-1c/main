@@ -10,13 +10,14 @@ class EditLogic :
 {
 private:
 	FileLogic fileHandler;
-	ArrangeLogic arranger;
+	AddLogic addFunction;
 
 public:
-	EditLogic();
+	EditLogic(FileLogic fileHandler);
 	~EditLogic();
 
-	void editEntry(string date, string position);
+	void appendEntry(string attriibute, string entry);
+	void editEntry(string date, int position);
 };
 
 #endif

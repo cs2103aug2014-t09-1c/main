@@ -13,7 +13,7 @@ private:
 	FileLogic fileHandler;
 
 public:
-	AddLogic(string fileName);
+	AddLogic(FileLogic fileHandler);
 	~AddLogic();
 	string getLineEntry();
 	void setLineEntry(string newLineEntry);
@@ -21,6 +21,7 @@ public:
 	bool isSlotFree();
 	void appendToLineEntry(string attribute, string entry);
 	void determineType();
+	bool isEntryValid();
 	void commitAdd();
 
 };

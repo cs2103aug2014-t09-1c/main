@@ -13,8 +13,11 @@ private:
 	FileLogic fileHandler;
 
 public:
-	DeleteLogic(string fileName);
+	DeleteLogic(FileLogic fileHandler);
 	~DeleteLogic();
+
+	string deletedEntry;
+	int deletedPosition = -1;
 
 	void deleteEntry(string date, int position);
 };
