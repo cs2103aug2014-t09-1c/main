@@ -33,7 +33,7 @@ void DeleteParser::extractLine(string iterArguments)
 	string lineNum = add.extractLeadingBracketContent(iterArguments);
 
 	if (ParserHelperFunctions::isParameterStringANumber(lineNum)){
-		parsedData.lineNum = lineNum;
+		parsedData.lineNum = stoi(lineNum);
 	}
 	else {
 		argumentError();

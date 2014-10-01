@@ -16,6 +16,6 @@ public:
 	string start; //FORMAT SHOULD BE "HH:MM" or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
 	string end; //FORMAT SHOULD BE "HH:MM" or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
 	string category; // Empty string for uncategorised
-	string lineNum; //line to delete or edit
+	int lineNum; //line to delete or edit
 };
 

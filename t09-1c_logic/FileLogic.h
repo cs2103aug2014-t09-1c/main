@@ -16,7 +16,7 @@ public:
 	FileLogic(string fileName);
 	~FileLogic();
 
-	bool fileAccess(string fileName);
+	bool fileAccess();
 	void changeFile(string fileName);
 	
 	//These are floating file logic functions that accesses IO functions

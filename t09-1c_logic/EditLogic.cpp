@@ -33,7 +33,7 @@ void EditLogic::editEntry(string date, int position)
 	newLine = FileEntryFormatter::editAttributedEntryFromLineEntry("CreationDate", oldCreationDate, newLine);
 	addFunction.setLineEntry(newLine);
 
-	if (addFunction.isEntryValid()) {
+	if (addFunction.isEntryValid() && deletedPosition > -1) {
 		fileHandler.addToPositionNumber(deletedPosition, newLine);
 	}
 }

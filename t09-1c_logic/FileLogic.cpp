@@ -17,7 +17,7 @@ int FileLogic::getSize()
 	return memoryHandler.getVectorSize();
 }
 
-bool FileLogic::fileAccess(string fileName)
+bool FileLogic::fileAccess()
 {
 	if (FileController::checkFile(fileName))
 	{
@@ -31,21 +31,21 @@ bool FileLogic::fileAccess(string fileName)
 }
 void FileLogic::changeFile(string fileName)
 {
-	if (fileAccess(fileName)) {
+	if (fileAccess()) {
 		this->fileName = fileName;
 	}
 }
 
 string FileLogic::getLineFromPositionNumber(int position)
 {
-	if (fileAccess(fileName)) {
+	if (fileAccess()) {
 		return memoryHandler.getLineEntry(position);
 	}
 }
 
 void FileLogic::appendToFile(string lineEntry)
 {
-	if (fileAccess(fileName)) {
+	if (fileAccess()) {
 		memoryHandler.appendLineEntry(lineEntry);
 		FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
 	}
@@ -53,7 +53,7 @@ void FileLogic::appendToFile(string lineEntry)
 
 void FileLogic::addToPositionNumber(int position, string lineEntry)
 {
-	if (fileAccess(fileName)) {
+	if (fileAccess()) {
 		if (memoryHandler.getVectorSize() > position) {
 			memoryHandler.insertLineEntry(position, lineEntry);
 			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
@@ -63,7 +63,7 @@ void FileLogic::addToPositionNumber(int position, string lineEntry)
 
 void FileLogic::editLine(int position, string lineEntry) 
 {
-	if (fileAccess(fileName)) {
+	if (fileAccess()) {
 		if (memoryHandler.getVectorSize() > position) {
 			memoryHandler.deleteLineEntry(position);
 			memoryHandler.insertLineEntry(position, lineEntry);
@@ -74,7 +74,7 @@ void FileLogic::editLine(int position, string lineEntry)
 
 void FileLogic::deleteLine(int position)
 {
-	if (fileAccess(fileName)) {
+	if (fileAccess()) {
 		if (memoryHandler.getVectorSize() > position) {
 			memoryHandler.deleteLineEntry(position);
 			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());

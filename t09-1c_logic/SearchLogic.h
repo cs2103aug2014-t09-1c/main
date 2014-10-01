@@ -4,8 +4,8 @@ class SearchLogic :
 	public BaseClassLogic
 {
 public:
-	SearchLogic(string userInput);
-
+	SearchLogic();
+	/*
 	string searchKeyWord = userInput;
 	if (searchKeyWord != SpecificDate){
 		TempFileToStoreSearchedResult = FileLogic.creatNewFile;
@@ -16,7 +16,7 @@ public:
 			}
 		}
 		cout << TempFileToStoreSearchResult;
-	}
+	} */
 	~SearchLogic();
 };
 
