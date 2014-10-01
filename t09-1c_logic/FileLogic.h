@@ -2,6 +2,7 @@
 #ifndef FILE_LOGIC
 #define FILE_LOGIC
 
+//#include "FileEntryFormatter.h"
 #include "FileController.h"
 #include "MemoryController.h"
 

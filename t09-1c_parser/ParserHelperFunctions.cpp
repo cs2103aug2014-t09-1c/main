@@ -20,7 +20,8 @@ string ParserHelperFunctions::toLowerCaseString(string input)
 int ParserHelperFunctions::findMatchingStringIndex(string str, vector<string> lst)
 {
 	int index = -1;
-	for (int i = 0; i < lst.size(); ++i) {
+	int lstSize = lst.size();
+	for (int i = 0; i < lstSize; ++i) {
 		if (lst[i] == str) {
 			index = i;
 			break;
