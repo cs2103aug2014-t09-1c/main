@@ -1,9 +1,13 @@
 #include "stdafx.h"
 #include "CommandAndArgumentParser.h"
+#include "ParserHelperFunctions.h"
 
 
 CommandAndArgumentParser::CommandAndArgumentParser(string input)
 {
+	setCommand(input);
+	setArguments(input);
+
 }
 
 
@@ -46,7 +50,7 @@ string CommandAndArgumentParser::getArguments(string input)
 
 string CommandAndArgumentParser::argumentStringParser(string argument)
 {
-	if (isParameterStringEmpty(argument)) {  // I don't know how to use the VariableHelperFunction class from t09-1c project.
+	if (ParserHelperFunctions::isParameterStringEmpty(argument)) {  // I don't know how to use the VariableHelperFunction class from t09-1c project.
 		argument = ""; // empty string
 	}
 	else {
@@ -73,15 +77,15 @@ void CommandAndArgumentParser::commandParser(string command, string arguments)
 
 void CommandAndArgumentParser::moveToAddParser(string arguments)
 {
-	add.setArguments(arguments);
+	setArguments(arguments);
 }
 
 void CommandAndArgumentParser::moveToDeleteParser(string arguments)
 {
-	del.setArguments(arguments);
+	setArguments(arguments);
 }
 
 void CommandAndArgumentParser::moveToEditParser(string arguments)
 {
-	edit.setArguments(arguments);
+	setArguments(arguments);
 }

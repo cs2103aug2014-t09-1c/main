@@ -10,15 +10,11 @@ using namespace std;
 
 class CommandAndArgumentParser
 {
-private:
+
+public:
 	string command;
 	string arguments;
 
-	AddParser add;
-	DeleteParser del; 
-	EditParser edit;
-
-public:
 	CommandAndArgumentParser(string input);
 	~CommandAndArgumentParser();
 

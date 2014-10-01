@@ -1,4 +1,7 @@
 #pragma once
+#ifndef PROGRAM_CONTROLLER
+#define PROGRAM_CONTROLLER
+
 #include <string>
 #include <sstream>
 #include "ParsedDataDeployer.h"
@@ -7,28 +10,23 @@
 #include "ParsedDataPackage.h"
 #include "FileLogic.h"
 
+#define FILENAME \
+	"example.txt"
 
 
 class ProgramController
 {
 private:
-	ParsedDataPackage parseOutput;
-	string command;
-	string arguments;
-	AddParser addParserObj;
-	DeleteParser deleteParserObj;
-	EditParser editParserObj;
-	CommandAndArgumentParser comdAndArgParserObj;
-	ParsedDataDeployer parsDataDeployerObj;
 	FileLogic fileLogicObj;
+
 public:
-	ProgramController();
+	ProgramController(string filename);
 	~ProgramController();
-	void SendToLogic(string parsedString);
 	void getOutput(string);
-	void SendToParser(string input);
+	void executeEntry(string input);
 	void ConnectToCommandFeedback(string input);
 	void ConnectToDoListOutput(string newLineEntry);
 	void ConnectToDoListOutput(int position, string newLineEntry);
 };
 
+#endif
