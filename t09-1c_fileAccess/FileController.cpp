@@ -42,11 +42,17 @@ vector<string> FileController::parseFileToMemoryVector(string fileName)
 }
 bool FileController::cloneMemoryVectorToFile(string fileName, vector<string> memVector)
 {
-	std::ofstream myFile(fileName); 
-	for (vector<string>::iterator it = memVector.begin(); it != memVector.end(); ++it) {
-		myFile << *it << "\n"; 
-	} 
-	myFile.close();
+	std::ofstream myFile(fileName);
+		if (myFile.is_open()) {
+			for (vector<string>::iterator it = memVector.begin(); it != memVector.end(); ++it) {
+			myFile << *it << "\n";
+		}
+		myFile.close();
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 string FileController::declareFileAccessError()

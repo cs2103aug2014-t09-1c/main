@@ -45,7 +45,8 @@ void MemoryController::insertLineEntry(int position, string line)
 
 bool MemoryController::deleteLineEntry(int position)
 {
-	if (position < vectorInMemory.size()) {
+	int vectorSize = vectorInMemory.size();
+	if (position < vectorSize) {
 		vectorInMemory.erase(vectorInMemory.begin() + position);
 		return true;
 	}

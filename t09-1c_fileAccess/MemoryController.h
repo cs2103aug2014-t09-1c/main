@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 
-#endif
+
 
 using namespace std;
 
@@ -28,4 +28,6 @@ public:
 	
 
 };
+
+#endif
 

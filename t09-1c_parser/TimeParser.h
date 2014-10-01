@@ -2,6 +2,9 @@
 #ifndef TIME_PARSER
 #define TIME_PARSER
 
+#define _CRT_SECURE_NO_WARNINGS
+
+
 #include <iostream>
 #include <vector>
 #include "time.h"

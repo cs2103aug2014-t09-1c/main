@@ -10,13 +10,11 @@
 #define BAD_ACCESS \
 	"Error. File cannot be accessed."
 
-#endif
-
 using namespace std;
 
 class FileController
 {
-private:
+protected:
 	FileController();
 	~FileController();
 
@@ -27,3 +25,4 @@ public:
 	static string declareFileAccessError();
 };
 
+#endif

@@ -2,6 +2,8 @@
 #ifndef TIME_LOGIC
 #define TIME_LOGIC
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <time.h>
 #include <ctime>
 #include <iostream>

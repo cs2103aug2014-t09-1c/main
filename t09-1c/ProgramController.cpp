@@ -8,7 +8,7 @@
 //after Parser returns the variables in ParsedDataPackage, send the details to logic
 //after file output returns an output, controller sends it to UI
 
-ProgramController::ProgramController(string fileName) : fileLogicObj(fileName)
+ProgramController::ProgramController(string fileName) : fileLogicObj(FILENAME)
 {
 }
 

@@ -2,6 +2,7 @@
 #include "FileLogic.h"
 
 
+
 FileLogic::FileLogic(string fileName) : memoryHandler()
 {
 	this->fileName = fileName;
@@ -40,6 +41,9 @@ string FileLogic::getLineFromPositionNumber(int position)
 {
 	if (fileAccess()) {
 		return memoryHandler.getLineEntry(position);
+	}
+	else{
+		return "";
 	}
 }
 

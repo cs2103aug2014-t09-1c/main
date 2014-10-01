@@ -125,7 +125,7 @@ bool AddLogic::isSlotFree() {
 bool AddLogic::isEntryValid() 
 {
 	bool isValid = false;
-	if (!isDateAndTimeCorrect) {
+	if (!isDateAndTimeCorrect()) {
 		//Time error
 		return isValid;
 	}

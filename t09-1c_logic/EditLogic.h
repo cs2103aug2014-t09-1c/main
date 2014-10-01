@@ -4,6 +4,7 @@
 
 #include "BaseClassLogic.h"
 #include "ArrangeLogic.h"
+#include "AddLogic.h"
 
 class EditLogic :
 	public BaseClassLogic

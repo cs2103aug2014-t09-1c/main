@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 
-#endif
+
 
 using namespace std;
 
@@ -27,3 +27,4 @@ public:
 	static string editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry);
 };
 
+#endif
