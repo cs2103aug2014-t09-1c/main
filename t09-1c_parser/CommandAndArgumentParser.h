@@ -1,4 +1,7 @@
 #pragma once
+#ifndef COMMANDANDARGUMENT_PARSER
+#define COMMANDANDARGUMENT_PARSER
+
 #include "stdafx.h"
 #include <string>
 #include <sstream>
@@ -26,11 +29,6 @@ public:
 	string argumentStringParser(string argument);
 
 	string commandArgumentError();
-
-	//void commandParser(string command, string arguments);
-
-	//void moveToAddParser(string arguments);
-	//void moveToDeleteParser(string arguments);
-	//void moveToEditParser(string arguments);
 };
 
+#endif

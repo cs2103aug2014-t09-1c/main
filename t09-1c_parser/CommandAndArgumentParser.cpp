@@ -63,27 +63,3 @@ string CommandAndArgumentParser::commandArgumentError()
 {
 	return COMMANDANDARGUMENT_PARSER_ERROR;
 }
-
-// void CommandAndArgumentParser::commandParser(string command, string arguments)
-//{
-//	if (command == "add") moveToAddParser(arguments);
-//	else if (command == "delete") moveToDeleteParser(arguments);
-//	else if (command == "edit") moveToEditParser(arguments);
-//
-//	else commandArgumentError();
-//}
-
-//void CommandAndArgumentParser::moveToAddParser(string arguments)
-//{
-//	setArguments(arguments);
-//}
-
-//void CommandAndArgumentParser::moveToDeleteParser(string arguments)
-//{
-//	setArguments(arguments);
-//}
-//
-//void CommandAndArgumentParser::moveToEditParser(string arguments)
-//{
-//	setArguments(arguments);
-//}
