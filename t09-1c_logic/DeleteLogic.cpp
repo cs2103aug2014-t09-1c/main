@@ -21,7 +21,7 @@ void DeleteLogic::deleteEntry(string date, int position)
 	if (position - 1 < positionSize) {
 		deletedEntry = lines[position - 1];
 		deletedPosition = positions[position - 1];
-		fileHandler.deleteLine(positions[position - 1]);
+		fileHandler.deleteLine(deletedPosition);
 	}
 
 }

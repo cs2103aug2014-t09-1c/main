@@ -48,15 +48,17 @@ string AddParser::nextArguments(string argument)
 	return argument;
 }
 
-void AddParser::extractDate(string iterArguments)
+string AddParser::extractDate(string iterArguments)
 {
 	string date = extractLeadingBracketContent(iterArguments);
 	string noSpaceDate = ParserHelperFunctions::removeWhiteSpace(date);
-	if (date.size() == 0) {}
+	if (date.size() == 0) {
+		return "";
+	}
 	else if (ParserHelperFunctions::isParameterStringANumber(noSpaceDate)) {
 
 		if (noSpaceDate.length() == 6) {
-			parsedData.date = TimeParser::formatDate(noSpaceDate);
+			return TimeParser::formatDate(noSpaceDate);
 		}
 		else {
 			argumentError();
@@ -65,7 +67,7 @@ void AddParser::extractDate(string iterArguments)
 	else {
 		string newDateFormat = TimeParser::parseDayOfWeek(date);
 		if (newDateFormat != date) { //parseDayOfWeek returns unchanged if error
-			parsedData.date = newDateFormat;
+			return newDateFormat;
 		}
 		else {
 			argumentError();
@@ -113,7 +115,7 @@ ParsedDataPackage AddParser::parseAndReturn(string parseInput)
 {
 	parsedData.name = extractLeadingBracketContent(parseInput);
 	parseInput = nextArguments(parseInput);
-	extractDate(parseInput);
+	parsedData.date = extractDate(parseInput);
 	parseInput = nextArguments(parseInput);
 	extractTime(parseInput);
 	parseInput = nextArguments(parseInput);

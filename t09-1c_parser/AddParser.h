@@ -33,7 +33,7 @@ public:
 
 	string extractLeadingBracketContent(string arguments);
 	string nextArguments(string arguments);
-	void extractDate(string arguments);
+	string extractDate(string arguments);
 	void extractTime(string arguments);
 	
 };

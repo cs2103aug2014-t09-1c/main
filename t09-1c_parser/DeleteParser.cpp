@@ -42,7 +42,7 @@ void DeleteParser::extractLine(string iterArguments)
 
 ParsedDataPackage DeleteParser::parseAndReturn(string parseInput)
 {
-	add.extractDate(parseInput);
+	parsedData.date = add.extractDate(parseInput);
 	parseInput = add.nextArguments(parseInput);
 	extractLine(parseInput);
 

@@ -79,13 +79,16 @@ bool AddLogic::isDateAndTimeCorrect()
 		}
 	}
 	else {
-		TimeLogic checkStart(FileEntryFormatter::getAttributeEntry("date", lineEntry),
-			FileEntryFormatter::getAttributeEntry("start", lineEntry));
-		TimeLogic checkEnd(FileEntryFormatter::getAttributeEntry("date", lineEntry),
-			FileEntryFormatter::getAttributeEntry("end", lineEntry));
+		string date = FileEntryFormatter::getAttributeEntry("date", lineEntry);
+		string start = FileEntryFormatter::getAttributeEntry("start", lineEntry);
+		string end = FileEntryFormatter::getAttributeEntry("end", lineEntry);
+
+		TimeLogic checkStart(date, start);
+		TimeLogic checkEnd(date, end);
 		
 		return (checkStart.getTimeFormatCheck() && checkEnd.getTimeFormatCheck()
-			&& TimeLogic::isFirstEarlierThanSecond(checkStart,checkEnd));
+			&& TimeLogic::isFirstEarlierThanSecond(checkStart,checkEnd) &&
+			start != end);
 	}
 }
 bool AddLogic::isSlotFree() {
@@ -110,10 +113,23 @@ bool AddLogic::isSlotFree() {
 				TimeLogic endTime2(date2, end2);
 				
 				if (startTime2.getTimeFormatCheck() && endTime2.getTimeFormatCheck()) {
-					if (!TimeLogic::isFirstEarlierThanSecond(end,startTime2) &&
-						!TimeLogic::isFirstEarlierThanSecond(endTime2, start) &&
-						TimeLogic::isFirstEarlierThanSecond(startTime2, endTime2)) {
+					if (startTime == start2 && endTime == end2) {
 						slotFree = false;
+						break;
+					}
+
+					if (TimeLogic::isFirstEarlierThanSecond(startTime2,start) &&
+						TimeLogic::isFirstEarlierThanSecond(start, endTime2) &&
+						(startTime != start2 && startTime != end2)) {
+						slotFree = false;
+						break;
+					}
+						
+					if (TimeLogic::isFirstEarlierThanSecond(startTime2, end) &&
+						TimeLogic::isFirstEarlierThanSecond(end, endTime2) &&
+						(endTime != start2 && endTime != end2)) {
+						slotFree = false;
+						break;
 					}
 				}
 			}
@@ -139,7 +155,6 @@ bool AddLogic::isEntryValid()
 		else {
 			if (type == "timed" && !isSlotFree()) {
 				//no slots
-				isValid = true;
 				return isValid;
 			}
 			else {
