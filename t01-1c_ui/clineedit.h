@@ -4,6 +4,7 @@
 #include "ccompleter.h"
 #include <QKeyEvent>
 #include <QLineEdit>
+#include "ProgramController.h"
 
 class CLineEdit: public QLineEdit
 {
@@ -20,6 +21,7 @@ protected:
 
 private slots:
     void insertCompletion(const QModelIndex &completion);
+    void sendToParser();
 
 private:
     CCompleter *c;

@@ -65,7 +65,7 @@ void AddParser::extractDate(string iterArguments)
 	else {
 		string newDateFormat = TimeParser::parseDayOfWeek(date);
 		if (newDateFormat != date) { //parseDayOfWeek returns unchanged if error
-			parsedData.date = date;
+			parsedData.date = newDateFormat;
 		}
 		else {
 			argumentError();
@@ -88,7 +88,7 @@ void AddParser::extractTime(string iterArguments)
 			start.insert(2, ":");
 			end.insert(2, ":");
 			parsedData.start = start;
-			parsedData.start = end;
+			parsedData.end = end;
 		}
 		else {
 			argumentError();

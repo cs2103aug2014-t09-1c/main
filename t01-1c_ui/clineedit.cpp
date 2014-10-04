@@ -1,6 +1,9 @@
 #include "clineedit.h"
 #include <QAbstractItemView>
+#include "ui_mainwindow.h"
+#include "QLabel"
 
+using namespace std;
 
 CLineEdit::CLineEdit(QWidget *parent)
 : QLineEdit(parent), c(0)
@@ -9,11 +12,19 @@ CLineEdit::CLineEdit(QWidget *parent)
     CCompleter * completer = new CCompleter(QStringList() << "eat food" << "eat steak", this);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     setCompleter(completer);
-    connect(this, SIGNAL(returnPressed()),this, SLOT(clear()));
+    connect(this, SIGNAL(returnPressed()),this, SLOT(sendToParser()));
 }
 
 CLineEdit::~CLineEdit()
 {
+}
+
+void CLineEdit::sendToParser()
+{
+    string inputText = text().toUtf8().constData();
+	ProgramController programControl("");
+	programControl.executeEntry(inputText);
+    clear();
 }
 
 void CLineEdit::setCompleter(CCompleter *completer)

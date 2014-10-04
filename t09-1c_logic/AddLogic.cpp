@@ -139,6 +139,7 @@ bool AddLogic::isEntryValid()
 		else {
 			if (type == "timed" && !isSlotFree()) {
 				//no slots
+				isValid = true;
 				return isValid;
 			}
 			else {

@@ -6,6 +6,7 @@
 FileLogic::FileLogic(string fileName) : memoryHandler()
 {
 	this->fileName = fileName;
+	fileAccess();
 }
 
 

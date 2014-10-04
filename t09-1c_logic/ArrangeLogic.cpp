@@ -48,20 +48,20 @@ pair<vector<string>, vector<int>> ArrangeLogic::getListOfDate(string date)
 					string checkLineDate = FileEntryFormatter::getAttributeEntry("date", checkLine);
 					string checkLineTime;
 					if (FileEntryFormatter::getAttributeEntry("type", checkLine) == "deadline") {
-						string checkLineTime = FileEntryFormatter::getAttributeEntry("end", checkLine);
+						checkLineTime = FileEntryFormatter::getAttributeEntry("end", checkLine);
 					}
 					else if (FileEntryFormatter::getAttributeEntry("type", checkLine) == "timed") {
-						string checkLineTime = FileEntryFormatter::getAttributeEntry("start", checkLine);
+						checkLineTime = FileEntryFormatter::getAttributeEntry("start", checkLine);
 					}
 					TimeLogic checkLineTimeLogic(checkLineDate, checkLineTime);
 
 					string lineDate = FileEntryFormatter::getAttributeEntry("date", line);
 					string lineTime;
 					if (FileEntryFormatter::getAttributeEntry("type", line) == "deadline") {
-						string lineTime = FileEntryFormatter::getAttributeEntry("end", line);
+						lineTime = FileEntryFormatter::getAttributeEntry("end", line);
 					}
 					else if (FileEntryFormatter::getAttributeEntry("type", line) == "timed") {
-						string lineTime = FileEntryFormatter::getAttributeEntry("start", line);
+						lineTime = FileEntryFormatter::getAttributeEntry("start", line);
 					}
 					TimeLogic deadline(lineDate, lineTime);
 

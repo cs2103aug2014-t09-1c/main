@@ -15,7 +15,7 @@ size_t FileEntryFormatter::getAttributedEntryPosition(string attribute, string l
 {
 	string openingAttribute = "<" + attribute + ">";
 	size_t foundOpeningAttributeAt = lineEntry.find(openingAttribute);
-	size_t attributeEntryStartAt = foundOpeningAttributeAt + attribute.size() + 1;
+	size_t attributeEntryStartAt = foundOpeningAttributeAt + openingAttribute.size();
 	
 	return attributeEntryStartAt;
 }
@@ -48,7 +48,7 @@ string FileEntryFormatter::getAttributeEntry(string attribute, string lineEntry)
 	
 	if (attributeEntryStartAt != string::npos) {
 		size_t attributeEntrySize = getAttributeEntrySize(attribute, lineEntry);
-		string attributeEntry = lineEntry.substr(attributeEntryStartAt, attributeEntrySize);
+		attributeEntry = lineEntry.substr(attributeEntryStartAt, attributeEntrySize);
 	}
 
 	return attributeEntry;

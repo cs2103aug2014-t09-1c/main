@@ -27,11 +27,29 @@ CTable::CTable(QWidget *par)
     QStringList header;
     header << "Number" << "To-Do" << "Category" << "Start" << "Deadline/End" << "Complete?";
     setHorizontalHeaderLabels(header);
+}
 
-    insertRow(0);
-    insertRow(1);
-    selectRow(1);
-
+void CTable::createTableData()
+{
+    vector<vector<string>> list;
+    vector<string> list1 = {"eat haggis", "yuk", "1700", "1900", "no"};
+    list.push_back(list1);
+    clearContents();
+	setRowCount(0);
+    int listSize = list.size();
+    for (int i = 0; i < listSize; ++i) {
+        insertRow(i);
+        QTableWidgetItem *num =
+                        new QTableWidgetItem(QString::number(i + 1));
+        setItem(i,0,num);
+        for (int j = 0; j < 5; ++j) {
+            QString stringGet = QString::fromStdString(list[i][j]);
+            QTableWidgetItem *item =
+                            new QTableWidgetItem(stringGet);
+            setItem(i,j + 1, item);
+        }
+    }
+   show();
 }
 
 void CTable::initialiseHighlight()

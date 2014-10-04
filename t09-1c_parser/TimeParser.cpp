@@ -38,12 +38,13 @@ int TimeParser::determineDaysToAdd(string day, bool isNextPresent)
 	}
 	else {
 		int dayIndex = determineDayIndex(day);
-		int toAdd = (dayIndex - todayDayIndex) % longDays.size();
-		if (dayIndex = -1) {
+		int toAdd = ((dayIndex - todayDayIndex) + longDays.size()) % longDays.size();
+		if (dayIndex == -1) {
 			return -1;
 		}
-		if ((todayDayIndex < dayIndex) && isNextPresent)
+		if (toAdd == 0 ||((todayDayIndex <= dayIndex) && isNextPresent)) {
 			toAdd += 7;
+		}
 		return toAdd;
 	}
 }
@@ -52,7 +53,7 @@ int TimeParser::determineDayIndex(string day)
 {
 	int index = -1;
 	index = ParserHelperFunctions::findMatchingStringIndex(day, longDays);
-	if (index = -1) {
+	if (index == -1) {
 		index = ParserHelperFunctions::findMatchingStringIndex(day, shortDays);
 	}
 	return index;

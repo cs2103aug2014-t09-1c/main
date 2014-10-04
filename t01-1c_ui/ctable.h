@@ -4,6 +4,10 @@
 #include <QTableWidget>
 #include <QStringList>
 #include <QItemSelectionModel>
+#include <vector>
+#include <iostream>
+
+using namespace std;
 
 class CTable : public QTableWidget
 {
@@ -11,11 +15,16 @@ class CTable : public QTableWidget
 public:
     CTable();
     CTable(QWidget *par);
+
+
+
 private:
     void initialiseHighlight();
     void keyPressEvent(QKeyEvent *event);
 private slots:
     void selectRowSlot(const QModelIndex & selected, const QModelIndex & deselected);
+    void createTableData();
+
 };
 
 
