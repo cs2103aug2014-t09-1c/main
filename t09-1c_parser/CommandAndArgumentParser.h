@@ -1,10 +1,13 @@
 #pragma once
-#include "AddParser.h"
-#include "DeleteParser.h"
-#include "EditParser.h"
+#ifndef COMMANDANDARGUMENT_PARSER
+#define COMMANDANDARGUMENT_PARSER
+
 #include "stdafx.h"
 #include <string>
 #include <sstream>
+
+#define COMMANDANDARGUMENT_PARSER_ERROR \
+	"Unable to Commit. Please refer to \"help\" for guide to input."
 
 using namespace std;
 
@@ -18,8 +21,6 @@ public:
 	CommandAndArgumentParser(string input);
 	~CommandAndArgumentParser();
 
-	// I assumed UI sends the input string to CommandAndArgumentParser(string input)?
-	// input = what user typed in the commit box?
 	void setCommand(string input);
 	void setArguments(string input);
 
@@ -28,10 +29,6 @@ public:
 	string argumentStringParser(string argument);
 
 	string commandArgumentError();
-	void commandParser(string command, string arguments);
-
-	void moveToAddParser(string arguments);
-	void moveToDeleteParser(string arguments);
-	void moveToEditParser(string arguments);
 };
 
+#endif
