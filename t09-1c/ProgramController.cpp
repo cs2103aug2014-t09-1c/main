@@ -18,29 +18,28 @@ ProgramController::~ProgramController()
 }
 
 
-
 void ProgramController::executeEntry(string input)//placeholder input for scanned input from UI
 {
 	//if command = add, delete, or edit, use parseAndReturn accordingly
 
 	CommandAndArgumentParser inputParse(input);
-	string command = inputParse.command;
-	string arguments = inputParse.arguments;
+	command = inputParse.command;
+	arguments = inputParse.arguments;
 
 	if (command == "add") {
 		AddParser addParsing;
-		ParsedDataPackage addPackage = addParsing.parseAndReturn(arguments);
-		ParsedDataDeployer::executeAdd(addPackage, fileLogicObj);
+		dataPackage = addParsing.parseAndReturn(arguments);
+		ParsedDataDeployer::executeAdd(dataPackage, fileLogicObj);
 	}
 	else if (command == "edit"){
 		EditParser editParsing;
-		vector<ParsedDataPackage> editPackages = editParsing.parseAndReturn(arguments);
-		ParsedDataDeployer::executeEdit(editPackages, fileLogicObj);
+		dataPackages = editParsing.parseAndReturn(arguments);
+		ParsedDataDeployer::executeEdit(dataPackages, fileLogicObj);
 	}
 	else if (command == "delete"){
 		DeleteParser deleteParsing;
-		ParsedDataPackage deletePackage = deleteParsing.parseAndReturn(arguments);
-		ParsedDataDeployer::executeDelete(deletePackage, fileLogicObj);
+		dataPackage = deleteParsing.parseAndReturn(arguments);
+		ParsedDataDeployer::executeDelete(dataPackage, fileLogicObj);
 	}
 
 }
@@ -51,18 +50,24 @@ void ProgramController::ConnectToCommandFeedback(string input)
 	
 }
 
-void ProgramController::ConnectToDoListOutput(string newLineEntry)//input from other logic class a string lineEntry with attributes tags
+void ProgramController::ConnectToDoListOutput(vector<string> vectorOutput)//input from other logic class a string lineEntry with attributes tags
 {
+	//send to UI e.g. >>> vectorOutput.parseFileToMemoryVector(FILENAME);
 	
-	//else depending on date, use addToPositionNumber method to insert line (SearchLogic to find date?)
 	
 }
-void ProgramController::ConnectToDoListOutput(int position, string newLineEntry)//input from other logic class a string lineEntry with attributes tags
+
+
+
+/*void ProgramController::ConnectToDoListOutput(int position, string newLineEntry)//input from other logic class a string lineEntry with attributes tags
 {
+	if (command == "add"){
+		
+	}
 	//else return error
-
-
-}
+	int position = dataPackage.lineNum;
+	
+}*/
 /*void ProgramController::SendToLogic() //now that deployer does this instead
 {
 	if (command == "add"){	

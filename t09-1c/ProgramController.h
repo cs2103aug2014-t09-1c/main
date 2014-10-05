@@ -4,6 +4,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 #include "ParsedDataDeployer.h"
 #include "CommandAndArgumentParser.h"
 #include "AddParser.h"
@@ -20,14 +21,17 @@ class ProgramController
 {
 private:
 	FileLogic fileLogicObj;
+	string command;
+	string arguments;
+	ParsedDataPackage dataPackage;
+	vector<ParsedDataPackage> dataPackages;
 
 public:
 	ProgramController(string filename);
 	~ProgramController();
-	void getOutput(string);
 	void executeEntry(string input);
 	void ConnectToCommandFeedback(string input);
-	void ConnectToDoListOutput(string newLineEntry);
+	void ConnectToDoListOutput(vector<string> newLineEntry);
 	void ConnectToDoListOutput(int position, string newLineEntry);
 };
 
