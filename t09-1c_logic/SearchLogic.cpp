@@ -59,8 +59,8 @@ string SearchLogic::searchForLineInFile(string specificKeyWord)
 	for (positionOfCurrentLine = 0; positionOfCurrentLine < fileSize; positionOfCurrentLine++){
 		string currentLine = FileLogic.getLineFromPositionNumber(positionOfCurrentLine);
 		int len2 = currentLine.length();
-		int count[][];
-
+		int count[50][50];// I dont know the size of the array. because it depends on each line of the
+						  //file. so the size is not constant. how to do with it?
 		for (int i = 0; i < count.length(); i++){
 			for (int j = 0; j < count[i].length(); j++){
 				if (i == 0){
