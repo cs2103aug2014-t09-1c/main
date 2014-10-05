@@ -2,6 +2,7 @@
 #include "SearchLogic.h"
 #include "AddLogic.h"
 #include "FileEntryFormatter.h"
+#include "FileLogic.h"
 
 
 SearchLogic::SearchLogic(FileLogic fileHandler) : fileHandler(""), addFunction(fileHandler)
@@ -26,7 +27,10 @@ string SearchLogic::searchEntryDate(string date){
 
 
 string SearchLogic::searchEntry(string userEntry)
+
 {
+	string specificKeyWord = userEntry;
+	if (specificKeyWord)
 	if (!addFuntion.isEntryValid()){
 		//return error message?
 	}
@@ -41,8 +45,8 @@ string SearchLogic::searchEntry(string userEntry)
 //implementation of leveshlein algorithm
 string SearchLogic::searchForLineInFile(string userEntry)
 {
-
-	int fileSize = FileLogic::getSize();
+	 
+	int fileSize = FileLogic.getSize();
 	int positionOfCurrentLine;
 	int len1 = userEntry.length();
 
@@ -50,12 +54,11 @@ string SearchLogic::searchForLineInFile(string userEntry)
 
 	//This loop is to search for the wanted data line by line. 
 	for (positionOfCurrentLine = 0; positionOfCurrentLine < fileSize; positionOfCurrentLine++){
-		string currentLine = FileLogic::getLineFromPositionNumber(positionOfCurrentLine);
+		string currentLine = FileLogic.getLineFromPositionNumber(positionOfCurrentLine);
 		int len2 = currentLine.length();
-		//size of the array is determined by the size of 2 strings.
 		//im not sure if the user input is a line of entry or just the key attributes? should it compare 2 line of data?
 		//if the user only enter key attributes, how do i extract each attribute from the task and compare with the user input?
-		int count[len1 + 1][len2 + 1];
+		int count[][];
 
 		for (int i = 0; i < count.length(); i++){
 			for (int j = 0; j < count[i].length(); j++){
@@ -84,10 +87,25 @@ string SearchLogic::searchForLineInFile(string userEntry)
 
 		//cound == 0 means the wanted data is found, return it
 		if (count[count.length() - 1][count(0).length_1] == 0){
-			string lineFound = FileLogic::getLineFromPositionNumber(positionOfCurrentLine);
+			string lineFound = FileLogic.getLineFromPositionNumber(positionOfCurrentLine);
 			return lineFound;
 		}
 	}
 
 
 }
+
+
+/*
+string searchKeyWord = userInput;
+if (searchKeyWord != SpecificDate){
+TempFileToStoreSearchedResult = FileLogic.creatNewFile;
+
+for (lineNumber = 0; LineNumber < file.size(); lineNumber++){
+if (file.getAttributesFromTheLineEntry(LineNumber) == searchKeyWord){
+//add this line to TempFileToStoreSearchedResult;
+}
+}
+cout << TempFileToStoreSearchResult;
+} */
+

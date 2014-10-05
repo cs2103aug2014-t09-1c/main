@@ -1,22 +1,26 @@
 #pragma once
 #include "BaseClassLogic.h"
+#include <string>
+#include <iostream>
+
+
 class SearchLogic :
 	public BaseClassLogic
 {
-public:
-	SearchLogic();
-	/*
-	string searchKeyWord = userInput;
-	if (searchKeyWord != SpecificDate){
-		TempFileToStoreSearchedResult = FileLogic.creatNewFile;
 
-		for (lineNumber = 0; LineNumber < file.size(); lineNumber++){
-			if (file.getAttributesFromTheLineEntry(LineNumber) == searchKeyWord){
-				//add this line to TempFileToStoreSearchedResult;
-			}
-		}
-		cout << TempFileToStoreSearchResult;
-	} */
+private:
+
+	FileLogic fileHandler;
+
+
+public:
+	
+	SearchLogic(FileLogic fileHandler);
 	~SearchLogic();
+
+	string searchEntryDate(string date);
+	string searchEntry(string userEntry);
+	string searchForLineInFile(string userEntry);
+
 };
 
