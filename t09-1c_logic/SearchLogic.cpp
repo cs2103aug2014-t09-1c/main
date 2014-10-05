@@ -3,6 +3,7 @@
 #include "AddLogic.h"
 #include "FileEntryFormatter.h"
 #include "FileLogic.h"
+#include "TimeLogic.h"
 
 
 SearchLogic::SearchLogic(FileLogic fileHandler) : fileHandler(""), addFunction(fileHandler)
@@ -30,25 +31,27 @@ string SearchLogic::searchEntry(string userEntry)
 
 {
 	string specificKeyWord = userEntry;
-	if (specificKeyWord)
-	if (!addFuntion.isEntryValid()){
-		//return error message?
+	if (TimeLogic.isDateValid(specificKeyWord)){
+		searchEntryDate;
 	}
 
 	else{
-		string resultedLine = searchForLineInFile(userEntry);
+		FILE TempFileToStoreSearchedResult = FileLogic.creatNewFile;
+		string resultedLine = searchForLineInFile(specificKeyWord);
+		FileLogic.appendToFile(string resultedLine);
 	}
+	cout << "Temperary File To Store Search Result";
 }
 
 
 
 //implementation of leveshlein algorithm
-string SearchLogic::searchForLineInFile(string userEntry)
+string SearchLogic::searchForLineInFile(string specificKeyWord)
 {
-	 
+	
 	int fileSize = FileLogic.getSize();
 	int positionOfCurrentLine;
-	int len1 = userEntry.length();
+	int len1 = specificKeyWord.length();
 
 	using std::fmin;
 
@@ -56,8 +59,6 @@ string SearchLogic::searchForLineInFile(string userEntry)
 	for (positionOfCurrentLine = 0; positionOfCurrentLine < fileSize; positionOfCurrentLine++){
 		string currentLine = FileLogic.getLineFromPositionNumber(positionOfCurrentLine);
 		int len2 = currentLine.length();
-		//im not sure if the user input is a line of entry or just the key attributes? should it compare 2 line of data?
-		//if the user only enter key attributes, how do i extract each attribute from the task and compare with the user input?
 		int count[][];
 
 		for (int i = 0; i < count.length(); i++){
@@ -74,7 +75,7 @@ string SearchLogic::searchForLineInFile(string userEntry)
 					}
 				}
 				if (i > 0 && j > 0){
-					if (userEntry.at(i - 1) == currentLine.at(j - 1)){
+					if (specificKeyWord.at(i - 1) == currentLine.at(j - 1)){
 						count[i][j] = count[i - 1][j - 1];
 					}
 					else{
