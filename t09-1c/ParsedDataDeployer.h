@@ -12,8 +12,8 @@ class ParsedDataDeployer
 public:
 	ParsedDataDeployer();
 	~ParsedDataDeployer();
-	static void executeAdd(ParsedDataPackage addPackage, FileLogic fileHandler);
-	static void executeDelete(ParsedDataPackage deletePackage, FileLogic fileHandler);
-	static void executeEdit(vector<ParsedDataPackage> editPackages, FileLogic fileHandler);
+	static void executeAdd(ParsedDataPackage addPackage, string fileName);
+	static void executeDelete(ParsedDataPackage deletePackage, string fileName);
+	static void executeEdit(vector<ParsedDataPackage> editPackages, string fileName);
 };
 #endif

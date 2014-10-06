@@ -9,11 +9,10 @@ class DeleteLogic :
 	public BaseClassLogic
 {
 private:
-	ArrangeLogic arranger;
 	FileLogic fileHandler;
 
 public:
-	DeleteLogic(FileLogic fileHandler);
+	DeleteLogic(string fileName);
 	~DeleteLogic();
 
 	string deletedEntry;

@@ -30,6 +30,8 @@ private:
 	AddParser add;
 
 public:
+	string excessInput;
+
 	DeleteParser();
 	~DeleteParser();
 	ParsedDataPackage parseAndReturn(string parseInput);

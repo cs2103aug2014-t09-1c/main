@@ -2,9 +2,8 @@
 #include "DeleteLogic.h"
 #include <string>
 
-DeleteLogic::DeleteLogic(FileLogic fileHandler) : arranger(fileHandler), fileHandler("")
+DeleteLogic::DeleteLogic(string fileName) : fileHandler(fileName)
 {
-	this->fileHandler = fileHandler;
 }
 
 
@@ -14,6 +13,7 @@ DeleteLogic::~DeleteLogic()
 
 void DeleteLogic::deleteEntry(string date, int position) 
 {
+	ArrangeLogic arranger(fileHandler);
 	pair<vector<string>, vector<int>> list = arranger.getListOfEventOn(date);
 	vector<string> lines = list.first;
 	vector<int> positions = list.second;

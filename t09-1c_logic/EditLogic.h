@@ -5,20 +5,27 @@
 #include "BaseClassLogic.h"
 #include "ArrangeLogic.h"
 #include "AddLogic.h"
+#include "DeleteLogic.h"
 
 class EditLogic :
 	public BaseClassLogic
 {
 private:
-	FileLogic fileHandler;
-	AddLogic addFunction;
+	string fileName;
 
+	string lineText;
+	string oldLine;
+	int oldPosition;
+
+	void initiateLineText();
+	void deleteLine(string date, int position);
+	bool verifyLine();
 public:
-	EditLogic(FileLogic fileHandler);
+	EditLogic(string fileName, string date, int position);
 	~EditLogic();
-
+	
 	void appendEntry(string attriibute, string entry);
-	void editEntry(string date, int position);
+	void editEntry();
 };
 
 #endif

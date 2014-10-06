@@ -20,7 +20,7 @@
 class ProgramController
 {
 private:
-	FileLogic fileLogicObj;
+	string fileName;
 	string command;
 	string arguments;
 	ParsedDataPackage dataPackage;

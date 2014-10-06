@@ -13,7 +13,7 @@ private:
 	FileLogic fileHandler;
 
 public:
-	AddLogic(FileLogic fileHandler);
+	AddLogic(string fileName);
 	~AddLogic();
 	string getLineEntry();
 	void setLineEntry(string newLineEntry);

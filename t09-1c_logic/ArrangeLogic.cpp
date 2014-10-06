@@ -55,11 +55,13 @@ pair<vector<string>, vector<int>> ArrangeLogic::getListOfEventsOnwardFrom(string
 		else {
 			string lineDateString = FileEntryFormatter::getAttributeEntry("date", line);
 			TimeLogic lineDate(lineDateString, "00:00");
-
-			if (TimeLogic::isFirstEarlierThanSecond(dateQualifier,lineDate)) {
-				pair<vector<string>, vector<int>> addedPair = addNonFloatEventToEntry(lineEntry, linePosition, i);
-				lineEntry = addedPair.first;
-				linePosition = addedPair.second;
+			
+			if (lineDate.getTimeFormatCheck()) {
+				if (TimeLogic::isFirstEarlierThanSecond(dateQualifier, lineDate)) {
+					pair<vector<string>, vector<int>> addedPair = addNonFloatEventToEntry(lineEntry, linePosition, i);
+					lineEntry = addedPair.first;
+					linePosition = addedPair.second;
+				}
 			}
 		}
 	}
@@ -113,6 +115,14 @@ pair<vector<string>, vector<int>> ArrangeLogic::addNonFloatEventToEntry(vector<s
 				linePosition.insert(it2 + iterator, iteration);
 				break;
 			}
+			
+			if (iterator == (size2 - 1))
+			{
+				lineEntry.push_back(line);
+				linePosition.push_back(iteration);
+				break;
+			}
+
 			else {
 				++iterator;
 			}

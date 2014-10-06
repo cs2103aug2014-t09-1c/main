@@ -13,12 +13,18 @@ private:
 	string fileName;
 	MemoryController memoryHandler;
 
+
+
 public:
+
+	int vectorSize;
+
 	FileLogic(string fileName);
 	~FileLogic();
 
 	bool fileAccess();
 	void changeFile(string fileName);
+	string getFileName();
 	
 	//These are floating file logic functions that accesses IO functions
 	int getSize();

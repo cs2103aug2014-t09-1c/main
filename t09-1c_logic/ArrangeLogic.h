@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include "FileLogic.h"
+#include "TimeLogic.h"
 
 using namespace std;
 

@@ -8,8 +8,9 @@
 //after Parser returns the variables in ParsedDataPackage, send the details to logic
 //after file output returns an output, controller sends it to UI
 
-ProgramController::ProgramController(string fileName) : fileLogicObj(FILENAME)
+ProgramController::ProgramController(string fileName)
 {
+	this->fileName = FILENAME;
 }
 
 
@@ -29,17 +30,17 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 	if (command == "add") {
 		AddParser addParsing;
 		dataPackage = addParsing.parseAndReturn(arguments);
-		ParsedDataDeployer::executeAdd(dataPackage, fileLogicObj);
+		ParsedDataDeployer::executeAdd(dataPackage, fileName);
 	}
 	else if (command == "edit"){
 		EditParser editParsing;
 		dataPackages = editParsing.parseAndReturn(arguments);
-		ParsedDataDeployer::executeEdit(dataPackages, fileLogicObj);
+		ParsedDataDeployer::executeEdit(dataPackages, fileName);
 	}
 	else if (command == "delete"){
 		DeleteParser deleteParsing;
 		dataPackage = deleteParsing.parseAndReturn(arguments);
-		ParsedDataDeployer::executeDelete(dataPackage, fileLogicObj);
+		ParsedDataDeployer::executeDelete(dataPackage, fileName);
 	}
 
 }

@@ -38,9 +38,15 @@ void MemoryController::appendLineEntry(string lineEntry)
 
 void MemoryController::insertLineEntry(int position, string line)
 {
-	vector<string>::iterator it;
-	it = vectorInMemory.begin() + position;
-	vectorInMemory.insert(it, line);
+	int vectorSize = vectorInMemory.size();
+	if (position < vectorSize) {
+		vector<string>::iterator it;
+		it = vectorInMemory.begin() + position;
+		vectorInMemory.insert(it, line);
+	}
+	else {
+		appendLineEntry(line);
+	}
 }
 
 bool MemoryController::deleteLineEntry(int position)

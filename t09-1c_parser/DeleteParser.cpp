@@ -45,6 +45,8 @@ ParsedDataPackage DeleteParser::parseAndReturn(string parseInput)
 	parsedData.date = add.extractDate(parseInput);
 	parseInput = add.nextArguments(parseInput);
 	extractLine(parseInput);
+	
+	excessInput = add.nextArguments(parseInput);
 
 	return parsedData;
 }

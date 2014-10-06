@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "EditLogic.h"
-#include "DeleteLogic.h"
-#include "AddLogic.h"
 #include "FileEntryFormatter.h"
 
 
 
-EditLogic::EditLogic(FileLogic fileHandler) : fileHandler(""), addFunction(fileHandler)
+EditLogic::EditLogic(string fileName, string date, int position)
 {
-	this->fileHandler = fileHandler;
+	this->fileName = fileName;
+	initiateLineText();
+	deleteLine(date, position);
 }
 
 
@@ -16,24 +16,43 @@ EditLogic::~EditLogic()
 {
 }
 
-void EditLogic::appendEntry(string attribute, string entry)
+void EditLogic::initiateLineText() 
 {
-	addFunction.appendToLineEntry(attribute, entry);
+	string creationDate = FileEntryFormatter::createAttributedEntry("CreationDate", TimeLogic::getTimeNowInString());
+	lineText = FileEntryFormatter::addAttributedEntryToLineEntry(creationDate, lineText);
 }
 
-void EditLogic::editEntry(string date, int position)
+void EditLogic::deleteLine(string date, int position)
 {
-	DeleteLogic deleter(fileHandler);
+	DeleteLogic deleter(fileName);
 	deleter.deleteEntry(date, position);
-	string deletedLine = deleter.deletedEntry;
-	int deletedPosition = deleter.deletedPosition;
+	oldLine = deleter.deletedEntry;
+	oldPosition = deleter.deletedPosition;
+}
 
-	string oldCreationDate = FileEntryFormatter::getAttributeEntry("CreationDate", deletedLine);
-	string newLine = addFunction.getLineEntry();
-	newLine = FileEntryFormatter::editAttributedEntryFromLineEntry("CreationDate", oldCreationDate, newLine);
-	addFunction.setLineEntry(newLine);
+void EditLogic::appendEntry(string attribute, string entry)
+{
+	string newEntry = FileEntryFormatter::createAttributedEntry(attribute, entry);
+	lineText = FileEntryFormatter::addAttributedEntryToLineEntry(newEntry, lineText);
+}
 
-	if (addFunction.isEntryValid() && deletedPosition > -1) {
-		fileHandler.addToPositionNumber(deletedPosition, newLine);
+bool EditLogic::verifyLine()
+{
+	AddLogic addFunction(fileName);
+	addFunction.setLineEntry(lineText);
+	if (addFunction.isEntryValid()) {
+		lineText = addFunction.getLineEntry();
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void EditLogic::editEntry()
+{
+	if (verifyLine() && oldPosition > -1) {
+		FileLogic fileHandler(fileName);
+		fileHandler.addToPositionNumber(oldPosition, lineText);
 	}
 }

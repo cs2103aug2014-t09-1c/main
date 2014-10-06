@@ -40,11 +40,8 @@ vector<ParsedDataPackage> EditParser::parseAndReturn(string parseInput)
 {
 	vector<ParsedDataPackage> parsedDatas;
 
-	string deleteArguments = parseInput.substr(0, 11);
-	string addArguments = parseInput.substr(13, parseInput.length() - 12);
-
-	parsedDatas.push_back(del.parseAndReturn(deleteArguments));
-	parsedDatas.push_back(add.parseAndReturn(addArguments));
+	parsedDatas.push_back(del.parseAndReturn(parseInput));
+	parsedDatas.push_back(add.parseAndReturn(del.excessInput));
 
 	return parsedDatas;
 }

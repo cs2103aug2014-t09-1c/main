@@ -5,9 +5,8 @@
 #include <iostream>
 
 
-AddLogic::AddLogic(FileLogic fileHandler) : fileHandler("")
+AddLogic::AddLogic(string fileName) : fileHandler(fileName)
 {
-	this->fileHandler = fileHandler;
 	string creationDate = FileEntryFormatter::createAttributedEntry("CreationDate", TimeLogic::getTimeNowInString());
 	lineEntry = FileEntryFormatter::addAttributedEntryToLineEntry(creationDate, lineEntry);
 }
@@ -56,6 +55,7 @@ void AddLogic::determineType()
 	else {
 		appendToLineEntry("type", "timed");
 	}
+	appendToLineEntry("complete", "no");
 }
 
 bool AddLogic::isDateAndTimeCorrect()
@@ -91,6 +91,7 @@ bool AddLogic::isDateAndTimeCorrect()
 			start != end);
 	}
 }
+
 bool AddLogic::isSlotFree() {
 	bool slotFree = true;
 	string startTime = FileEntryFormatter::getAttributeEntry("start", lineEntry);
@@ -133,6 +134,22 @@ bool AddLogic::isSlotFree() {
 							break;
 						}
 					}
+					
+					if (endTime != start2 && startTime != start2) {
+						if (TimeLogic::isFirstEarlierThanSecond(start, startTime2) &&
+							TimeLogic::isFirstEarlierThanSecond(startTime2, end)) {
+							slotFree = false;
+							break;
+						}
+					}
+
+					if (endTime != end2 && startTime != end2) {
+						if (TimeLogic::isFirstEarlierThanSecond(start, endTime2) &&
+							TimeLogic::isFirstEarlierThanSecond(endTime2, end)) {
+							slotFree = false;
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -170,7 +187,7 @@ bool AddLogic::isEntryValid()
 void AddLogic::commitAdd()
 {
 	if (isEntryValid()) {
-		appendToLineEntry("complete", "no");
+
 		fileHandler.appendToFile(lineEntry);
 	}
 }

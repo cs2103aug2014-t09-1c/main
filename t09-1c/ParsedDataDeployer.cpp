@@ -11,9 +11,9 @@ ParsedDataDeployer::~ParsedDataDeployer()
 {
 }
 
-void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, FileLogic fileHandler)
+void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, string fileName)
 {
-	AddLogic newAdd(fileHandler);
+	AddLogic newAdd(fileName);
 	newAdd.appendToLineEntry("name", addPackage.name);
 	newAdd.appendToLineEntry("date", addPackage.date);	
 	newAdd.appendToLineEntry("start", addPackage.start);
@@ -22,23 +22,23 @@ void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, FileLogic file
 	newAdd.commitAdd();
 }
 
-void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, FileLogic fileHandler)
+void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, string fileName)
 {
-	DeleteLogic deleter(fileHandler);
+	DeleteLogic deleter(fileName);
 	deleter.deleteEntry(deletePackage.date, deletePackage.lineNum);
 }
 
-void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, FileLogic fileHandler)
+void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, string fileName)
 {
 	ParsedDataPackage deletePackage = editPackages[0];
 	ParsedDataPackage addPackage = editPackages[1];
 
-	EditLogic newEdit(fileHandler);
+	EditLogic newEdit(fileName, deletePackage.date, deletePackage.lineNum);
 	newEdit.appendEntry("name", addPackage.name);
 	newEdit.appendEntry("date", addPackage.date);
 	newEdit.appendEntry("start", addPackage.start);
 	newEdit.appendEntry("end", addPackage.end);
 	newEdit.appendEntry("category", addPackage.category);
 
-	newEdit.editEntry(deletePackage.date, deletePackage.lineNum);
+	newEdit.editEntry();
 }
