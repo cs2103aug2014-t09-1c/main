@@ -20,6 +20,7 @@ private:
 	void initiateLineText();
 	void deleteLine(string date, int position);
 	bool verifyLine();
+	void appendOldCreationDate();
 public:
 	EditLogic(string fileName, string date, int position);
 	~EditLogic();

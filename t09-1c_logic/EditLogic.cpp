@@ -48,11 +48,20 @@ bool EditLogic::verifyLine()
 		return false;
 	}
 }
+void EditLogic::appendOldCreationDate() 
+{
+	string oldDate = FileEntryFormatter::getAttributeEntry("CreationDate", oldLine);
+	lineText = FileEntryFormatter::editAttributedEntryFromLineEntry("CreationDate", oldDate, lineText);
+}
 
 void EditLogic::editEntry()
 {
+	FileLogic fileHandler(fileName);
 	if (verifyLine() && oldPosition > -1) {
-		FileLogic fileHandler(fileName);
+		appendOldCreationDate();
 		fileHandler.addToPositionNumber(oldPosition, lineText);
+	}
+	else {
+		fileHandler.addToPositionNumber(oldPosition, oldLine);
 	}
 }
