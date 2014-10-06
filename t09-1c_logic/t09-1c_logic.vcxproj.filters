@@ -71,9 +71,6 @@
     <ClCompile Include="EditLogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SearchLogic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UndoLogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

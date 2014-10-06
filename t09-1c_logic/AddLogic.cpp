@@ -118,18 +118,20 @@ bool AddLogic::isSlotFree() {
 						break;
 					}
 
-					if (TimeLogic::isFirstEarlierThanSecond(startTime2,start) &&
-						TimeLogic::isFirstEarlierThanSecond(start, endTime2) &&
-						(startTime != start2 && startTime != end2)) {
-						slotFree = false;
-						break;
+					if (startTime != start2 && startTime != end2) {
+						if (TimeLogic::isFirstEarlierThanSecond(startTime2, start) &&
+							TimeLogic::isFirstEarlierThanSecond(start, endTime2)) {
+							slotFree = false;
+							break;
+						}
 					}
-						
-					if (TimeLogic::isFirstEarlierThanSecond(startTime2, end) &&
-						TimeLogic::isFirstEarlierThanSecond(end, endTime2) &&
-						(endTime != start2 && endTime != end2)) {
-						slotFree = false;
-						break;
+
+					if (endTime != start2 && endTime != end2) {
+						if (TimeLogic::isFirstEarlierThanSecond(startTime2, end) &&
+							TimeLogic::isFirstEarlierThanSecond(end, endTime2)) {
+							slotFree = false;
+							break;
+						}
 					}
 				}
 			}

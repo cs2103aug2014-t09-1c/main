@@ -13,11 +13,15 @@ class ArrangeLogic
 private:
 	FileLogic fileHandler;
 
+	TimeLogic getPriorityDateTime(string line);
+	pair<vector<string>, vector<int>> addNonFloatEventToEntry(vector<string> lineEntry, vector<int> linePosition, int iteration);
+
 public:
 	ArrangeLogic(FileLogic fileHandler);
 	~ArrangeLogic();
 
-	pair<vector<string>, vector<int>> getListOfDate(string date);
+	pair<vector<string>, vector<int>> getListOfEventOn(string date);
+	pair<vector<string>, vector<int>> getListOfEventsOnwardFrom(string date);
 };
 
 #endif

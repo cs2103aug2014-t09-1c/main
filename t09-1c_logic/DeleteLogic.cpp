@@ -14,7 +14,7 @@ DeleteLogic::~DeleteLogic()
 
 void DeleteLogic::deleteEntry(string date, int position) 
 {
-	pair<vector<string>, vector<int>> list = arranger.getListOfDate(date);
+	pair<vector<string>, vector<int>> list = arranger.getListOfEventOn(date);
 	vector<string> lines = list.first;
 	vector<int> positions = list.second;
 	int positionSize = positions.size();

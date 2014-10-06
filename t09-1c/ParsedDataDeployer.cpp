@@ -15,10 +15,10 @@ void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, FileLogic file
 {
 	AddLogic newAdd(fileHandler);
 	newAdd.appendToLineEntry("name", addPackage.name);
-	newAdd.appendToLineEntry("date", addPackage.date);
-	newAdd.appendToLineEntry("category", addPackage.category);
+	newAdd.appendToLineEntry("date", addPackage.date);	
 	newAdd.appendToLineEntry("start", addPackage.start);
 	newAdd.appendToLineEntry("end", addPackage.end);
+	newAdd.appendToLineEntry("category", addPackage.category);
 	newAdd.commitAdd();
 }
 
@@ -36,9 +36,9 @@ void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, Fil
 	EditLogic newEdit(fileHandler);
 	newEdit.appendEntry("name", addPackage.name);
 	newEdit.appendEntry("date", addPackage.date);
-	newEdit.appendEntry("category", addPackage.category);
 	newEdit.appendEntry("start", addPackage.start);
 	newEdit.appendEntry("end", addPackage.end);
+	newEdit.appendEntry("category", addPackage.category);
 
 	newEdit.editEntry(deletePackage.date, deletePackage.lineNum);
 }
