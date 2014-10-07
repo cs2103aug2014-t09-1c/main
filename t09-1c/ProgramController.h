@@ -13,9 +13,6 @@
 #include "ParsedDataPackage.h"
 #include "FileLogic.h"
 
-#define FILENAME \
-	"example.txt"
-
 
 class ProgramController
 {

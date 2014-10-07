@@ -34,10 +34,15 @@ void AddLogic::appendToLineEntry(string attribute, string entry)
 
 void AddLogic::determineType()
 {
-	if (FileEntryFormatter::getAttributeEntry("start", lineEntry) == "") {
-		if (FileEntryFormatter::getAttributeEntry("end", lineEntry) == "") {
-			if (FileEntryFormatter::getAttributeEntry("date", lineEntry) == "") {
-				if (FileEntryFormatter::getAttributeEntry("name", lineEntry) == "") {
+	bool isNameEmpty = FileEntryFormatter::getAttributeEntry("name", lineEntry) == "";
+	bool isDateEmpty = FileEntryFormatter::getAttributeEntry("date", lineEntry) == "";
+	bool isStartTimeEmpty = FileEntryFormatter::getAttributeEntry("start", lineEntry) == "";
+	bool isEndTimeEmpty = FileEntryFormatter::getAttributeEntry("end", lineEntry) == "";
+	
+	if (isStartTimeEmpty) {
+		if (isEndTimeEmpty) {
+			if (isDateEmpty) {
+				if (isNameEmpty) {
 				}
 				else {
 					appendToLineEntry("type", "float");
@@ -60,35 +65,32 @@ void AddLogic::determineType()
 
 bool AddLogic::isDateAndTimeCorrect()
 {
-	if (FileEntryFormatter::getAttributeEntry("start", lineEntry) == "") {
-		if (FileEntryFormatter::getAttributeEntry("end", lineEntry) == "") {
-			if (FileEntryFormatter::getAttributeEntry("date", lineEntry) == "") {
+	string date = FileEntryFormatter::getAttributeEntry("date", lineEntry);
+	string startTime = FileEntryFormatter::getAttributeEntry("start", lineEntry);
+	string endTime = FileEntryFormatter::getAttributeEntry("end", lineEntry);
+
+	if (startTime.empty()) {
+		if (endTime.empty()) {
+			if (date.empty()) {
 				return true;
 			}
 			else {
-				TimeLogic check(FileEntryFormatter::getAttributeEntry("date", lineEntry), "23:59");
-				
+				TimeLogic check(date, "23:59");
 				return check.getTimeFormatCheck();
 			}
 		}
 		else {
-			TimeLogic check(FileEntryFormatter::getAttributeEntry("date", lineEntry), 
-				FileEntryFormatter::getAttributeEntry("end", lineEntry));
-			
+			TimeLogic check(date, endTime);
 			return check.getTimeFormatCheck();
 		}
 	}
 	else {
-		string date = FileEntryFormatter::getAttributeEntry("date", lineEntry);
-		string start = FileEntryFormatter::getAttributeEntry("start", lineEntry);
-		string end = FileEntryFormatter::getAttributeEntry("end", lineEntry);
-
-		TimeLogic checkStart(date, start);
-		TimeLogic checkEnd(date, end);
+		TimeLogic checkStart(date, startTime);
+		TimeLogic checkEnd(date, endTime);
 		
 		return (checkStart.getTimeFormatCheck() && checkEnd.getTimeFormatCheck()
 			&& TimeLogic::isFirstEarlierThanSecond(checkStart,checkEnd) &&
-			start != end);
+			startTime != endTime);
 	}
 }
 

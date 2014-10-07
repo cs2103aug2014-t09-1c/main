@@ -10,7 +10,7 @@
 
 ProgramController::ProgramController(string fileName)
 {
-	this->fileName = FILENAME;
+	this->fileName = fileName;
 }
 
 
