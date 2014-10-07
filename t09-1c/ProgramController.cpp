@@ -3,6 +3,8 @@
 #include "ParsedDataDeployer.h"
 #include "ParsedDataPackage.h"
 #include <vector>
+#include "DisplayLogic.h"
+#include "TimeParser.h"
 
 //after an input is scanned by UI method, call to method sendToParse is made to send input to Parser
 //after Parser returns the variables in ParsedDataPackage, send the details to logic
@@ -11,6 +13,7 @@
 ProgramController::ProgramController(string fileName)
 {
 	this->fileName = fileName;
+	displayDate = TimeParser::parseDayOfWeek("today");
 }
 
 
@@ -21,8 +24,6 @@ ProgramController::~ProgramController()
 
 void ProgramController::executeEntry(string input)//placeholder input for scanned input from UI
 {
-	//if command = add, delete, or edit, use parseAndReturn accordingly
-
 	CommandAndArgumentParser inputParse(input);
 	command = inputParse.command;
 	arguments = inputParse.arguments;
@@ -35,20 +36,46 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 	else if (command == "edit"){
 		EditParser editParsing;
 		dataPackages = editParsing.parseAndReturn(arguments);
-		ParsedDataDeployer::executeEdit(dataPackages, fileName);
+		if (dataPackages[0].date.empty()) {
+			ParsedDataPackage deletePack = dataPackages[0];
+			deletePack.date = displayDate;
+			dataPackages[0] = deletePack;
+			ParsedDataDeployer::executeEdit(dataPackages, fileName, displayCase);
+		}
+		else {
+			ParsedDataDeployer::executeEdit(dataPackages, fileName , 2);
+		}
 	}
 	else if (command == "delete"){
 		DeleteParser deleteParsing;
 		dataPackage = deleteParsing.parseAndReturn(arguments);
-		ParsedDataDeployer::executeDelete(dataPackage, fileName);
+		if (dataPackage.date.empty()) {
+			dataPackage.date = displayDate;
+			ParsedDataDeployer::executeDelete(dataPackage, fileName, displayCase);
+		}
+		else {
+			ParsedDataDeployer::executeDelete(dataPackage, fileName, 2);
+		}
 	}
 
 }
 
-void ProgramController::ConnectToCommandFeedback(string input)
+vector<vector<string>> ProgramController::refreshTableDisplay()
 {
+	return displayTable(displayDate);
+}
 
-	
+vector<vector<string>> ProgramController::displayTable(string date)
+{
+	vector<vector<string>> forTableDisplay;
+	DisplayLogic displayer(fileName);
+	if (displayCase == 0) {
+		forTableDisplay = displayer.collectEventsFromDate(date);
+	}
+	else {
+		forTableDisplay = displayer.collectEventsOnDate(date);
+	}
+	return forTableDisplay;
 }
 
 void ProgramController::ConnectToDoListOutput(vector<string> vectorOutput)//input from other logic class a string lineEntry with attributes tags

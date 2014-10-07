@@ -84,6 +84,7 @@
     <ClInclude Include="ArrangeLogic.h" />
     <ClInclude Include="BaseClassLogic.h" />
     <ClInclude Include="DeleteLogic.h" />
+    <ClInclude Include="DisplayLogic.h" />
     <ClInclude Include="DL_Algorithm.h" />
     <ClInclude Include="EditLogic.h" />
     <ClInclude Include="FileLogic.h" />
@@ -99,6 +100,7 @@
     <ClCompile Include="ArrangeLogic.cpp" />
     <ClCompile Include="BaseClassLogic.cpp" />
     <ClCompile Include="DeleteLogic.cpp" />
+    <ClCompile Include="DisplayLogic.cpp" />
     <ClCompile Include="DL_Algorithm.cpp" />
     <ClCompile Include="EditLogic.cpp" />
     <ClCompile Include="FileLogic.cpp" />

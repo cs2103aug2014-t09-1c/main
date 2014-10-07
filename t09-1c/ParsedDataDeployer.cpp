@@ -22,18 +22,18 @@ void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, string fileNam
 	newAdd.commitAdd();
 }
 
-void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, string fileName)
+void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, string fileName, int displayCase)
 {
-	DeleteLogic deleter(fileName);
+	DeleteLogic deleter(fileName, displayCase);
 	deleter.deleteEntry(deletePackage.date, deletePackage.lineNum);
 }
 
-void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, string fileName)
+void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, string fileName, int displayCase)
 {
 	ParsedDataPackage deletePackage = editPackages[0];
 	ParsedDataPackage addPackage = editPackages[1];
 
-	EditLogic newEdit(fileName, deletePackage.date, deletePackage.lineNum);
+	EditLogic newEdit(fileName, deletePackage.date, deletePackage.lineNum, displayCase);
 	newEdit.appendEntry("name", addPackage.name);
 	newEdit.appendEntry("date", addPackage.date);
 	newEdit.appendEntry("start", addPackage.start);

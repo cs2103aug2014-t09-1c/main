@@ -100,15 +100,18 @@ bool TimeLogic::isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2)
 		int time1Vector[] = { time1.year, time1.month, time1.day, time1.hour, time1.min };
 		int time2Vector[] = { time2.year, time2.month, time2.day, time2.hour, time2.min };
 		while (iterator < 5) {
-			iterator++;
+
 			if (!boolStore) {
 				boolStore = (time1Vector[iterator] < time2Vector[iterator]);
+				if (time1Vector[iterator] > time2Vector[iterator]) {
+					break;
+				}
 			}
 			bool isEqual = (time1Vector[iterator] == time2Vector[iterator]);
 			if (isEqual) {
 				numberEqual++;
 			}
-
+			iterator++;
 		}
 		if (numberEqual == 5) {
 			boolStore = true;
@@ -127,11 +130,11 @@ bool TimeLogic::isTimeBeforeToday(TimeLogic time1)
 		int todayVector[] = { (now->tm_year + 1900), (now->tm_mon + 1), now->tm_mday};
 		int time1Vector[] = { time1.year, time1.month, time1.day};
 		while (iterator < 3) {
-			iterator++;
 			boolStore = (time1Vector[iterator] < todayVector[iterator]);
 			if (boolStore) {
 				break;
 			}
+			iterator++;
 		}
 	}
 	return boolStore;

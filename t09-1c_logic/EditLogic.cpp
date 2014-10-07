@@ -4,11 +4,13 @@
 
 
 
-EditLogic::EditLogic(string fileName, string date, int position)
+EditLogic::EditLogic(string fileName, string date, int position, int displayCase)
 {
+	this->displayCase = displayCase;
 	this->fileName = fileName;
 	initiateLineText();
 	deleteLine(date, position);
+
 }
 
 
@@ -24,7 +26,7 @@ void EditLogic::initiateLineText()
 
 void EditLogic::deleteLine(string date, int position)
 {
-	DeleteLogic deleter(fileName);
+	DeleteLogic deleter(fileName, displayCase);
 	deleter.deleteEntry(date, position);
 	oldLine = deleter.deletedEntry;
 	oldPosition = deleter.deletedPosition;

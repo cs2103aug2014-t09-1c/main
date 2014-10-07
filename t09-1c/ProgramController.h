@@ -17,6 +17,9 @@
 class ProgramController
 {
 private:
+	int displayCase = 0;
+	string displayDate;
+	
 	string fileName;
 	string command;
 	string arguments;
@@ -27,6 +30,8 @@ public:
 	ProgramController(string filename);
 	~ProgramController();
 	void executeEntry(string input);
+	vector<vector<string>> refreshTableDisplay();
+	vector<vector<string>> displayTable(string date);
 	void ConnectToCommandFeedback(string input);
 	void ConnectToDoListOutput(vector<string> newLineEntry);
 	void ConnectToDoListOutput(int position, string newLineEntry);

@@ -42,11 +42,21 @@ void DeleteParser::extractLine(string iterArguments)
 
 ParsedDataPackage DeleteParser::parseAndReturn(string parseInput)
 {
-	parsedData.date = add.extractDate(parseInput);
-	parseInput = add.nextArguments(parseInput);
-	extractLine(parseInput);
+	string delimiter = "[";
+	string getFirst = ParserHelperFunctions::removeWhiteSpace(parseInput.substr(0, parseInput.find(delimiter)));
 	
-	excessInput = add.nextArguments(parseInput);
-
+	if (ParserHelperFunctions::isParameterStringANumber(getFirst))
+	{
+		int lineNum = stoi(getFirst);
+		parsedData.lineNum = lineNum;
+		parseInput.erase(0, parseInput.find(delimiter));
+		excessInput = parseInput;
+	}
+	else {
+		parsedData.date = add.extractDate(parseInput);
+		parseInput = add.nextArguments(parseInput);
+		extractLine(parseInput);
+		excessInput = add.nextArguments(parseInput);
+	}
 	return parsedData;
 }

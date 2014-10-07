@@ -10,9 +10,10 @@ class DeleteLogic :
 {
 private:
 	FileLogic fileHandler;
+	int displayCase;
 
 public:
-	DeleteLogic(string fileName);
+	DeleteLogic(string fileName, int displayCase);
 	~DeleteLogic();
 
 	string deletedEntry;

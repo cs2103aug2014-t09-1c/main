@@ -13,7 +13,7 @@ public:
 	ParsedDataDeployer();
 	~ParsedDataDeployer();
 	static void executeAdd(ParsedDataPackage addPackage, string fileName);
-	static void executeDelete(ParsedDataPackage deletePackage, string fileName);
-	static void executeEdit(vector<ParsedDataPackage> editPackages, string fileName);
+	static void executeDelete(ParsedDataPackage deletePackage, string fileName, int displayCase);
+	static void executeEdit(vector<ParsedDataPackage> editPackages, string fileName, int displayCase);
 };
 #endif

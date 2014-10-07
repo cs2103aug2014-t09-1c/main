@@ -16,13 +16,14 @@ private:
 	string lineText;
 	string oldLine;
 	int oldPosition;
+	int displayCase;
 
 	void initiateLineText();
 	void deleteLine(string date, int position);
 	bool verifyLine();
 	void appendOldCreationDate();
 public:
-	EditLogic(string fileName, string date, int position);
+	EditLogic(string fileName, string date, int position, int displayCase);
 	~EditLogic();
 	
 	void appendEntry(string attriibute, string entry);
