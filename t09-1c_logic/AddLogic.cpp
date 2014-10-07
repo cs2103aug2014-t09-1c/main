@@ -116,7 +116,7 @@ bool AddLogic::isSlotFree() {
 				TimeLogic endTime2(date2, end2);
 				
 				if (startTime2.getTimeFormatCheck() && endTime2.getTimeFormatCheck()) {
-					if (startTime == start2 && endTime == end2) {
+					if (date == date2 && startTime == start2 && endTime == end2) {
 						slotFree = false;
 						break;
 					}

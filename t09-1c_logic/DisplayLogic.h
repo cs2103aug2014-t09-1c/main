@@ -22,7 +22,7 @@
 #define DETAIL_AT_POS_4 \
 	"complete"
 #define NO_START_STRING \
-	"Current"
+	"In Progress"
 #define FLOAT_START_STRING \
 	"To Infinity"
 #define FLOAT_END_STRING \
