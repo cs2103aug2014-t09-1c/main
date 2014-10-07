@@ -95,36 +95,47 @@ pair<vector<string>, vector<int>> ArrangeLogic::addNonFloatEventToEntry(vector<s
 	else {
 		vector<string>::iterator it1 = lineEntry.begin();
 		vector<int>::iterator it2 = linePosition.begin();
-		int iterator = 0;
-		int size2 = lineEntry.size();
+		int minSize = 0;
+		int maxSize = lineEntry.size() -1;
 		
-		while (iterator < size2) {
-			string checkLine = lineEntry[iterator];
+		while (maxSize >= minSize) {
+			int mid = (minSize + maxSize) / 2;
+			string checkLine = lineEntry[mid];
 
 			if (FileEntryFormatter::getAttributeEntry("type", checkLine) == "float") {
-				lineEntry.insert(it1 + iterator, line);
-				linePosition.insert(it2 + iterator, iteration);
-				break;
+				if (maxSize == minSize) {
+					lineEntry.insert(it1 + minSize, line);
+					linePosition.insert(it2 + minSize, iteration);
+					break;
+				}
+				else {
+					maxSize = mid;
+				}
 			}
 
 			TimeLogic checkLineTimeLogic = getPriorityDateTime(checkLine);
 			TimeLogic deadline = getPriorityDateTime(line);
 
 			if (TimeLogic::isFirstEarlierThanSecond(deadline, checkLineTimeLogic)) {
-				lineEntry.insert(it1 + iterator, line);
-				linePosition.insert(it2 + iterator, iteration);
-				break;
-			}
-			
-			if (iterator == (size2 - 1))
-			{
-				lineEntry.push_back(line);
-				linePosition.push_back(iteration);
-				break;
+				if (maxSize == minSize) {
+					lineEntry.insert(it1 + minSize, line);
+					linePosition.insert(it2 + minSize, iteration);
+					break;
+				}
+				else {
+					maxSize = mid;
+				}
 			}
 
 			else {
-				++iterator;
+				if (minSize == maxSize) {
+					lineEntry.push_back(line);
+					linePosition.push_back(iteration);
+					break;
+				}
+				else {
+					minSize = mid + 1;
+				}
 			}
 		}
 	}
