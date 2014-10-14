@@ -30,7 +30,9 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 
 	if (command == "add") {
 		AddParser addParsing;
+		//if error detect, get string
 		dataPackage = addParsing.parseAndReturn(arguments);
+		//if error detect, get string
 		ParsedDataDeployer::executeAdd(dataPackage, fileName);
 	}
 	else if (command == "edit"){
@@ -56,6 +58,9 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 		else {
 			ParsedDataDeployer::executeDelete(dataPackage, fileName, 2);
 		}
+	}
+	else if (command == "undo"){
+		//execute Undo, call undologic
 	}
 
 }

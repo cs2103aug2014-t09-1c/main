@@ -23,16 +23,17 @@ class SearchParser :
 {
 private:
 	ParsedDataPackage parsedData;
-	AddParser addObject;
+	string command;
 public:
 	SearchParser();
+	
 	~SearchParser();
 	ParsedDataPackage parseAndReturn(string parseInput);
 
 	string argumentError();
 
-	string extractLine(string arguments);
-	string nextArguments(string arguments);
+	string findCommandAndGetArgument(string arguments);
+	//string nextArguments(string arguments);
 	string extractDate(string arguments);
 	
 

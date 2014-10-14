@@ -46,8 +46,14 @@ void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, str
 void ParsedDataDeployer::executeSearch(ParsedDataPackage searchPackage, string fileName)
 {
 	SearchLogic newSearch(fileName);
-	newSearch.addFilterCondition("name", searchPackage.name);//assuming there is vector in SearchLogic that stores a the conditions
-	newSearch.addFilterCondition("date", searchPackage.date);
-	newSearch.addFilterCondition("category", searchPackage.category);
-	newSearch.searchEntry();
+	if (searchPackage.name != ""){
+		newSearch.searchEntry(name, searchPackage.name);//havent put header entry
+	}
+	if (searchPackage.date != ""){
+		newSearch.searchEntry(date, searchPackage.date);//havent put header entry
+	}
+	if (searchPackage.category != ""){
+		newSearch.searchEntry(category, searchPackage.category);//havent put header entry
+	}
+
 }

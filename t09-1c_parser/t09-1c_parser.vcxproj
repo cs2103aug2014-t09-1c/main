@@ -48,11 +48,15 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <BufferSecurityCheck>true</BufferSecurityCheck>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -78,6 +82,7 @@
     <ClInclude Include="AddParser.h" />
     <ClInclude Include="BaseClassParser.h" />
     <ClInclude Include="CommandAndArgumentParser.h" />
+    <ClInclude Include="CompleteParser.h" />
     <ClInclude Include="DeleteParser.h" />
     <ClInclude Include="EditParser.h" />
     <ClInclude Include="ParsedDataPackage.h" />
@@ -91,6 +96,7 @@
     <ClCompile Include="AddParser.cpp" />
     <ClCompile Include="BaseClassParser.cpp" />
     <ClCompile Include="CommandAndArgumentParser.cpp" />
+    <ClCompile Include="CompleteParser.cpp" />
     <ClCompile Include="DeleteParser.cpp" />
     <ClCompile Include="EditParser.cpp" />
     <ClCompile Include="ParsedDataPackage.cpp" />
