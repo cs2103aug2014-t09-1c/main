@@ -6,7 +6,7 @@
 #include "AddLogic.h"
 #include "DeleteLogic.h"
 #include "EditLogic.h"
-
+#include "SearchLogic.h"
 class ParsedDataDeployer
 {
 public:
@@ -15,5 +15,6 @@ public:
 	static void executeAdd(ParsedDataPackage addPackage, string fileName);
 	static void executeDelete(ParsedDataPackage deletePackage, string fileName, int displayCase);
 	static void executeEdit(vector<ParsedDataPackage> editPackages, string fileName, int displayCase);
+	static void executeSearch(ParsedDataPackage addPackage, string fileName);
 };
 #endif

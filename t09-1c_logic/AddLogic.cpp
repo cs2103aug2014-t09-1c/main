@@ -163,19 +163,19 @@ bool AddLogic::isEntryValid()
 {
 	bool isValid = false;
 	if (!isDateAndTimeCorrect()) {
-		//Time error
+		//Time error: Invalid date and time. Please refer to \"help\" for guide to input.
 		return isValid;
 	}
 	else {
 		determineType();
 		string type = FileEntryFormatter::getAttributeEntry("type", lineEntry);
 		if (type == "") {
-			//format error
+			//format error: No event detected. Please refer to \"help\" for guide to input.
 			return isValid;
 		}
 		else {
 			if (type == "timed" && !isSlotFree()) {
-				//no slots
+				//no slots: No slots are available. Please refer to \"help\" for guide to input.
 				return isValid;
 			}
 			else {

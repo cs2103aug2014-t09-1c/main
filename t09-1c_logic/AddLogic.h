@@ -23,7 +23,7 @@ public:
 	void determineType();
 	bool isEntryValid();
 	void commitAdd();
-
+	string errorMsg;
 };
 
 #endif
