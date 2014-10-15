@@ -31,7 +31,5 @@ bool UndoLogic:: executeCommand(command_ptr_t command)
 void UndoLogic:: undoFunction()
 {
 	UndoStack.pop();
-
-return CommandExcuted;
 }
 
