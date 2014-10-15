@@ -61,7 +61,10 @@ string AddParser::extractDate(string iterArguments)
 			return TimeParser::formatDate(noSpaceDate);
 		}
 		else {
-			argumentError();
+			setErrorString(ADD_PARSER_6DIGIT_DATE_ERROR);
+			setErrorTrue();
+
+			return "";
 		}
 	}
 	else {
@@ -70,7 +73,10 @@ string AddParser::extractDate(string iterArguments)
 			return newDateFormat;
 		}
 		else {
-			argumentError();
+			setErrorString(ADD_PARSER_DAY_OF_WEEK_ERROR);
+			setErrorTrue();
+
+			return "";
 		}
 	}
 }
@@ -93,7 +99,8 @@ void AddParser::extractTime(string iterArguments)
 			parsedData.end = end;
 		}
 		else {
-			argumentError();
+			setErrorString(ADD_PARSER_START_END_TIME_ERROR);
+			setErrorTrue();
 		}
 	}
 	else if (position1 == string::npos  && time.size() == 4) {
@@ -102,11 +109,13 @@ void AddParser::extractTime(string iterArguments)
 			parsedData.end = time;
 		}
 		else {
-			argumentError();
+			setErrorString(ADD_PARSER_TIME_ERROR);
+			setErrorTrue();
 		}
 	}
 	else {
-		argumentError();
+		setErrorString(ADD_PARSER_TIME_ERROR);
+		setErrorTrue();
 	}
 	
 }
@@ -122,4 +131,19 @@ ParsedDataPackage AddParser::parseAndReturn(string parseInput)
 	parsedData.category = extractLeadingBracketContent(parseInput);
 
 	return parsedData;
+}
+
+void AddParser::setErrorString(string errorString)
+{
+	error = errorString;
+}
+
+void AddParser::setErrorTrue()
+{
+	errorPresent = true;
+}
+
+bool AddParser::isInputValid()
+{
+	return errorPresent;
 }
