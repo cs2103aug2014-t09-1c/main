@@ -13,7 +13,7 @@ UndoLogic::~UndoLogic()
 {
 }
 
-bool UndoLogic:: executeCommand(command_ptr_t command)
+void UndoLogic:: executeCommand(command_ptr_t command)
 {
 	// Execute command
 	bool CommandExcuted = command->execute();
@@ -25,10 +25,9 @@ bool UndoLogic:: executeCommand(command_ptr_t command)
 		UndoStack.push(command);
 	}
 
-	return CommandExcuted;
 }
 
-void UndoLogic:: undoFunction()
+void UndoLogic:: undoCommand()
 {
 	UndoStack.pop();
 }

@@ -6,8 +6,8 @@ class UndoLogic :
 public:
 	UndoLogic();
 
-	bool executeCommand(command_ptr_t command);
-	void UndoFunction();
+	void executeCommand(command_ptr_t command);
+	void UndoCommand();
 	~UndoLogic();
 };
 
