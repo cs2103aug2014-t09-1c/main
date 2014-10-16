@@ -23,7 +23,8 @@ class SearchParser :
 {
 private:
 	ParsedDataPackage parsedData;
-	string command;
+	string type;
+	
 public:
 	SearchParser();
 	
@@ -32,7 +33,7 @@ public:
 
 	string argumentError();
 
-	string findCommandAndGetArgument(string arguments);
+	string findTypeAndGetArgument(string arguments);
 	//string nextArguments(string arguments);
 	string extractDate(string arguments);
 	

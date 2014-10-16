@@ -10,6 +10,7 @@
 #include "AddParser.h"
 #include "DeleteParser.h"
 #include "EditParser.h"
+#include "SearchParser.h"
 #include "ParsedDataPackage.h"
 #include "FileLogic.h"
 

@@ -9,7 +9,6 @@ SearchParser::SearchParser() : parsedData()
 {
 }
 
-
 SearchParser::~SearchParser()
 {
 }
@@ -19,13 +18,13 @@ string AddParser::argumentError()
 	return SEARCH_PARSER_ERROR;
 }
 
-string SearchParser::findCommandAndGetArgument(string iterarguments)
+string SearchParser::findTypeAndGetArgument(string typeAndArgument)
 {
-	string line = iterarguments;
-	line = line.substr(7);
+	string line = typeAndArgument;
 	string delimiter = " ";
-	command = line.substr(0, line.find(delimiter));
-	string argument = line.substr(line.find(delimiter)+1);
+	type = line.substr(0, line.find(delimiter));
+	line = line.substr(line.find(delimiter) + 1);
+	string argument = line.substr(line.find_first_not_of(' '));
 	return argument;
 }
 
@@ -64,14 +63,14 @@ string SearchParser::extractDate(string argument)
 
 ParsedDataPackage SearchParser::parseAndReturn(string parseInput)
 {
-	string argument = findCommandAndGetArgument(parseInput);
-	if (command == "date"){
+	string argument = findTypeAndGetArgument(parseInput);
+	if (type == "date"){
 		parsedData.date = extractDate(argument);
 	}
-	else if(command == "name"){
+	else if(type == "name"){
 		parsedData.name = argument;
 	}
-	else if (command == "category"){
+	else if (type == "category"){
 		parsedData.category = argument;
 	}
 	return parsedData;
