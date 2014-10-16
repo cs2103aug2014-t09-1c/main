@@ -6,7 +6,7 @@
 #include "ParsedDataPackage.h"
 
 #define COMPLETE_PARSER_ERROR \
-	"Unable to Commit. Please refer to \"help\" for guide to input."
+	"Please enter the line number of the task you wish to mark as completed!"
 
 using namespace std;
 

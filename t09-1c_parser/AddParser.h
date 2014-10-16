@@ -8,6 +8,14 @@
 
 #define ADD_PARSER_ERROR \
 	"Unable to Commit. Please refer to \"help\" for guide to input."
+#define ADD_PARSER_6DIGIT_DATE_ERROR \
+	"Please enter a valid DDMMYY date!"
+#define ADD_PARSER_DAY_OF_WEEK_ERROR \
+	"Please enter a valid day of the week!"
+#define ADD_PARSER_START_END_TIME_ERROR \
+	"Please enter a valid HHMM-HHMM start-end time format!"
+#define ADD_PARSER_TIME_ERROR \
+	"Please enter a valid time format!"
 
 using namespace std;
 
@@ -35,6 +43,10 @@ public:
 	string nextArguments(string arguments);
 	string extractDate(string arguments);
 	void extractTime(string arguments);
+
+	void setErrorString(string errorString);
+	void setErrorTrue();
+	bool isInputValid();
 	
 };
 
