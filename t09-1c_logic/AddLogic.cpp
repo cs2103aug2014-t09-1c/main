@@ -159,23 +159,36 @@ bool AddLogic::isSlotFree() {
 	return slotFree;
 }
 
+void AddLogic::setErrorString(string errorString)
+{
+	error = errorString;
+}
+
+string AddLogic::getErrorString()
+{
+	return error;
+}
+
 bool AddLogic::isEntryValid() 
 {
 	bool isValid = false;
 	if (!isDateAndTimeCorrect()) {
-		//Time error: Invalid date and time. Please refer to \"help\" for guide to input.
+		setErrorString(ADD_LOGIC_TIME_DATE_ERROR);
+		//Time error: Invalid date and time. 
 		return isValid;
 	}
 	else {
 		determineType();
 		string type = FileEntryFormatter::getAttributeEntry("type", lineEntry);
 		if (type == "") {
-			//format error: No event detected. Please refer to \"help\" for guide to input.
+			setErrorString(ADD_LOGIC_MISSING_ERROR);
+			//format error: No event detected. 
 			return isValid;
 		}
 		else {
 			if (type == "timed" && !isSlotFree()) {
-				//no slots: No slots are available. Please refer to \"help\" for guide to input.
+				setErrorString(ADD_LOGIC_NO_SLOT_ERROR);
+				//no slots: No slots are available. 
 				return isValid;
 			}
 			else {

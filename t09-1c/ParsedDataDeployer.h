@@ -7,8 +7,12 @@
 #include "DeleteLogic.h"
 #include "EditLogic.h"
 #include "SearchLogic.h"
+#include "UndoLogic.h"
 class ParsedDataDeployer
 {
+private:
+	static string error;
+
 public:
 	ParsedDataDeployer();
 	~ParsedDataDeployer();
@@ -16,5 +20,7 @@ public:
 	static void executeDelete(ParsedDataPackage deletePackage, string fileName, int displayCase);
 	static void executeEdit(vector<ParsedDataPackage> editPackages, string fileName, int displayCase);
 	static void executeSearch(ParsedDataPackage addPackage, string fileName);
+	static void executeUndo(string fileName);
+	static string returnErrorString();
 };
 #endif

@@ -73,7 +73,7 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 			dataPackage = searchParsing.parseAndReturn(arguments);
 		}
 		else if (command == "undo"){
-			//execute Undo, call undologic
+			ParsedDataDeployer::executeUndo(fileName);
 		}
 	}
 	catch (string e){//

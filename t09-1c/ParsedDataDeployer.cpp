@@ -19,7 +19,14 @@ void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, string fileNam
 	newAdd.appendToLineEntry("start", addPackage.start);
 	newAdd.appendToLineEntry("end", addPackage.end);
 	newAdd.appendToLineEntry("category", addPackage.category);
-	newAdd.commitAdd();
+	if (newAdd.isEntryValid())
+	{
+		newAdd.commitAdd();
+	}
+	else
+	{
+		error = newAdd.getErrorString();
+	}
 }
 
 void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, string fileName, int displayCase)
@@ -56,4 +63,14 @@ void ParsedDataDeployer::executeSearch(ParsedDataPackage searchPackage, string f
 		newSearch.searchEntry(category, searchPackage.category);//havent put header entry
 	}
 
+}
+void ParsedDataDeployer::executeUndo(string fileName)
+{
+	UndoLogic newUndo(fileName);
+	newUndo.removeLastChange();
+}
+
+string ParsedDataDeployer::returnErrorString()
+{
+	return error;
 }
