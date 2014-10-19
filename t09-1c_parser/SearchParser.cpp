@@ -5,6 +5,7 @@
 
 // Syntax: search searchcategory item 
 //e.g. search date 121012, search name annual concert, search category meeting
+
 SearchParser::SearchParser() : parsedData()
 {
 }
@@ -33,6 +34,9 @@ string SearchParser::extractDate(string argument)
 	string date = argument;
 	string noSpaceDate = ParserHelperFunctions::removeWhiteSpace(date);
 	if (date.size() == 0) {
+		setErrorString(SEARCH_PARSER_NO_DATE_ERROR);
+		setErrorTrue();
+
 		return "";
 	}
 	else if (ParserHelperFunctions::isParameterStringANumber(noSpaceDate)) {
@@ -41,7 +45,10 @@ string SearchParser::extractDate(string argument)
 			return TimeParser::formatDate(noSpaceDate);
 		}
 		else {
-			argumentError();
+			setErrorString(SEARCH_PARSER_6DIGIT_DATE_ERROR);
+			setErrorTrue();
+
+			return "";
 		}
 	}
 	else {
@@ -50,10 +57,14 @@ string SearchParser::extractDate(string argument)
 			return newDateFormat;
 		}
 		else {
-			argumentError();
+			setErrorString(SEARCH_PARSER_DAY_OF_WEEK_ERROR);
+			setErrorTrue();
+
+			return "";
 		}
 	}
 }
+
 /*string SearchParser::nextArguments(string argument)
 {
 	string delimiter = "]";
@@ -74,4 +85,19 @@ ParsedDataPackage SearchParser::parseAndReturn(string parseInput)
 		parsedData.category = argument;
 	}
 	return parsedData;
+}
+
+void SearchParser::setErrorString(string errorString)
+{
+	error = errorString;
+}
+
+void SearchParser::setErrorTrue()
+{
+	errorPresent = true;
+}
+
+bool SearchParser::isInputValid()
+{
+	return errorPresent;
 }
