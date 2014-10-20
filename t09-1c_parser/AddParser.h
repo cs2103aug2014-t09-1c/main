@@ -16,12 +16,17 @@
 	"Please enter a valid HHMM-HHMM start-end time format!"
 #define ADD_PARSER_TIME_ERROR \
 	"Please enter a valid time format!"
+#define ADD_PARSER_CATEGORY_ERROR \
+	"Please enter a valid category format!"
 
 using namespace std;
 
 // Syntax: [eventName]<start><end><rating><@category> - timed
 // Syntax: [eventName]<deadline><rating><@category> - deadline
 // Syntax: [eventName]<rating><@category> - float
+
+// Natural Language Syntax: meeting with boss on 101014 at 1700 "boss"
+
 // Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
 // eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
 // eg. Watch movie 191014 1700 to 1800
@@ -36,6 +41,7 @@ public:
 	AddParser();
 	~AddParser();
 	ParsedDataPackage parseAndReturn(string parseInput);
+	ParsedDataPackage parseNLandReturn(string parseInput); // parse Natural Language and Return
 
 	string argumentError();
 
