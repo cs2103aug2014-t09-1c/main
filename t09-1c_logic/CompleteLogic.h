@@ -1,7 +1,9 @@
 #pragma once
-#include "BassClassLogic"
+#include "BaseClassLogic.h"
 #include "ArrangeLogic.h"
 #include "CompleteLogic.h"
+#include "EditLogic.h"
+#include "FileLogic.h"
 
 class CompleteLogic
 	public class BaseClassLogic

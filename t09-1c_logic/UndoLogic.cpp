@@ -5,7 +5,7 @@
 
 UndoLogic::UndoLogic()
 {
-	stack <string> UndoStack;
+	
 }
 
 
@@ -13,7 +13,7 @@ UndoLogic::~UndoLogic()
 {
 }
 
-void UndoLogic:: executeCommand(command_ptr_t command)
+void UndoLogic:: executeCommand()
 {
 	// Execute command
 	bool CommandExcuted = command->execute();

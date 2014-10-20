@@ -30,6 +30,9 @@ void CompleteLogic::CompleteTask(string date, int position)
 	if (position - 1 < positionSize) {
 		taskCompleted = lines[position - 1];
 		completedTaskPosition = positions[position - 1];
-		//fileHandler.appendCompleteMarkToTask(completeTaskPosition);
+		//fileHandler.appendCompletedMarkToTask(completeTaskPosition);
 	}
+
+	string lineText = FileLogic::getLineFromPositionNumber(int completedTaskPosition);
+	void EditLogic::appendEntry(string status, string completed);
 }
