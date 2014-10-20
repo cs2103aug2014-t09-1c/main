@@ -68,8 +68,12 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 				ParsedDataDeployer::executeDelete(dataPackage, fileName, 2);
 			}
 		}
+		else if (command == "search"){
+			SearchParser searchParsing;
+			dataPackage = searchParsing.parseAndReturn(arguments);
+		}
 		else if (command == "undo"){
-			//execute Undo, call undologic
+			ParsedDataDeployer::executeUndo(fileName);
 		}
 	}
 	catch (string e){//
