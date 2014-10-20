@@ -26,6 +26,7 @@ using namespace std;
 // Syntax: [eventName]<rating><@category> - float
 
 // Natural Language Syntax: meeting with boss on 101014 at 1700 "boss"
+// Natural Language Syntax: meeting with boss on 191014 from 1700-1800 "boss"
 
 // Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
 // eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
