@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "UndoLogic.h"
-#include<stack>
+#include <stack>
 
 
 UndoLogic::UndoLogic()
@@ -13,22 +13,28 @@ UndoLogic::~UndoLogic()
 {
 }
 
-void UndoLogic:: executeCommand()
+void UndoLogic:: executeCommand(int position, string command)
 {
+	std::stack<int>positionStack:
+	std::stack<string>commanStack;
+	
 	// Execute command
+	
 	bool CommandExcuted = command->execute();
 
 	// If command complete successfully store in the
 	// undo stack
 	if (CommandExcuted)
 	{
-		UndoStack.push(command);
+		positionStack.push(position);
+		commandStack.push(command);
 	}
 
 }
 
-void UndoLogic:: undoCommand()
+void UndoLogic:: undoCommand(stack positionStack, stack commandStack)
 {
-	UndoStack.pop();
+	positionStack.pop();
+	commandStack.pop();
 }
 

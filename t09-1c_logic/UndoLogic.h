@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseClassLogic.h"
+#include "stack"
 class UndoLogic :
 	public BaseClassLogic
 {
