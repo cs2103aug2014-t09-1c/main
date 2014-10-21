@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "t09-1c_parser", "t09-1c_par
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "t09-1c_fileAccess", "t09-1c_fileAccess\t09-1c_fileAccess.vcxproj", "{0422FB22-BD84-4276-8724-8B7B2D461972}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "t01-1c_ui", "t01-1c_ui\t01-1c_ui.vcxproj", "{EDBF3C29-BFC3-3D6C-B0D3-2DAB290D1DFB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -51,6 +53,10 @@ Global
 		{0422FB22-BD84-4276-8724-8B7B2D461972}.Debug|Win32.Build.0 = Debug|Win32
 		{0422FB22-BD84-4276-8724-8B7B2D461972}.Release|Win32.ActiveCfg = Release|Win32
 		{0422FB22-BD84-4276-8724-8B7B2D461972}.Release|Win32.Build.0 = Release|Win32
+		{EDBF3C29-BFC3-3D6C-B0D3-2DAB290D1DFB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EDBF3C29-BFC3-3D6C-B0D3-2DAB290D1DFB}.Debug|Win32.Build.0 = Debug|Win32
+		{EDBF3C29-BFC3-3D6C-B0D3-2DAB290D1DFB}.Release|Win32.ActiveCfg = Release|Win32
+		{EDBF3C29-BFC3-3D6C-B0D3-2DAB290D1DFB}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
