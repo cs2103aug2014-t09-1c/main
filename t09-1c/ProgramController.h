@@ -20,7 +20,7 @@ class ProgramController
 private:
 	int displayCase = 0;
 	string displayDate;
-	
+	string errorString;
 	string fileName;
 	string command;
 	string arguments;

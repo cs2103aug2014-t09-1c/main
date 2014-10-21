@@ -241,3 +241,8 @@ bool AddParser::isInputValid()
 {
 	return errorPresent;
 }
+
+string AddParser::getErrorString()
+{
+	return error;
+}

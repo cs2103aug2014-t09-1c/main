@@ -37,7 +37,7 @@ class AddParser :
 {
 private:
 	ParsedDataPackage parsedData;
-
+	string error;
 public:
 	AddParser();
 	~AddParser();
@@ -54,7 +54,7 @@ public:
 	void setErrorString(string errorString);
 	void setErrorTrue();
 	bool isInputValid();
-	
+	string getErrorString();
 };
 
 #endif

@@ -24,6 +24,11 @@ string SearchParser::findTypeAndGetArgument(string typeAndArgument)
 	string line = typeAndArgument;
 	string delimiter = " ";
 	type = line.substr(0, line.find(delimiter));
+	if (type != "date" || type != "name" || type != "category")
+	{
+		setErrorString(SEARCH_PARSER_NO_TYPE_ERROR);
+		setErrorTrue();
+	}
 	line = line.substr(line.find(delimiter) + 1);
 	string argument = line.substr(line.find_first_not_of(' '));
 	return argument;
@@ -100,4 +105,9 @@ void SearchParser::setErrorTrue()
 bool SearchParser::isInputValid()
 {
 	return errorPresent;
+}
+
+string SearchParser::getErrorString()
+{
+	return error;
 }
