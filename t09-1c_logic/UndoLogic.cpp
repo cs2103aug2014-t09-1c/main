@@ -16,7 +16,7 @@ UndoLogic::~UndoLogic()
 void UndoLogic:: executeCommand(int position, string command)
 {
 	std::stack<int>positionStack:
-	std::stack<string>commanStack;
+	std::stack<char>commanStack;
 	
 	// Execute command
 	
@@ -34,7 +34,15 @@ void UndoLogic:: executeCommand(int position, string command)
 
 void UndoLogic:: undoCommand(stack positionStack, stack commandStack)
 {
-	positionStack.pop();
-	commandStack.pop();
+	int positionUndo = positionStack.pop();
+	char commandUndo = commandStack.pop();
+
+	if (strcmp(commandUndo, "add") != 0){
+		DeleteLogic::deleteEntry(date, undoPosition);
+	}
+	else if (strcmp(commanUndo, "delete") != 0){
+		//add accordingly
+	}
+	//how to do undo with edit?
 }
 
