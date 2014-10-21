@@ -62,6 +62,7 @@ string AddParser::extractDate(string iterArguments)
 		}
 		else {
 			argumentError();
+			return "";
 		}
 	}
 	else {
@@ -71,6 +72,7 @@ string AddParser::extractDate(string iterArguments)
 		}
 		else {
 			argumentError();
+			return "";
 		}
 	}
 }

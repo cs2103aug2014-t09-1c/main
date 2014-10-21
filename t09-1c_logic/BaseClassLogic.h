@@ -10,6 +10,7 @@ class BaseClassLogic
 protected:
 	BaseClassLogic();
 	~BaseClassLogic();
+	void toLog(string log);
 };
 
 #endif

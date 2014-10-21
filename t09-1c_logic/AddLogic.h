@@ -13,6 +13,7 @@ private:
 	FileLogic fileHandler;
 
 public:
+	string error;
 	AddLogic(string fileName);
 	~AddLogic();
 	string getLineEntry();

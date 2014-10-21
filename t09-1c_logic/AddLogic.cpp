@@ -3,6 +3,7 @@
 #include "FileEntryFormatter.h"
 #include <string>
 #include <iostream>
+#include <assert.h>
 
 
 AddLogic::AddLogic(string fileName) : fileHandler(fileName)
@@ -34,33 +35,40 @@ void AddLogic::appendToLineEntry(string attribute, string entry)
 
 void AddLogic::determineType()
 {
-	bool isNameEmpty = FileEntryFormatter::getAttributeEntry("name", lineEntry) == "";
-	bool isDateEmpty = FileEntryFormatter::getAttributeEntry("date", lineEntry) == "";
-	bool isStartTimeEmpty = FileEntryFormatter::getAttributeEntry("start", lineEntry) == "";
-	bool isEndTimeEmpty = FileEntryFormatter::getAttributeEntry("end", lineEntry) == "";
-	
-	if (isStartTimeEmpty) {
-		if (isEndTimeEmpty) {
-			if (isDateEmpty) {
-				if (isNameEmpty) {
+	try {
+		bool isNameEmpty = FileEntryFormatter::getAttributeEntry("name", lineEntry) == "";
+		bool isDateEmpty = FileEntryFormatter::getAttributeEntry("date", lineEntry) == "";
+		bool isStartTimeEmpty = FileEntryFormatter::getAttributeEntry("start", lineEntry) == "";
+		bool isEndTimeEmpty = FileEntryFormatter::getAttributeEntry("end", lineEntry) == "";
+
+		if (isStartTimeEmpty) {
+			if (isEndTimeEmpty) {
+				if (isDateEmpty) {
+					if (isNameEmpty) {
+						throw "Invalid Entry";
+					}
+					else {
+						appendToLineEntry("type", "float");
+					}
 				}
 				else {
-					appendToLineEntry("type", "float");
+					lineEntry = FileEntryFormatter::editAttributedEntryFromLineEntry("end", "23:59", lineEntry);
+					appendToLineEntry("type", "deadline");
 				}
 			}
 			else {
-				lineEntry = FileEntryFormatter::editAttributedEntryFromLineEntry("end", "23:59", lineEntry);
 				appendToLineEntry("type", "deadline");
 			}
 		}
 		else {
-			appendToLineEntry("type", "deadline");
+			appendToLineEntry("type", "timed");
 		}
+		appendToLineEntry("complete", "no");
 	}
-	else {
-		appendToLineEntry("type", "timed");
+	catch (const char* msg) 
+	{
+		error = msg;
 	}
-	appendToLineEntry("complete", "no");
 }
 
 bool AddLogic::isDateAndTimeCorrect()
@@ -87,7 +95,7 @@ bool AddLogic::isDateAndTimeCorrect()
 	else {
 		TimeLogic checkStart(date, startTime);
 		TimeLogic checkEnd(date, endTime);
-		
+		assert(checkStart.getTimeFormatCheck() && checkEnd.getTimeFormatCheck() && "Wrong date and Time");
 		return (checkStart.getTimeFormatCheck() && checkEnd.getTimeFormatCheck()
 			&& TimeLogic::isFirstEarlierThanSecond(checkStart,checkEnd) &&
 			startTime != endTime);
@@ -161,29 +169,29 @@ bool AddLogic::isSlotFree() {
 
 bool AddLogic::isEntryValid() 
 {
-	bool isValid = false;
-	if (!isDateAndTimeCorrect()) {
-		//Time error
-		return isValid;
-	}
-	else {
-		determineType();
-		string type = FileEntryFormatter::getAttributeEntry("type", lineEntry);
-		if (type == "") {
-			//format error
+		bool isValid = false;
+		if (!isDateAndTimeCorrect()) {
+			//Time error
 			return isValid;
 		}
 		else {
-			if (type == "timed" && !isSlotFree()) {
-				//no slots
+			determineType();
+			string type = FileEntryFormatter::getAttributeEntry("type", lineEntry);
+			if (type == "") {
+				//format error
 				return isValid;
 			}
 			else {
-				isValid = true;
-				return isValid;
+				if (type == "timed" && !isSlotFree()) {
+					//no slots
+					return isValid;
+				}
+				else {
+					isValid = true;
+					return isValid;
+				}
 			}
 		}
-	}
 }
 
 void AddLogic::commitAdd()
