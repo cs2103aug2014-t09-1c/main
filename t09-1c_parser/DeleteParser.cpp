@@ -11,7 +11,7 @@
 // eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
 // eg. Watch movie 191014 1700 to 1800
 
-// Delete Syntax: delete [010914][2]
+// Delete Syntax: delete [010914][2] or delete [3]
 
 DeleteParser::DeleteParser()
 {
@@ -27,16 +27,16 @@ string DeleteParser::argumentError()
 	return DELETE_PARSER_ERROR;
 }
 
-
 void DeleteParser::extractLine(string iterArguments)
 {
 	string lineNum = add.extractLeadingBracketContent(iterArguments);
 
-	if (ParserHelperFunctions::isParameterStringANumber(lineNum)){
+	if (ParserHelperFunctions::isParameterStringANumber(lineNum)) {
 		parsedData.lineNum = stoi(lineNum);
 	}
 	else {
-		argumentError();
+		setErrorString(DELETE_PARSER_LINE_NUM_ERROR);
+		setErrorTrue();
 	}
 }
 
@@ -45,8 +45,7 @@ ParsedDataPackage DeleteParser::parseAndReturn(string parseInput)
 	string delimiter = "[";
 	string getFirst = ParserHelperFunctions::removeWhiteSpace(parseInput.substr(0, parseInput.find(delimiter)));
 	
-	if (ParserHelperFunctions::isParameterStringANumber(getFirst))
-	{
+	if (ParserHelperFunctions::isParameterStringANumber(getFirst)) {
 		int lineNum = stoi(getFirst);
 		parsedData.lineNum = lineNum;
 		parseInput.erase(0, parseInput.find(delimiter));
@@ -58,5 +57,21 @@ ParsedDataPackage DeleteParser::parseAndReturn(string parseInput)
 		extractLine(parseInput);
 		excessInput = add.nextArguments(parseInput);
 	}
+
 	return parsedData;
+}
+
+void DeleteParser::setErrorString(string errorString)
+{
+	error = errorString;
+}
+
+void DeleteParser::setErrorTrue()
+{
+	errorPresent = true;
+}
+
+bool DeleteParser::isInputValid()
+{
+	return errorPresent;
 }
