@@ -50,17 +50,17 @@ void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, str
 	newEdit.editEntry();
 }
 
-void ParsedDataDeployer::executeSearch(ParsedDataPackage searchPackage, string fileName)
+void ParsedDataDeployer::executeSearch(ParsedDataPackage searchPackage, string fileName)//search for either name, date or category
 {
 	SearchLogic newSearch(fileName);
 	if (searchPackage.name != ""){
-		newSearch.searchEntry(name, searchPackage.name);//havent put header entry
+		newSearch.searchEntry(name, searchPackage.name);//havent put search logic class
 	}
 	if (searchPackage.date != ""){
-		newSearch.searchEntry(date, searchPackage.date);//havent put header entry
+		newSearch.searchEntry(date, searchPackage.date);
 	}
 	if (searchPackage.category != ""){
-		newSearch.searchEntry(category, searchPackage.category);//havent put header entry
+		newSearch.searchEntry(category, searchPackage.category);
 	}
 
 }

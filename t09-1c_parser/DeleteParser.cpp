@@ -75,3 +75,8 @@ bool DeleteParser::isInputValid()
 {
 	return errorPresent;
 }
+
+string DeleteParser::getErrorString()
+{
+	return error;
+}

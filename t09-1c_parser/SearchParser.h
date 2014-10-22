@@ -10,6 +10,9 @@
 	"Please enter a valid DDMMYY date!"
 #define SEARCH_PARSER_DAY_OF_WEEK_ERROR \
 	"Please enter a valid day of the week!"
+#define SEARCH_PARSER_NO_TYPE_ERROR \
+	"Please enter a type of \"name\", \"date\" or \"category!\""
+
 
 #include "BaseClassParser.h"
 #include "ParsedDataPackage.h"
@@ -31,7 +34,7 @@ class SearchParser :
 private:
 	ParsedDataPackage parsedData;
 	string type;
-	
+	string error;
 public:
 	SearchParser();
 	
@@ -47,7 +50,7 @@ public:
 	void setErrorString(string errorString);
 	void setErrorTrue();
 	bool isInputValid();
-	
+	string getErrorString();
 };
 
 #endif

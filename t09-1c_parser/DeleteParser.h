@@ -45,6 +45,7 @@ public:
 	void setErrorString(string errorString);
 	void setErrorTrue();
 	bool isInputValid();
+	string getErrorString();
 	
 };
 
