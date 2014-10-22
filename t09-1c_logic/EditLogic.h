@@ -14,8 +14,7 @@ private:
 	string fileName;
 
 	string lineText;
-	string oldLine;
-	int oldPosition;
+
 	int displayCase;
 
 	void initiateLineText();
@@ -25,6 +24,9 @@ private:
 public:
 	EditLogic(string fileName, string date, int position, int displayCase);
 	~EditLogic();
+	bool successfulEdit = false;
+	string oldLine;
+	int oldPosition;
 	
 	void appendEntry(string attriibute, string entry);
 	void editEntry();

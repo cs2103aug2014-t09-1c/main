@@ -90,8 +90,11 @@ void AddParser::extractTime(string iterArguments)
 	time = ParserHelperFunctions::removeWhiteSpace(time);
 
 	size_t position1 = time.find("-");
-	if (time.size() == 0) {}
-	if (position1 != string::npos  && time.size() == 9) {
+	if (time.size() == 0) {
+		parsedData.start = "";
+		parsedData.end = "";
+	}
+	else if (position1 != string::npos  && time.size() == 9) {
 		string start = time.substr(0, 4);
 		string end = time.substr(5, 4);
 		if (ParserHelperFunctions::isParameterStringANumber(start) &&

@@ -1,8 +1,10 @@
 #pragma once
 #ifndef DELETE_LOGIC
 #define DELETE_LOGIC
+
 #include "BaseClassLogic.h"
 #include "ArrangeLogic.h"
+#include <stack>
 
 
 class DeleteLogic :
@@ -16,8 +18,8 @@ public:
 	DeleteLogic(string fileName, int displayCase);
 	~DeleteLogic();
 
-	string deletedEntry;
-	int deletedPosition = -1;
+	stack<string> deletedEntry;
+	stack<int> deletedPosition;
 
 	void deleteEntry(string date, int position);
 };

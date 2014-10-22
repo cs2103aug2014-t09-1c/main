@@ -1,24 +1,29 @@
 #pragma once
 #include "BaseClassLogic.h"
 #include "ArrangeLogic.h"
-#include "CompleteLogic.h"
-#include "EditLogic.h"
 #include "FileLogic.h"
+#include <stack>
 
-class CompleteLogic
-	public class BaseClassLogic
+class CompleteLogic :
+	public BaseClassLogic
 {
 
 private:
 	FileLogic fileHandler;
 	int displayCase;
 
+	void completer(string date, int fromPosition, int toPosition, bool complete);
+
 public:
 	CompleteLogic(string fileName, int displayCase);
-	~CompleteLogicLogic();
+	~CompleteLogic();
+	
+	stack<int> fileEntryPositions;
+	string commandType;
 
-	string taskCompleted;
-	int completedTaskPosition = -1;
-	void CompleteTask(string date, int position);
+	void complete(string date, int fromPosition, int toPosition);
+	void uncomplete(string date, int fromPosition, int toPosition);
+
+
 };
 

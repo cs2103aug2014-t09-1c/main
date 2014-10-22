@@ -5,6 +5,7 @@
 #include <vector>
 #include "DisplayLogic.h"
 #include "TimeParser.h"
+#include "CompleteParser.h"
 #include <stdio.h>      //
 #include <assert.h>//
 
@@ -84,7 +85,22 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 	else if (command == "undo"){
 		ParsedDataDeployer::executeUndo(fileName);
 	}
+	else if (command == "complete"){
+		CompleteParser completeParsing;
+		dataPackage = completeParsing.parseAndReturn(arguments);
+		if (completeParsing.isInputValid())
+		{
+			//errorString = completeParsing.getErrorString();
+		}
+		else if (dataPackage.date.empty()) {
+			dataPackage.date = displayDate;
+			ParsedDataDeployer::executeComplete(dataPackage, fileName, displayCase);
+		}
+		else {
+			ParsedDataDeployer::executeComplete(dataPackage, fileName, 2);
+		}
 
+	}
 }
 
 vector<vector<string>> ProgramController::refreshTableDisplay()
