@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CompleteLogic.h"
 #include <string>
+#include "FileEntryFormatter.h"
 
 CompleteLogic::CompleteLogic(string fileName, int displayCase) : fileHandler(fileName)
 {
@@ -12,27 +13,42 @@ CompleteLogic::~CompleteLogic()
 {
 }
 
-void CompleteLogic::CompleteTask(string date, int position)
+void CompleteLogic::completer(string date, int fromPosition, int toPosition, bool complete)
 {
 	ArrangeLogic arranger(fileHandler);
 	pair<vector<string>, vector<int>> list;
-	if (displayCase == 0) {
-		list = arranger.getListOfEventsOnwardFrom(date);
+	switch (displayCase) {
+	case 0: list = arranger.getListOfEventsOnwardFrom(date);
+		break;
+	default: list = arranger.getListOfEventOn(date);
+		break;
 	}
-	else {
-		list = arranger.getListOfEventOn(date);
-	}
-
-	vector<string> lines = list.first;
 	vector<int> positions = list.second;
-
 	int positionSize = positions.size();
-	if (position - 1 < positionSize) {
-		taskCompleted = lines[position - 1];
-		completedTaskPosition = positions[position - 1];
-		//fileHandler.appendCompletedMarkToTask(completeTaskPosition);
+	for (int i = fromPosition -1; i <= toPosition -1 && i <= positionSize; ++i)
+	{
+		int filePosition = positions[i];
+		fileEntryPositions.push(filePosition);
+		string line = fileHandler.getLineFromPositionNumber(filePosition);
+		if (complete) {
+			line = FileEntryFormatter::editAttributedEntryFromLineEntry("complete", "yes", line);
+		}
+		else {
+			line = FileEntryFormatter::editAttributedEntryFromLineEntry("complete", "no", line);
+		}
+		fileHandler.deleteLine(filePosition);
+		fileHandler.addToPositionNumber(filePosition, line);
 	}
+}
 
-	string lineText = FileLogic::getLineFromPositionNumber(int completedTaskPosition);
-	void EditLogic::appendEntry(string status, string completed);
+void CompleteLogic::complete(string date, int fromPosition, int toPosition)
+{
+	commandType = "complete";
+	completer(date, fromPosition, toPosition, true);
+}
+
+void CompleteLogic::uncomplete(string date, int fromPosition, int toPosition)
+{
+	commandType = "uncomplete";
+	completer(date, fromPosition, toPosition, false);
 }

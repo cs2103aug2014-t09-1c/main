@@ -26,9 +26,9 @@ void DeleteLogic::deleteEntry(string date, int position)
 	vector<int> positions = list.second;
 	int positionSize = positions.size();
 	if (position - 1 < positionSize) {
-		deletedEntry = lines[position - 1];
-		deletedPosition = positions[position - 1];
-		fileHandler.deleteLine(deletedPosition);
+		deletedEntry.push(lines[position - 1]);
+		deletedPosition.push(positions[position - 1]);
+		fileHandler.deleteLine(positions[position - 1]);
 	}
 
 }

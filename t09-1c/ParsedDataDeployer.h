@@ -3,11 +3,8 @@
 #define PARSE_DATA_DEPLOYER
 
 #include "ParsedDataPackage.h"
-#include "AddLogic.h"
-#include "DeleteLogic.h"
-#include "EditLogic.h"
-#include "SearchLogic.h"
-#include "UndoLogic.h"
+#include <vector>
+
 class ParsedDataDeployer
 {
 private:
@@ -21,6 +18,7 @@ public:
 	static void executeEdit(vector<ParsedDataPackage> editPackages, string fileName, int displayCase);
 	static void executeSearch(ParsedDataPackage searchPackage, string fileName);
 	static void executeUndo(string fileName);
+	static void executeComplete(ParsedDataPackage completePackage, string fileName, int displayCase);
 	static string returnErrorString();
 };
 #endif

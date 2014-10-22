@@ -28,8 +28,8 @@ void EditLogic::deleteLine(string date, int position)
 {
 	DeleteLogic deleter(fileName, displayCase);
 	deleter.deleteEntry(date, position);
-	oldLine = deleter.deletedEntry;
-	oldPosition = deleter.deletedPosition;
+	oldLine = deleter.deletedEntry.top();
+	oldPosition = deleter.deletedPosition.top();
 }
 
 void EditLogic::appendEntry(string attribute, string entry)
@@ -62,6 +62,7 @@ void EditLogic::editEntry()
 	if (verifyLine() && oldPosition > -1) {
 		appendOldCreationDate();
 		fileHandler.addToPositionNumber(oldPosition, lineText);
+		successfulEdit = true;
 	}
 	else {
 		fileHandler.addToPositionNumber(oldPosition, oldLine);

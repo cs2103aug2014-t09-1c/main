@@ -14,7 +14,7 @@ SearchParser::~SearchParser()
 {
 }
 
-string AddParser::argumentError()
+string SearchParser::argumentError()
 {
 	return SEARCH_PARSER_ERROR;
 }

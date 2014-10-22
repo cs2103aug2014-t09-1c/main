@@ -112,29 +112,31 @@ pair<vector<string>, vector<int>> ArrangeLogic::addNonFloatEventToEntry(vector<s
 					maxSize = mid;
 				}
 			}
-
-			TimeLogic checkLineTimeLogic = getPriorityDateTime(checkLine);
-			TimeLogic deadline = getPriorityDateTime(line);
-
-			if (TimeLogic::isFirstEarlierThanSecond(deadline, checkLineTimeLogic)) {
-				if (maxSize == minSize) {
-					lineEntry.insert(it1 + minSize, line);
-					linePosition.insert(it2 + minSize, iteration);
-					break;
-				}
-				else {
-					maxSize = mid;
-				}
-			}
-
 			else {
-				if (minSize == maxSize) {
-					lineEntry.push_back(line);
-					linePosition.push_back(iteration);
-					break;
+
+				TimeLogic checkLineTimeLogic = getPriorityDateTime(checkLine);
+				TimeLogic deadline = getPriorityDateTime(line);
+
+				if (TimeLogic::isFirstEarlierThanSecond(deadline, checkLineTimeLogic)) {
+					if (maxSize == minSize) {
+						lineEntry.insert(it1 + minSize, line);
+						linePosition.insert(it2 + minSize, iteration);
+						break;
+					}
+					else {
+						maxSize = mid;
+					}
 				}
+
 				else {
-					minSize = mid + 1;
+					if (minSize == maxSize) {
+						lineEntry.push_back(line);
+						linePosition.push_back(iteration);
+						break;
+					}
+					else {
+						minSize = mid + 1;
+					}
 				}
 			}
 		}

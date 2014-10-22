@@ -4,6 +4,7 @@
 
 BaseClassParser::BaseClassParser() : parsedData()
 {
+	errorPresent = false;
 }
 
 
