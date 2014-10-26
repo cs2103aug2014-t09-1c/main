@@ -21,11 +21,14 @@ protected:
     void keyPressEvent(QKeyEvent *e);
 
 private slots:
-    void insertCompletion(const QModelIndex &completion);
+	void insertCompletion(const QString& completion);
     void sendToParser();
+	void updateCompleter(QStringList suggestions);
 
 signals:
+	void emitFeedback(QString feedback);
 	void sendText(string text);
+	void emitSuggestionSelected(string selection, string lineText);
 
 private:
     CCompleter *c;

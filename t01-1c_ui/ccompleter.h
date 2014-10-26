@@ -12,12 +12,13 @@ class CCompleter : public QCompleter
 public:
     CCompleter();
     CCompleter(const QStringList& words, QObject * parent);
-    void update(QString word);
     QString word();
+	void update(QStringList suggestions);
 private:
     QStringList m_list;
     QStringListModel m_model;
     QString m_word;
+
 };
 
 #endif // CCOMPLETER_H

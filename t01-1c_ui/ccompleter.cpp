@@ -12,11 +12,12 @@ QCompleter(parent), m_list(words), m_model()
     popup()->setFont(QFont("Segoe UI", 13));
 }
 
-void CCompleter::update(QString word)
+void CCompleter::update(QStringList suggestions)
 {
-    QStringList filtered = m_list.filter(word, caseSensitivity());
-    m_model.setStringList(m_list);
-    m_word = word;
+    //QStringList filtered = m_list.filter(word, caseSensitivity());
+	QStringList filtered = suggestions;
+    m_model.setStringList(filtered);
+    //m_word = word;
     complete();
 }
 

@@ -33,6 +33,8 @@ public:
 	ProgramController(string filename);
 	~ProgramController();
 	void executeEntry(string input);
+	vector<string> populateSuggestionBox(string input);
+	void executeSuggestionSelection(string selection, string lineText);
 	vector<vector<string>> refreshTableDisplay();
 	vector<vector<string>> displayTable(string date);
 	void ConnectToCommandFeedback(string input);

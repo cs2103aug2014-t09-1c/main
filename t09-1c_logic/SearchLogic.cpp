@@ -88,25 +88,37 @@ pair<vector<string>, vector<int>> SearchLogic::determinePriority(vector<string> 
 	vector<string> suggestionsList = list;
 	vector<int> priorityList = priority;
 	int size = suggestionsList.size();
-	if (suggestionsList.size() == 0) {
-		suggestionsList.push_back(keyword);
-		priorityList.push_back(diffCost);
+
+	bool isCopy = false;
+	for (int i = 0; i < size; ++i) {
+		string suggestion = suggestionsList[i];
+		if (keyword == suggestion) {
+			isCopy = true;
+			break;
+		}
 	}
-	else {
-		for (int i = 0; i < size; ++i) {
-			if (priorityList[i] >= diffCost) {
-				vector<string>::iterator it1;
-				it1 = suggestionsList.begin() + i;
-				suggestionsList.insert(it1, keyword);
 
-				vector<int>::iterator it2;
-				it2 = priorityList.begin() + i;
-				priorityList.insert(it2, diffCost);
+	if (!isCopy) {
+		if (suggestionsList.size() == 0) {
+			suggestionsList.push_back(keyword);
+			priorityList.push_back(diffCost);
+		}
+		else {
+			for (int i = 0; i < size; ++i) {
+				if (priorityList[i] >= diffCost) {
+					vector<string>::iterator it1;
+					it1 = suggestionsList.begin() + i;
+					suggestionsList.insert(it1, keyword);
 
-				if (suggestionsList.size() > SUGGESTIONS_LIMIT) {
-					suggestionsList.resize(SUGGESTIONS_LIMIT);
+					vector<int>::iterator it2;
+					it2 = priorityList.begin() + i;
+					priorityList.insert(it2, diffCost);
+
+					if (suggestionsList.size() > SUGGESTIONS_LIMIT) {
+						suggestionsList.resize(SUGGESTIONS_LIMIT);
+					}
+					break;
 				}
-				break;
 			}
 		}
 	}
@@ -121,7 +133,7 @@ bool SearchLogic::checkTimedTaskEligibility(string input, string line)
 	string end = FileEntryFormatter::getAttributeEntry("end", line);
 
 	TimeLogic startTime(date, start);
-	TimeLogic endTime(date, start);
+	TimeLogic endTime(date, end);
 	TimeLogic inputTime(date, input);
 
 	return TimeLogic::isFirstEarlierThanSecond(startTime, inputTime) && TimeLogic::isFirstEarlierThanSecond(inputTime, endTime);

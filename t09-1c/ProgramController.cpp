@@ -114,6 +114,36 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 	}
 }
 
+vector<string> ProgramController::populateSuggestionBox(string input)
+{
+	CommandAndArgumentParser inputParse(input);
+
+	command = inputParse.command;
+	arguments = inputParse.arguments;
+
+	vector<string> suggestions;
+
+	if (command == "search") {
+		SearchParser searchParsing;
+		string argument = searchParsing.parseAndReturn(arguments);
+		suggestions = ParsedDataDeployer::executeSearch(argument, fileName);
+	}
+	return suggestions;
+}
+
+void ProgramController::executeSuggestionSelection(string selection, string lineText)
+{
+	CommandAndArgumentParser inputParse(lineText);
+	string command = inputParse.command;
+
+	if (command == "search") {
+		searchKeywords.clear();
+		searchKeywords.push_back(selection);
+		displayCase = 1;
+	}
+	refreshTableDisplay();
+}
+
 vector<vector<string>> ProgramController::refreshTableDisplay()
 {
 	return displayTable(displayDate);

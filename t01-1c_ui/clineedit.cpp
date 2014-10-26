@@ -21,9 +21,9 @@ CLineEdit::~CLineEdit()
 
 void CLineEdit::sendToParser()
 {
-    string inputText = text().toUtf8().constData();
+	string inputText = text().toUtf8().constData();
 	emit sendText(inputText);
-    clear();
+	clear();
 }
 
 void CLineEdit::setCompleter(CCompleter *completer)
@@ -39,7 +39,7 @@ void CLineEdit::setCompleter(CCompleter *completer)
     }
 
     c->setWidget(this);
-    connect(completer, SIGNAL(activated(const QModelIndex &)), this, SLOT(insertCompletion(const QModelIndex &)));
+	connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
 }
 
 CCompleter *CLineEdit::completer() const
@@ -47,12 +47,14 @@ CCompleter *CLineEdit::completer() const
     return c;
 }
 
-void CLineEdit::insertCompletion(const QModelIndex & completion)
+void CLineEdit::insertCompletion(const QString & completion)
 {
-    int number = completion.row();
-    QString& s = QString::number(number);
+	string choiceString = completion.toUtf8().constData();
+	string inputText = text().toUtf8().constData();
+	emit emitSuggestionSelected(choiceString, inputText);
+    QString& s = QString("");
     setText(s);
-    selectAll();
+    //selectAll();
 }
 
 
@@ -60,17 +62,10 @@ void CLineEdit::keyPressEvent(QKeyEvent *e)
 {
     if (c && c->popup()->isVisible()) {
     // The following keys are forwarded by the completer to the widget
-        if (c->currentRow() > -1) {
-            switch (e->key()) {
-                case Qt::Key_Enter:
-                case Qt::Key_Return:
-                e->ignore();
-            }
-        }
         switch (e->key())
         {
-            //case Qt::Key_Enter:
-            //case Qt::Key_Return:
+            case Qt::Key_Enter:
+            case Qt::Key_Return:
             case Qt::Key_Escape:
             case Qt::Key_Tab:
             case Qt::Key_Backtab:
@@ -93,6 +88,11 @@ void CLineEdit::keyPressEvent(QKeyEvent *e)
         return;
     }
 
-    c->update(text());
+	emit emitFeedback(text());
     c->popup()->setCurrentIndex(c->completionModel()->index(-1, 0));
+}
+
+void CLineEdit::updateCompleter(QStringList suggestions)
+{
+	c->update(suggestions);
 }

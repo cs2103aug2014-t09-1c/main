@@ -24,9 +24,13 @@ private:
 
 private slots:
 	void sendInputToController(string text);
+	void getSuggestionResponse(string selection, string lineText);
+	void sendFeedbackToController(QString text);
 
 signals:
 	void sendTableData(vector<vector<string>> data);
+	void sendToSuggestionBox(QStringList suggestions);
+	void sendSuggestionContentsToCompleter(QStringList list);
 };
 
 #endif // MAINWINDOW_H
