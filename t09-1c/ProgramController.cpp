@@ -6,8 +6,6 @@
 #include "DisplayLogic.h"
 #include "TimeParser.h"
 #include "CompleteParser.h"
-#include <stdio.h>      //
-#include <assert.h>//
 
 //after an input is scanned by UI method, call to method sendToParse is made to send input to Parser
 //after Parser returns the variables in ParsedDataPackage, send the details to logic
@@ -16,12 +14,15 @@
 ProgramController::ProgramController(string fileName)
 {
 	this->fileName = fileName;
+	file.open(fileName, ios::out | ios::app);
+	file << "";
 	displayDate = TimeParser::parseDayOfWeek("today");
 }
 
 
 ProgramController::~ProgramController()
 {
+	file.close();
 }
 
 
@@ -32,7 +33,12 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 	command = inputParse.command;
 	arguments = inputParse.arguments;
 
-	if (command == "add") {
+	if (command == "home") {
+		displayCase = 0;
+		searchKeywords.clear();
+	}
+
+	else if (command == "add") {
 		AddParser addParsing;
 		dataPackage = addParsing.parseAndReturn(arguments);
 		if (addParsing.isInputValid())
@@ -52,10 +58,10 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 			ParsedDataPackage deletePack = dataPackages[0];
 			deletePack.date = displayDate;
 			dataPackages[0] = deletePack;
-			ParsedDataDeployer::executeEdit(dataPackages, fileName, displayCase);
+			ParsedDataDeployer::executeEdit(dataPackages, searchKeywords, fileName, displayCase);
 		}
 		else {
-			ParsedDataDeployer::executeEdit(dataPackages, fileName, 2);
+			ParsedDataDeployer::executeEdit(dataPackages, searchKeywords, fileName, displayCase);
 		}
 	}
 	else if (command == "delete"){
@@ -67,20 +73,25 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 		}
 		else if (dataPackage.date.empty()) {
 			dataPackage.date = displayDate;
-			ParsedDataDeployer::executeDelete(dataPackage, fileName, displayCase);
+			ParsedDataDeployer::executeDelete(dataPackage, searchKeywords, fileName, displayCase);
 		}
 		else {
-			ParsedDataDeployer::executeDelete(dataPackage, fileName, 2);
+			ParsedDataDeployer::executeDelete(dataPackage, searchKeywords, fileName, displayCase);
 		}
 	}
 	else if (command == "search"){
 		SearchParser searchParsing;
-		dataPackage = searchParsing.parseAndReturn(arguments);
+		string argument = searchParsing.parseAndReturn(arguments);
 		if (searchParsing.isInputValid())
 		{
 			errorString = searchParsing.getErrorString();
 		}
-		//else ParsedDataDeployer::executeSearch(dataPackage, fileName);  -> waiting for search logic
+		else {
+			searchKeywords = ParsedDataDeployer::executeSearch(argument, fileName);
+			if (searchKeywords.size() > 0) {
+				displayCase = 1;
+			}
+		}
 	}
 	else if (command == "undo"){
 		ParsedDataDeployer::executeUndo(fileName);
@@ -94,10 +105,10 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 		}
 		else if (dataPackage.date.empty()) {
 			dataPackage.date = displayDate;
-			ParsedDataDeployer::executeComplete(dataPackage, fileName, displayCase);
+			ParsedDataDeployer::executeComplete(dataPackage, searchKeywords, fileName , displayCase);
 		}
 		else {
-			ParsedDataDeployer::executeComplete(dataPackage, fileName, 2);
+			ParsedDataDeployer::executeComplete(dataPackage, searchKeywords, fileName, displayCase);
 		}
 
 	}
@@ -116,7 +127,7 @@ vector<vector<string>> ProgramController::displayTable(string date)
 		forTableDisplay = displayer.collectEventsFromDate(date);
 	}
 	else {
-		forTableDisplay = displayer.collectEventsOnDate(date);
+		forTableDisplay = displayer.collectEventsWithKeywords(searchKeywords, date);
 	}
 	return forTableDisplay;
 }

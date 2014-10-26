@@ -4,12 +4,12 @@
 
 
 
-EditLogic::EditLogic(string fileName, string date, int position, int displayCase)
+EditLogic::EditLogic(string fileName, string date, vector<string> keywords, int position, int displayCase)
 {
 	this->displayCase = displayCase;
 	this->fileName = fileName;
 	initiateLineText();
-	deleteLine(date, position);
+	deleteLine(date, keywords, position);
 
 }
 
@@ -24,10 +24,10 @@ void EditLogic::initiateLineText()
 	lineText = FileEntryFormatter::addAttributedEntryToLineEntry(creationDate, lineText);
 }
 
-void EditLogic::deleteLine(string date, int position)
+void EditLogic::deleteLine(string date, vector<string> keywords, int position)
 {
 	DeleteLogic deleter(fileName, displayCase);
-	deleter.deleteEntry(date, position);
+	deleter.deleteEntry(date, keywords, position);
 	oldLine = deleter.deletedEntry.top();
 	oldPosition = deleter.deletedPosition.top();
 }

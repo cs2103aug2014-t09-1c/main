@@ -77,9 +77,14 @@ string SearchParser::extractDate(string argument)
 	return argument;
 }*/
 
-ParsedDataPackage SearchParser::parseAndReturn(string parseInput)
+string SearchParser::parseAndReturn(string parseInput)
 {
-	string argument = findTypeAndGetArgument(parseInput);
+	string checkInput = TimeParser::parseDayOfWeek(parseInput);
+	if (ParserHelperFunctions::isParameterStringANumber(checkInput) && checkInput.length() == 4) {
+		checkInput.insert(2, ":");
+	}
+	return checkInput;
+	/*string argument = findTypeAndGetArgument(parseInput);
 	if (type == "date"){
 		parsedData.date = extractDate(argument);
 	}
@@ -89,7 +94,7 @@ ParsedDataPackage SearchParser::parseAndReturn(string parseInput)
 	else if (type == "category"){
 		parsedData.category = argument;
 	}
-	return parsedData;
+	return parsedData;*/
 }
 
 void SearchParser::setErrorString(string errorString)

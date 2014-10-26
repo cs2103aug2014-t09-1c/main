@@ -18,8 +18,10 @@
 class ProgramController
 {
 private:
+	fstream file;
 	int displayCase = 0;
 	string displayDate;
+	vector<string> searchKeywords;
 	string errorString;
 	string fileName;
 	string command;

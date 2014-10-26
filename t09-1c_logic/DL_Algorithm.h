@@ -7,11 +7,11 @@
 #define Damerau_Levenshtein_Algorithm
 
 #define DELETE_COST \
-	1
+	5
 #define INSERT_COST \
-	1
+	0
 #define REPLACE_COST \
-	1
+	4
 #define SWAP_COST \
 	1
 

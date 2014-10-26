@@ -12,7 +12,7 @@ private:
 	FileLogic fileHandler;
 	int displayCase;
 
-	void completer(string date, int fromPosition, int toPosition, bool complete);
+	void completer(string date, vector<string> keywords, int fromPosition, int toPosition, bool complete);
 
 public:
 	CompleteLogic(string fileName, int displayCase);
@@ -21,8 +21,8 @@ public:
 	stack<int> fileEntryPositions;
 	string commandType;
 
-	void complete(string date, int fromPosition, int toPosition);
-	void uncomplete(string date, int fromPosition, int toPosition);
+	void complete(string date, vector<string> keywords, int fromPosition, int toPosition);
+	void uncomplete(string date, vector<string> keywords, int fromPosition, int toPosition);
 
 
 };

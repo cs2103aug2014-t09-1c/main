@@ -21,7 +21,7 @@ public:
 	stack<string> deletedEntry;
 	stack<int> deletedPosition;
 
-	void deleteEntry(string date, int position);
+	void deleteEntry(string date, vector<string> keywords, int position);
 };
 
 #endif

@@ -1,112 +1,160 @@
 #include "stdafx.h"
 #include "SearchLogic.h"
-#include "AddLogic.h"
+#include "ArrangeLogic.h"
 #include "FileEntryFormatter.h"
 #include "FileLogic.h"
 #include "TimeLogic.h"
+#include "DL_Algorithm.h"
 
 
-SearchLogic::SearchLogic(FileLogic fileHandler) : fileHandler(""), addFunction(fileHandler)
+SearchLogic::SearchLogic(string fileName) : fileHandler(fileName)
 {
-	this->fileHandler = fileHandler;
 }
 
 
-SearchLogic::~SearchLogic(){
+SearchLogic::~SearchLogic()
+{
 }
 		
-
-
-
-		//user is searching for the list of the task of a certain day
-string SearchLogic::searchEntryDate(string date){
-	return arranger.getListOfDate(date);
-}
-
-
-
-
-
-string SearchLogic::searchEntry(string userEntry)
-
+vector<string> SearchLogic::createKeywords(string input)
 {
-	string specificKeyWord = userEntry;
-	if (TimeLogic.isDateValid(specificKeyWord)){
-		searchEntryDate;
-	}
+	DL_Algorithm diffCost;
 
-	else{
-		FILE TempFileToStoreSearchedResult = FileLogic.creatNewFile;
-		string resultedLine = searchForLineInFile(specificKeyWord);
-		FileLogic.appendToFile(string resultedLine);
-	}
-	cout << "Temperary File To Store Search Result";
-}
+	vector<string> suggestionsList;
+	vector<int> suggestionPriority;
+	if (input.length() >= MIMUMUM_LENGTH) {
+		int numberOfEvents = fileHandler.getSize();
+		for (int i = 0; i < numberOfEvents; ++i) {
+			string line = fileHandler.getLineFromPositionNumber(i);
+			
+			string lineCategory = FileEntryFormatter::getAttributeEntry("category", line);
+			int categoryDifference = diffCost.findDLCost(input, lineCategory);
+			if (categoryDifference <= NONDATETIMEMAXCOST)
+			{
+				pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineCategory, categoryDifference);
+				suggestionsList = newSuggestions.first;
+				suggestionPriority = newSuggestions.second;
+			}
 
+			string lineName = FileEntryFormatter::getAttributeEntry("name", line);
+			int nameDifference = diffCost.findDLCost(input, lineName);
+			if (nameDifference <= NONDATETIMEMAXCOST)
+			{
+				pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineName, nameDifference);
+				suggestionsList = newSuggestions.first;
+				suggestionPriority = newSuggestions.second;
+			}
 
-
-//implementation of leveshlein algorithm
-string SearchLogic::searchForLineInFile(string specificKeyWord)
-{
-	
-	int fileSize = FileLogic.getSize();
-	int positionOfCurrentLine;
-	int len1 = specificKeyWord.length();
-
-	using std::fmin;
-
-	//This loop is to search for the wanted data line by line. 
-	for (positionOfCurrentLine = 0; positionOfCurrentLine < fileSize; positionOfCurrentLine++){
-		string currentLine = FileLogic.getLineFromPositionNumber(positionOfCurrentLine);
-		int len2 = currentLine.length();
-		int count[50][50];// I dont know the size of the array. because it depends on each line of the
-						  //file. so the size is not constant. how to do with it?
-		for (int i = 0; i < count.length(); i++){
-			for (int j = 0; j < count[i].length(); j++){
-				if (i == 0){
-					count[i][j] = j;
+			string lineDate = FileEntryFormatter::getAttributeEntry("date", line);
+			int dateDifference = diffCost.findDLCost(input, lineDate);
+			if (dateDifference <= DATETIMEMAXCOST)
+			{
+				TimeLogic dateCheck(lineDate, "00:00");
+				if (dateCheck.getTimeFormatCheck()) {
+					pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineDate, dateDifference);
+					suggestionsList = newSuggestions.first;
+					suggestionPriority = newSuggestions.second;
 				}
-				else{
-					if (j == 0){
-						count[i][j] = i;
-					}
-					else{
-						count[i][j] = 0;
-					}
-				}
-				if (i > 0 && j > 0){
-					if (specificKeyWord.at(i - 1) == currentLine.at(j - 1)){
-						count[i][j] = count[i - 1][j - 1];
-					}
-					else{
-						count[i][j] = fmin(count[i - 1][j] + 1, fmin(count[i][j - 1] + 1, count[i - 1][j - 1] + 1));
-					}
-				}
+			}
+			
+			string lineEnd = FileEntryFormatter::getAttributeEntry("end", line);
+			int endDifference = diffCost.findDLCost(input, lineEnd);
 
+			if (endDifference <= DATETIMEMAXCOST)
+			{
+				TimeLogic endCheck(lineDate, lineEnd);
+				if (endCheck.getTimeFormatCheck()) {
+					pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineEnd, endDifference);
+					suggestionsList = newSuggestions.first;
+					suggestionPriority = newSuggestions.second;
+				}
+			}
+
+			if (FileEntryFormatter::getAttributeEntry("type", line) == "timed") {
+				if (checkTimedTaskEligibility(input, line)) {
+					pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, input, 0);
+					suggestionsList = newSuggestions.first;
+					suggestionPriority = newSuggestions.second;
+				}
 			}
 		}
+		
+	}
+	return suggestionsList;
+}
 
-		//cound == 0 means the wanted data is found, return it
-		if (count[count.length() - 1][count(0).length_1] == 0){
-			string lineFound = FileLogic.getLineFromPositionNumber(positionOfCurrentLine);
-			return lineFound;
+pair<vector<string>, vector<int>> SearchLogic::determinePriority(vector<string> list, vector<int> priority, string keyword, int diffCost) 
+{
+	vector<string> suggestionsList = list;
+	vector<int> priorityList = priority;
+	int size = suggestionsList.size();
+	if (suggestionsList.size() == 0) {
+		suggestionsList.push_back(keyword);
+		priorityList.push_back(diffCost);
+	}
+	else {
+		for (int i = 0; i < size; ++i) {
+			if (priorityList[i] >= diffCost) {
+				vector<string>::iterator it1;
+				it1 = suggestionsList.begin() + i;
+				suggestionsList.insert(it1, keyword);
+
+				vector<int>::iterator it2;
+				it2 = priorityList.begin() + i;
+				priorityList.insert(it2, diffCost);
+
+				if (suggestionsList.size() > SUGGESTIONS_LIMIT) {
+					suggestionsList.resize(SUGGESTIONS_LIMIT);
+				}
+				break;
+			}
 		}
 	}
-
-
+	pair<vector<string>, vector<int>> newLists(suggestionsList, priorityList);
+	return newLists;
 }
 
+bool SearchLogic::checkTimedTaskEligibility(string input, string line)
+{
+	string date = FileEntryFormatter::getAttributeEntry("date", line);
+	string start = FileEntryFormatter::getAttributeEntry("start", line);
+	string end = FileEntryFormatter::getAttributeEntry("end", line);
 
-/*
-string searchKeyWord = userInput;
-if (searchKeyWord != SpecificDate){
-TempFileToStoreSearchedResult = FileLogic.creatNewFile;
+	TimeLogic startTime(date, start);
+	TimeLogic endTime(date, start);
+	TimeLogic inputTime(date, input);
 
-for (lineNumber = 0; LineNumber < file.size(); lineNumber++){
-if (file.getAttributesFromTheLineEntry(LineNumber) == searchKeyWord){
-//add this line to TempFileToStoreSearchedResult;
+	return TimeLogic::isFirstEarlierThanSecond(startTime, inputTime) && TimeLogic::isFirstEarlierThanSecond(inputTime, endTime);
 }
-}
-cout << TempFileToStoreSearchResult;
-} */
 
+vector<string> SearchLogic::getFreeSlots(string date)
+{
+	vector<string> freeSlots;
+	TimeLogic checkDate(date, "00:00");
+	if (checkDate.getTimeFormatCheck()) {
+		vector<string> keyword;
+		keyword.push_back(date);
+		ArrangeLogic arranger(fileHandler);
+		vector<string> eventList = arranger.getListOfEventsWithKeywords(keyword).first;
+		int eventListSize = eventList.size();
+		string currTime = "00:00";
+		for (int i = 0; i < eventListSize; ++i) {
+			string line = eventList[i];
+			if (FileEntryFormatter::getAttributeEntry("type", line) == "timed") {
+				string start = FileEntryFormatter::getAttributeEntry("start", line);
+				string end = FileEntryFormatter::getAttributeEntry("end", line);
+				TimeLogic startTime(date, start);
+				TimeLogic endTime(date, end);
+				TimeLogic currentTime(date, currTime);
+				if (startTime.getTimeFormatCheck() && endTime.getTimeFormatCheck()) {
+					if (currTime != start && TimeLogic::isFirstEarlierThanSecond(currentTime, startTime)) {
+						string freeSlot = currTime + ":" + start;
+						freeSlots.push_back(freeSlot);
+						currTime = end;
+					}
+				}
+			}
+		}
+	}
+	return freeSlots;
+}

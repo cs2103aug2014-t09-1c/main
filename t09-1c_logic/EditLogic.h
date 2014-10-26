@@ -18,11 +18,11 @@ private:
 	int displayCase;
 
 	void initiateLineText();
-	void deleteLine(string date, int position);
+	void deleteLine(string date, vector<string> keywords, int position);
 	bool verifyLine();
 	void appendOldCreationDate();
 public:
-	EditLogic(string fileName, string date, int position, int displayCase);
+	EditLogic(string fileName, string date, vector<string> keywords, int position, int displayCase);
 	~EditLogic();
 	bool successfulEdit = false;
 	string oldLine;

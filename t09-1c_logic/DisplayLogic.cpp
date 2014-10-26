@@ -57,14 +57,14 @@ vector<string> DisplayLogic::putToVectorEventDatails(string line, bool includeDa
 	return eventVector;
 }
 
-vector<vector<string>> DisplayLogic::collectEventsOnDate(string date)
+vector<vector<string>> DisplayLogic::collectEventsWithKeywords(vector<string> keywords, string date)
 {
 	vector<vector<string>> toDisplay;
 	ArrangeLogic arranger(fileHandler);
-	pair<vector<string>, vector<int>> events = arranger.getListOfEventOn(date);
+	pair<vector<string>, vector<int>> events = arranger.getListOfEventsWithKeywords(keywords);
 	vector<string> eventList = events.first;
 	for (size_t i = 0; i < eventList.size(); ++i) {
-		vector<string> parsedEvent = putToVectorEventDatails(eventList[i], false, date);
+		vector<string> parsedEvent = putToVectorEventDatails(eventList[i], true, date);
 		toDisplay.push_back(parsedEvent);
 	}
 	return toDisplay;

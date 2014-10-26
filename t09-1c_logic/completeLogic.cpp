@@ -13,14 +13,14 @@ CompleteLogic::~CompleteLogic()
 {
 }
 
-void CompleteLogic::completer(string date, int fromPosition, int toPosition, bool complete)
+void CompleteLogic::completer(string date, vector<string> keywords, int fromPosition, int toPosition, bool complete)
 {
 	ArrangeLogic arranger(fileHandler);
 	pair<vector<string>, vector<int>> list;
 	switch (displayCase) {
 	case 0: list = arranger.getListOfEventsOnwardFrom(date);
 		break;
-	default: list = arranger.getListOfEventOn(date);
+	default: list = arranger.getListOfEventsWithKeywords(keywords);
 		break;
 	}
 	vector<int> positions = list.second;
@@ -41,14 +41,14 @@ void CompleteLogic::completer(string date, int fromPosition, int toPosition, boo
 	}
 }
 
-void CompleteLogic::complete(string date, int fromPosition, int toPosition)
+void CompleteLogic::complete(string date, vector<string> keywords, int fromPosition, int toPosition)
 {
 	commandType = "complete";
-	completer(date, fromPosition, toPosition, true);
+	completer(date, keywords, fromPosition, toPosition, true);
 }
 
-void CompleteLogic::uncomplete(string date, int fromPosition, int toPosition)
+void CompleteLogic::uncomplete(string date, vector<string> keywords, int fromPosition, int toPosition)
 {
 	commandType = "uncomplete";
-	completer(date, fromPosition, toPosition, false);
+	completer(date, keywords, fromPosition, toPosition, false);
 }

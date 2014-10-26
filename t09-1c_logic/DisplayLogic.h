@@ -42,7 +42,7 @@ public:
 	DisplayLogic(string fileName);
 	~DisplayLogic();
 
-	vector<vector<string>> collectEventsOnDate(string date);
+	vector<vector<string>> collectEventsWithKeywords(vector<string> keywords, string date);
 	vector<vector<string>> collectEventsFromDate(string date);
 };
 

@@ -43,7 +43,7 @@ string FileEntryFormatter::createAttributedEntry(string attribute, string entry)
 
 string FileEntryFormatter::getAttributeEntry(string attribute, string lineEntry)
 {
-	string attributeEntry;
+	string attributeEntry = "";
 	size_t attributeEntryStartAt = getAttributedEntryPosition(attribute, lineEntry);
 	
 	if (attributeEntryStartAt != string::npos) {

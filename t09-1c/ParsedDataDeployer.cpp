@@ -37,21 +37,21 @@ void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, string fileNam
 	}
 }
 
-void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, string fileName, int displayCase)
+void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, vector<string> keywords, string fileName, int displayCase)
 {
 	DeleteLogic deleter(fileName, displayCase);
-	deleter.deleteEntry(deletePackage.date, deletePackage.lineNum);
+	deleter.deleteEntry(deletePackage.date, keywords, deletePackage.lineNum);
 	if (!deleter.deletedPosition.empty()) {
 		UndoLogic::instance()->storeUndo(deleter.deletedEntry, deleter.deletedPosition);
 	}
 }
 
-void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, string fileName, int displayCase)
+void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, vector<string> keywords, string fileName, int displayCase)
 {
 	ParsedDataPackage deletePackage = editPackages[0];
 	ParsedDataPackage addPackage = editPackages[1];
 
-	EditLogic newEdit(fileName, deletePackage.date, deletePackage.lineNum, displayCase);
+	EditLogic newEdit(fileName, deletePackage.date, keywords, deletePackage.lineNum, displayCase);
 	newEdit.appendEntry("name", addPackage.name);
 	newEdit.appendEntry("date", addPackage.date);
 	newEdit.appendEntry("start", addPackage.start);
@@ -65,18 +65,11 @@ void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, str
 	}
 }
 
-void ParsedDataDeployer::executeSearch(ParsedDataPackage searchPackage, string fileName)//search for either name, date or category
+vector<string> ParsedDataDeployer::executeSearch(string searchPackage, string fileName)//search for either name, date or category
 {
-	//SearchLogic newSearch(fileName);
-	if (searchPackage.name != ""){
-		//newSearch.searchEntry(name, searchPackage.name);//havent put search logic class
-	}
-	if (searchPackage.date != ""){
-		//newSearch.searchEntry(date, searchPackage.date);
-	}
-	if (searchPackage.category != ""){
-		//newSearch.searchEntry(category, searchPackage.category);
-	}
+	SearchLogic newSearch(fileName);
+	return newSearch.createKeywords(searchPackage);
+	
 
 }
 void ParsedDataDeployer::executeUndo(string fileName)
@@ -86,10 +79,10 @@ void ParsedDataDeployer::executeUndo(string fileName)
 	}
 }
 
-void ParsedDataDeployer::executeComplete(ParsedDataPackage completePackage, string fileName, int displayCase)
+void ParsedDataDeployer::executeComplete(ParsedDataPackage completePackage, vector<string> keywords, string fileName, int displayCase)
 {
 	CompleteLogic newComplete(fileName, displayCase);
-	newComplete.complete(completePackage.date, completePackage.lineNum, completePackage.lineNum);
+	newComplete.complete(completePackage.date, keywords, completePackage.lineNum, completePackage.lineNum);
 	UndoLogic::instance()->storeUndo("complete", newComplete.fileEntryPositions);
 }
 

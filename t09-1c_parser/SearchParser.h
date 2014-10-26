@@ -38,7 +38,7 @@ public:
 	SearchParser();
 	
 	~SearchParser();
-	ParsedDataPackage parseAndReturn(string parseInput);
+	string parseAndReturn(string parseInput);
 
 	string argumentError();
 

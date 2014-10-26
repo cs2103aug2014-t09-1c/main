@@ -14,7 +14,7 @@ ArrangeLogic::~ArrangeLogic()
 {
 }
 
-pair<vector<string>, vector<int>> ArrangeLogic::getListOfEventOn(string date)
+pair<vector<string>, vector<int>> ArrangeLogic::getAllEntries()
 {
 	vector<string> lineEntry;
 	vector<int> linePosition;
@@ -27,10 +27,35 @@ pair<vector<string>, vector<int>> ArrangeLogic::getListOfEventOn(string date)
 			lineEntry.push_back(line);
 			linePosition.push_back(i);
 		}
-		else if (FileEntryFormatter::getAttributeEntry("date", line) == date) {
+		else if (FileEntryFormatter::getAttributeEntry("type", line) != "") {
 			pair<vector<string>, vector<int>> addedPair = addNonFloatEventToEntry(lineEntry, linePosition, i);
 			lineEntry = addedPair.first;
 			linePosition = addedPair.second;
+		}
+	}
+	pair<vector<string>, vector<int>> list(lineEntry, linePosition);
+	return list;
+}
+
+pair<vector<string>, vector<int>> ArrangeLogic::getListOfEventsWithKeywords(vector<string> keywords)
+{
+	vector<string> lineEntry;
+	vector<int> linePosition;
+
+	int size = fileHandler.getSize();
+
+	for (int i = 0; i < size; ++i) {
+		string line = fileHandler.getLineFromPositionNumber(i);
+		if (checkKeywordCriteria(line, keywords)) {
+			if (FileEntryFormatter::getAttributeEntry("type", line) == "float") {
+				lineEntry.push_back(line);
+				linePosition.push_back(i);
+			}
+			else if (FileEntryFormatter::getAttributeEntry("type", line) != "") {
+				pair<vector<string>, vector<int>> addedPair = addNonFloatEventToEntry(lineEntry, linePosition, i);
+				lineEntry = addedPair.first;
+				linePosition = addedPair.second;
+			}
 		}
 	}
 	pair<vector<string>, vector<int>> list(lineEntry, linePosition);
@@ -143,4 +168,53 @@ pair<vector<string>, vector<int>> ArrangeLogic::addNonFloatEventToEntry(vector<s
 	}
 	pair<vector<string>, vector<int>> list(lineEntry, linePosition);
 	return list;
+}
+
+bool ArrangeLogic::checkKeywordCriteria(string line, vector<string> keywords)
+{
+	bool isCriteriaMet = false;
+	int numKeywords = keywords.size();
+	for (int i = 0; i < numKeywords; ++i) {
+		string keyword = keywords[i];
+		bool isMatchName = FileEntryFormatter::getAttributeEntry("name", line) == keyword;
+		if (isMatchName) {
+			isCriteriaMet = true;
+			break;
+		}
+		bool isMatchCategory = FileEntryFormatter::getAttributeEntry("category", line) == keyword;
+		if (isMatchCategory) {
+			isCriteriaMet = true;
+			break;
+		}
+		string lineDate = FileEntryFormatter::getAttributeEntry("date", line);
+		TimeLogic date(lineDate, "00:00");
+		bool isMatchDate = lineDate == keyword && date.getTimeFormatCheck();
+		if (isMatchDate) {
+			isCriteriaMet = true;
+			break;
+		}
+		string lineStart = FileEntryFormatter::getAttributeEntry("start", line);
+		TimeLogic startTime(lineDate, lineStart);
+		bool isMatchStart = lineStart == keyword && startTime.getTimeFormatCheck();
+		if (isMatchStart) {
+			isCriteriaMet = true;
+			break;
+		}
+		string lineEnd = FileEntryFormatter::getAttributeEntry("end", line);
+		TimeLogic endTime(lineDate, lineEnd);
+		bool isMatchEnd = lineEnd == keyword && endTime.getTimeFormatCheck();
+		if (isMatchEnd) {
+			isCriteriaMet = true;
+			break;
+		}
+		if (FileEntryFormatter::getAttributeEntry("type", line) == "timed") {
+			TimeLogic keywordTime(lineDate, keyword);
+			if (TimeLogic::isFirstEarlierThanSecond(startTime, keywordTime) &&
+				TimeLogic::isFirstEarlierThanSecond(keywordTime, endTime)) {
+				isCriteriaMet = true;
+				break;
+			}
+		}
+	}
+	return isCriteriaMet;
 }

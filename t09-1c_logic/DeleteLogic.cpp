@@ -12,7 +12,7 @@ DeleteLogic::~DeleteLogic()
 {
 }
 
-void DeleteLogic::deleteEntry(string date, int position) 
+void DeleteLogic::deleteEntry(string date, vector<string> keywords, int position) 
 {
 	ArrangeLogic arranger(fileHandler);
 	pair<vector<string>, vector<int>> list;
@@ -20,7 +20,7 @@ void DeleteLogic::deleteEntry(string date, int position)
 		list = arranger.getListOfEventsOnwardFrom(date);
 	}
 	else {
-		list = arranger.getListOfEventOn(date);
+		list = arranger.getListOfEventsWithKeywords(keywords);
 	}
 	vector<string> lines = list.first;
 	vector<int> positions = list.second;
