@@ -171,29 +171,3 @@ void ProgramController::ConnectToDoListOutput(vector<string> vectorOutput)//inpu
 
 
 
-/*void ProgramController::ConnectToDoListOutput(int position, string newLineEntry)//input from other logic class a string lineEntry with attributes tags
-{
-if (command == "add"){
-
-}
-//else return error
-int position = dataPackage.lineNum;
-
-}*/
-/*void ProgramController::SendToLogic() //now that deployer does this instead
-{
-if (command == "add"){
-BaseClassLogic::addParsedOutput(parseOutput);
-}
-else if (command == "edit"){
-BaseClassLogic::editParsedOutput(parseOutput);
-}
-else if (command == "delete"){
-BaseClassLogic::deleteParsedOutput(parseOutput);
-}
-
-}*/
-/*void ProgramController::getOutput(string)//now that logic does this instead.
-{
-FileOutput::returnOutput();
-}*/
