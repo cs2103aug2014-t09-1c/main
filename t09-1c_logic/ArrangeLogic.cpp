@@ -188,8 +188,13 @@ bool ArrangeLogic::checkKeywordCriteria(string line, vector<string> keywords)
 		}
 		string lineDate = FileEntryFormatter::getAttributeEntry("date", line);
 		TimeLogic date(lineDate, "00:00");
+		
+		string lineEnd = FileEntryFormatter::getAttributeEntry("end", line);
+		TimeLogic endTime(lineDate, lineEnd);
+
 		bool isMatchDate = lineDate == keyword && date.getTimeFormatCheck();
-		if (isMatchDate) {
+		bool isMatchEndDate = endTime.getStringDate() == keyword && endTime.getTimeFormatCheck();
+		if (isMatchDate || isMatchEndDate) {
 			isCriteriaMet = true;
 			break;
 		}
@@ -200,9 +205,8 @@ bool ArrangeLogic::checkKeywordCriteria(string line, vector<string> keywords)
 			isCriteriaMet = true;
 			break;
 		}
-		string lineEnd = FileEntryFormatter::getAttributeEntry("end", line);
-		TimeLogic endTime(lineDate, lineEnd);
-		bool isMatchEnd = lineEnd == keyword && endTime.getTimeFormatCheck();
+
+		bool isMatchEnd = endTime.getStringTime() == keyword && endTime.getTimeFormatCheck();
 		if (isMatchEnd) {
 			isCriteriaMet = true;
 			break;
@@ -213,6 +217,14 @@ bool ArrangeLogic::checkKeywordCriteria(string line, vector<string> keywords)
 				TimeLogic::isFirstEarlierThanSecond(keywordTime, endTime)) {
 				isCriteriaMet = true;
 				break;
+			}
+			if (lineEnd.substr(5, 2) == "+1") {
+				TimeLogic keywordTimePlusOne(lineDate, keyword + "+1");
+				if (TimeLogic::isFirstEarlierThanSecond(startTime, keywordTimePlusOne) &&
+					TimeLogic::isFirstEarlierThanSecond(keywordTimePlusOne, endTime)) {
+					isCriteriaMet = true;
+					break;
+				}
 			}
 		}
 	}

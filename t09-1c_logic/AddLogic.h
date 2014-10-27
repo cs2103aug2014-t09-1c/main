@@ -20,7 +20,7 @@ private:
 
 	FileLogic fileHandler;
 	string error;
-	string errorPresent;
+
 
 
 public:
@@ -36,7 +36,7 @@ public:
 	string getErrorString();
 	bool isEntryValid();
 	void commitAdd();
-	string errorMsg;
+	bool errorPresent = true;
 };
 
 #endif

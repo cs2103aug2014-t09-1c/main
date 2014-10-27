@@ -7,6 +7,7 @@ TimeLogic::TimeLogic(string date, string time)
 {
 	stringDate = date;
 	stringTime = time;
+	checkAndCorrectPlusOne();
 	convertStringToTimeLogic(stringDate, stringTime);
 }
 
@@ -18,6 +19,45 @@ TimeLogic::~TimeLogic()
 bool TimeLogic::getTimeFormatCheck()
 {
 	return timeFormatCheck;
+}
+
+string TimeLogic::getStringDate()
+{
+	return stringDate;
+}
+
+string TimeLogic::getStringTime()
+{
+	return stringTime;
+}
+
+void TimeLogic::checkAndCorrectPlusOne()
+{
+	if (stringTime.size() == 7 && stringTime.substr(5, 2) == "+1") {
+		stringTime = stringTime.substr(0, 5);
+		stringDate = addOneDay(stringDate);
+	}
+}
+
+string TimeLogic::addOneDay(string date)
+{
+	const char* str = date.c_str();
+	int tempYear, tempMonth, tempDay;
+	sscanf(str, "%2d/%2d/%4d", &tempDay, &tempMonth, &tempYear);
+	if (isDateValid(tempDay, tempMonth, tempYear)) {
+		time_t t = time(0);
+		struct tm * now = localtime(&t);
+		now->tm_year = tempYear - 1900;
+		now->tm_mon = tempMonth - 1;
+		now->tm_mday = tempDay + 1;
+		time_t nextDay = mktime(now);
+		struct tm * newDay = localtime(&nextDay);
+		char buffer[80];
+		strftime(buffer, 80, "%d/%m/%Y", newDay);
+		string newDate = buffer;
+		return buffer;
+	}
+	return date;
 }
 
 void TimeLogic::convertStringToTimeLogic(string dateString, string timeString)

@@ -31,6 +31,10 @@ public:
 	~TimeLogic();
 	bool getTimeFormatCheck();
 	void declareTimeFormatError();
+	string getStringDate();
+	string getStringTime();
+	void checkAndCorrectPlusOne();
+	string addOneDay(string date);
 
 	//These are functions which controller and logic can access staticlly
 	static bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);

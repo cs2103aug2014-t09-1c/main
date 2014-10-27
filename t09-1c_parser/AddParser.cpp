@@ -94,11 +94,19 @@ void AddParser::extractTime(string iterArguments)
 		parsedData.start = "";
 		parsedData.end = "";
 	}
-	else if (position1 != string::npos  && time.size() == 9) {
+	else if (position1 != string::npos) {
 		string start = time.substr(0, 4);
-		string end = time.substr(5, 4);
-		if (ParserHelperFunctions::isParameterStringANumber(start) &&
-			ParserHelperFunctions::isParameterStringANumber(end)) {
+		string end = time.substr(5, time.size() - 1);
+		
+		bool isValidTimeForOneDay = time.size() == 9 &&
+			ParserHelperFunctions::isParameterStringANumber(start) &&
+			ParserHelperFunctions::isParameterStringANumber(end);
+		bool isValidTimeSpanningTwoDays = time.size() == 11 &&
+			ParserHelperFunctions::isParameterStringANumber(start) &&
+			ParserHelperFunctions::isParameterStringANumber(end.substr(0, 4)) &&
+			end.substr(4, 2) == "+1";
+
+		if (isValidTimeForOneDay || isValidTimeSpanningTwoDays) {
 			start.insert(2, ":");
 			end.insert(2, ":");
 			parsedData.start = start;

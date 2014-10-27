@@ -26,13 +26,11 @@ void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, string fileNam
 	newAdd.appendToLineEntry("start", addPackage.start);
 	newAdd.appendToLineEntry("end", addPackage.end);
 	newAdd.appendToLineEntry("category", addPackage.category);
-	if (newAdd.isEntryValid())
-	{
-		newAdd.commitAdd();
+	newAdd.commitAdd();
+	if (newAdd.errorPresent) {
 		UndoLogic::instance()->storeUndo();
 	}
-	else
-	{
+	else {
 		error = newAdd.getErrorString();
 	}
 }

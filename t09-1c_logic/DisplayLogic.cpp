@@ -2,6 +2,7 @@
 #include "DisplayLogic.h"
 #include "ArrangeLogic.h"
 #include "FileEntryFormatter.h"
+#include "TimeLogic.h"
 
 
 
@@ -36,14 +37,17 @@ vector<string> DisplayLogic::putToVectorEventDatails(string line, bool includeDa
 	}
 
 	string pos3;
-	if (FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_3B, line) != "") {
-		if (FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_3A, line) == date) {
+	TimeLogic endDate(FileEntryFormatter::getAttributeEntry("date", line),
+		FileEntryFormatter::getAttributeEntry("end", line));
+
+	if (endDate.getStringTime() != "") {
+		if (endDate.getStringDate() == date) {
 			pos3 = (includeDate ? TODAY : "")
-				+ FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_3B, line);
+				+ endDate.getStringTime();
 		}
 		else {
-			pos3 = (includeDate ? FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_3A, line) + " " : "")
-				+ FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_3B, line);
+			pos3 = (includeDate ? endDate.getStringDate() + " " : "")
+				+ endDate.getStringTime();
 		}
 	}
 	else {

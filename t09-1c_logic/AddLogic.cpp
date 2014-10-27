@@ -186,15 +186,15 @@ bool AddLogic::isEntryValid()
 			return isValid;
 		}
 		else {
-			if (type == "timed" && !isSlotFree()) {
+			/*if (type == "timed" && !isSlotFree()) {
 				setErrorString(ADD_LOGIC_NO_SLOT_ERROR);
 				//no slots: No slots are available. 
 				return isValid;
 			}
-			else {
+			else {*/
 				isValid = true;
 				return isValid;
-			}
+			//}
 		}
 	}
 }
@@ -204,5 +204,9 @@ void AddLogic::commitAdd()
 	if (isEntryValid()) {
 
 		fileHandler.appendToFile(lineEntry);
+	}
+
+	else {
+		errorPresent = false;
 	}
 }

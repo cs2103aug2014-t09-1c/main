@@ -46,25 +46,32 @@ vector<string> SearchLogic::createKeywords(string input)
 			}
 
 			string lineDate = FileEntryFormatter::getAttributeEntry("date", line);
-			int dateDifference = diffCost.findDLCost(input, lineDate);
-			if (dateDifference <= DATETIMEMAXCOST)
-			{
+			string lineEnd = FileEntryFormatter::getAttributeEntry("end", line);
+			TimeLogic endDateTime(lineDate, lineEnd);
+			string endDate = endDateTime.getStringDate();
+			
+			int lineDateDifference = diffCost.findDLCost(input, lineDate);
+			int endDateDifference = diffCost.findDLCost(input, endDate);
+
+			if (lineDateDifference <= DATETIMEMAXCOST || endDateDifference <= DATETIMEMAXCOST) {
 				TimeLogic dateCheck(lineDate, "00:00");
-				if (dateCheck.getTimeFormatCheck()) {
-					pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineDate, dateDifference);
+				if (dateCheck.getTimeFormatCheck() && endDateTime.getTimeFormatCheck()) {
+					pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineDate, lineDateDifference);
+					suggestionsList = newSuggestions.first;
+					suggestionPriority = newSuggestions.second;
+					newSuggestions = determinePriority(suggestionsList, suggestionPriority, endDate, endDateDifference);
 					suggestionsList = newSuggestions.first;
 					suggestionPriority = newSuggestions.second;
 				}
 			}
 			
-			string lineEnd = FileEntryFormatter::getAttributeEntry("end", line);
-			int endDifference = diffCost.findDLCost(input, lineEnd);
+			string endTime = endDateTime.getStringTime();
+			int endDifference = diffCost.findDLCost(input, endTime);
 
 			if (endDifference <= DATETIMEMAXCOST)
 			{
-				TimeLogic endCheck(lineDate, lineEnd);
-				if (endCheck.getTimeFormatCheck()) {
-					pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineEnd, endDifference);
+				if (endDateTime.getTimeFormatCheck()) {
+					pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, endTime, endDifference);
 					suggestionsList = newSuggestions.first;
 					suggestionPriority = newSuggestions.second;
 				}
@@ -128,6 +135,8 @@ pair<vector<string>, vector<int>> SearchLogic::determinePriority(vector<string> 
 
 bool SearchLogic::checkTimedTaskEligibility(string input, string line)
 {
+	bool isEligible;
+
 	string date = FileEntryFormatter::getAttributeEntry("date", line);
 	string start = FileEntryFormatter::getAttributeEntry("start", line);
 	string end = FileEntryFormatter::getAttributeEntry("end", line);
@@ -136,7 +145,12 @@ bool SearchLogic::checkTimedTaskEligibility(string input, string line)
 	TimeLogic endTime(date, end);
 	TimeLogic inputTime(date, input);
 
-	return TimeLogic::isFirstEarlierThanSecond(startTime, inputTime) && TimeLogic::isFirstEarlierThanSecond(inputTime, endTime);
+	isEligible = TimeLogic::isFirstEarlierThanSecond(startTime, inputTime) && TimeLogic::isFirstEarlierThanSecond(inputTime, endTime);
+	if (!isEligible && end.substr(5, 2) == "+1") {
+		TimeLogic inputTimePlusOne(date, input + "+1");
+		isEligible = TimeLogic::isFirstEarlierThanSecond(startTime, inputTimePlusOne) && TimeLogic::isFirstEarlierThanSecond(inputTimePlusOne, endTime);
+	}
+	return isEligible;
 }
 
 vector<string> SearchLogic::getFreeSlots(string date)
