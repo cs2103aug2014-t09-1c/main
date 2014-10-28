@@ -18,6 +18,7 @@ public:
 	CompleteLogic(string fileName, int displayCase);
 	~CompleteLogic();
 	
+	stack<string> originalFileEntries;
 	stack<int> fileEntryPositions;
 	string commandType;
 

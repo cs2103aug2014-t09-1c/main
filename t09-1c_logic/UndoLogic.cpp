@@ -25,7 +25,7 @@ UndoLogic* UndoLogic::instance()
 
 void UndoLogic::reset()
 {
-	_instance = new UndoLogic;
+	_instance = new UndoLogic();
 }
 
 bool UndoLogic::isUndoEmpty()
@@ -33,114 +33,180 @@ bool UndoLogic::isUndoEmpty()
 	return undoCase.empty();
 }
 
-void UndoLogic::storeUndo()
+bool UndoLogic::isRedoEmpty()
 {
+	return redoCase.empty();
+}
+
+void UndoLogic::clearRedo()
+{
+	redoLineStack = stack<stack<string>>();
+	redoFilePositionStack = stack<stack<int>>();
+	redoCase = stack<string>();
+}
+
+void UndoLogic::clearAll()
+{
+	undoLineStack = stack<stack<string>>();
+	undoFilePositionStack = stack<stack<int>>();
+	undoCase = stack<string>();
+	clearRedo();
+}
+
+void UndoLogic::checkFile(string fileName)
+{
+	if (this->fileName != fileName) {
+		this->fileName = fileName;
+		clearAll();
+	}
+}
+
+void UndoLogic::storeUndo(string fileName)
+{
+	checkFile(fileName);
+	clearRedo();
 	undoCase.push("add");
 }
 
-void UndoLogic::storeUndo(string line, int position)
+void UndoLogic::storeUndo(string fileName, string line, int position)
 {
-	undoCase.push("edit");
+	checkFile(fileName);
+	clearRedo();
+	undoCase.push("modify");
 	
 	stack<string> lineEntry;
 	lineEntry.push(line);
-	lineStack.push(lineEntry);
+	undoLineStack.push(lineEntry);
 
 	stack<int> linePosition;
 	linePosition.push(position);
-	filePositionStack.push(linePosition);
+	undoFilePositionStack.push(linePosition);
 
 }
 
-void UndoLogic::storeUndo(stack<string> lines, stack<int> filePositions)
+void UndoLogic::storeUndo(string fileName, string commandType, stack<string> lines, stack<int> filePositions)
 {
-	undoCase.push("delete");
-	lineStack.push(lines);
-	filePositionStack.push(filePositions);
-}
-
-void UndoLogic::storeUndo(string commandCase, stack<int> filePositions)
-{
-	if (commandCase == "complete" || commandCase == "uncomplete") {
-		undoCase.push(commandCase);
-		filePositionStack.push(filePositions);
+	checkFile(fileName);
+	if (commandType == "delete") {
+		clearRedo();
+		undoCase.push("delete");
+		undoLineStack.push(lines);
+		undoFilePositionStack.push(filePositions);
+	}
+	else if (commandType == "modify") {
+		clearRedo();
+		undoCase.push("modify");
+		undoLineStack.push(lines);
+		undoFilePositionStack.push(filePositions);
 	}
 }
 
 void UndoLogic::undo(string fileName)
 {
+	checkFile(fileName);
 	if (!isUndoEmpty()) {
 		string caseType = undoCase.top();
 		undoCase.pop();
+		redoCase.push(caseType);
 
 		if (caseType == "add") {
-			undoAdd(fileName);
+			add(fileName, "undo");
 		}
-		else if (caseType == "edit") {
-			undoEdit(fileName);
+		else if (caseType == "modify") {
+			modify(fileName, "undo", "modify");
 		}
 		else if (caseType == "delete") {
-			undoDelete(fileName);
-		}
-		else if (caseType == "complete") {
-			undoCompleter(fileName, "complete");
-		}
-		else if (caseType == "uncomplete") {
-			undoCompleter(fileName, "uncomplete");
+			modify(fileName, "undo", "delete");
 		}
 	}
 }
 
-void UndoLogic::undoAdd(string fileName)
+void UndoLogic::redo(string fileName)
 {
-	FileLogic fileHandler(fileName);
-	int lastLine = fileHandler.getSize() - 1;
-	fileHandler.deleteLine(lastLine);
+	checkFile(fileName);
+	if (!isRedoEmpty()) {
+		string caseType = redoCase.top();
+		redoCase.pop();
+		undoCase.push(caseType);
+
+		if (caseType == "add") {
+			add(fileName, "redo");
+		}
+		else if (caseType == "modify") {
+			modify(fileName, "redo", "modify");
+		}
+		else if (caseType == "delete") {
+			modify(fileName, "redo", "delete");
+		}
+	}
 }
 
-void UndoLogic::undoEdit(string fileName)
+void UndoLogic::add(string fileName, string action)
 {
 	FileLogic fileHandler(fileName);
-	int position = filePositionStack.top().top();
-	filePositionStack.pop();
-	string line = lineStack.top().top();
-	lineStack.pop();
-	fileHandler.deleteLine(position);
-	fileHandler.addToPositionNumber(position, line);
+	
+	if (action == "undo") {
+		int lastLine = fileHandler.getSize() - 1;
+		string line = fileHandler.getLineFromPositionNumber(lastLine);
+		stack<string> addString;
+		addString.push(line);
+		redoLineStack.push(addString);
+		fileHandler.deleteLine(lastLine);
+	}
+
+	else if (action == "redo") {
+		stack<string> lines = redoLineStack.top();
+		redoLineStack.pop();
+		string line = lines.top();
+		fileHandler.appendToFile(line);
+	}
+	
 }
 
-void UndoLogic::undoDelete(string fileName)
+void UndoLogic::modify(string fileName, string action, string commandType)
 {
+	stack<stack<string>> * fromLineStack;
+	stack<stack<int>> * fromFilePositionStack;
+	stack<stack<string>> * toLineStack;
+	stack<stack<int>> * toFilePositionStack;
+
+	if (action == "undo") {
+		fromLineStack = &undoLineStack;
+		fromFilePositionStack = &undoFilePositionStack;
+		toLineStack = &redoLineStack;
+		toFilePositionStack = &redoFilePositionStack;
+	}
+	else {
+		fromLineStack = &redoLineStack;
+		fromFilePositionStack = &redoFilePositionStack;
+		toLineStack = &undoLineStack;
+		toFilePositionStack = &undoFilePositionStack;
+	}
+
 	FileLogic fileHandler(fileName);
-	stack<string> lines = lineStack.top();
-	lineStack.pop();
-	stack<int> positions = filePositionStack.top();
-	filePositionStack.pop();
+	stack<string> lines = fromLineStack->top();
+	fromLineStack->pop();
+	stack<int> positions = fromFilePositionStack->top();
+	fromFilePositionStack->pop();
+
+	stack<string> oldLinesStore;
+	stack<int> positionsStore;
+
 	while (!lines.empty() && !positions.empty()) {
 		string line = lines.top();
 		lines.pop();
 		int position = positions.top();
 		positions.pop();
-		fileHandler.addToPositionNumber(position, line);
+		positionsStore.push(position);
+		string oldLine = fileHandler.getLineFromPositionNumber(position);
+		oldLinesStore.push(oldLine);
+		if (commandType == "modify" || (commandType == "delete" && action == "redo")) {
+			fileHandler.deleteLine(position);
+		}
+		if (commandType == "modify" || (commandType == "delete" && action == "undo")) {
+			fileHandler.addToPositionNumber(position, line);
+		}
 	}
-}
-
-void UndoLogic::undoCompleter(string fileName, string commandType)
-{
-	string undoToEntry = "no";
-	if (commandType == "uncomplete") {
-		undoToEntry = "yes";
-	}
-	
-	FileLogic fileHandler(fileName);
-	stack<int> positions = filePositionStack.top();
-	filePositionStack.pop();
-	while (!positions.empty()) {
-		int position = positions.top();
-		positions.pop();
-		string line = fileHandler.getLineFromPositionNumber(position);
-		line = FileEntryFormatter::editAttributedEntryFromLineEntry("complete", undoToEntry, line);
-		fileHandler.deleteLine(position);
-		fileHandler.addToPositionNumber(position, line);
-	}
+	toLineStack->push(oldLinesStore);
+	toFilePositionStack->push(positionsStore);
 }

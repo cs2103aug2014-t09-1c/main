@@ -30,6 +30,7 @@ void CompleteLogic::completer(string date, vector<string> keywords, int fromPosi
 		int filePosition = positions[i];
 		fileEntryPositions.push(filePosition);
 		string line = fileHandler.getLineFromPositionNumber(filePosition);
+		originalFileEntries.push(line);
 		if (complete) {
 			line = FileEntryFormatter::editAttributedEntryFromLineEntry("complete", "yes", line);
 		}

@@ -18,6 +18,7 @@ public:
 	static void executeEdit(vector<ParsedDataPackage> editPackages, vector<string> keywords, string fileName, int displayCase);
 	static vector<string> executeSearch(string searchPackage, string fileName);
 	static void executeUndo(string fileName);
+	static void executeRedo(string fileName);
 	static void executeComplete(ParsedDataPackage completePackage, vector<string> keywords, string fileName, int displayCase);
 	static string returnErrorString();
 };

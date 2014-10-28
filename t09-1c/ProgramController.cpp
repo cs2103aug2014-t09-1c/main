@@ -96,6 +96,9 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 	else if (command == "undo"){
 		ParsedDataDeployer::executeUndo(fileName);
 	}
+	else if (command == "redo"){
+		ParsedDataDeployer::executeRedo(fileName);
+	}
 	else if (command == "complete"){
 		CompleteParser completeParsing;
 		dataPackage = completeParsing.parseAndReturn(arguments);

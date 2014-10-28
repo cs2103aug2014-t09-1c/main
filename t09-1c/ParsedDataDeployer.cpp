@@ -28,7 +28,7 @@ void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, string fileNam
 	newAdd.appendToLineEntry("category", addPackage.category);
 	newAdd.commitAdd();
 	if (newAdd.errorPresent) {
-		UndoLogic::instance()->storeUndo();
+		UndoLogic::instance()->storeUndo(fileName);
 	}
 	else {
 		error = newAdd.getErrorString();
@@ -40,7 +40,7 @@ void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, vector<s
 	DeleteLogic deleter(fileName, displayCase);
 	deleter.deleteEntry(deletePackage.date, keywords, deletePackage.lineNum);
 	if (!deleter.deletedPosition.empty()) {
-		UndoLogic::instance()->storeUndo(deleter.deletedEntry, deleter.deletedPosition);
+		UndoLogic::instance()->storeUndo(fileName, "delete", deleter.deletedEntry, deleter.deletedPosition);
 	}
 }
 
@@ -59,7 +59,7 @@ void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, vec
 	newEdit.editEntry();
 
 	if (newEdit.successfulEdit) {
-		UndoLogic::instance()->storeUndo(newEdit.oldLine, newEdit.oldPosition);
+		UndoLogic::instance()->storeUndo(fileName, newEdit.oldLine, newEdit.oldPosition);
 	}
 }
 
@@ -77,11 +77,18 @@ void ParsedDataDeployer::executeUndo(string fileName)
 	}
 }
 
+void ParsedDataDeployer::executeRedo(string fileName)
+{
+	if (!UndoLogic::instance()->isRedoEmpty()) {
+		UndoLogic::instance()->redo(fileName);
+	}
+}
+
 void ParsedDataDeployer::executeComplete(ParsedDataPackage completePackage, vector<string> keywords, string fileName, int displayCase)
 {
 	CompleteLogic newComplete(fileName, displayCase);
 	newComplete.complete(completePackage.date, keywords, completePackage.lineNum, completePackage.lineNum);
-	UndoLogic::instance()->storeUndo("complete", newComplete.fileEntryPositions);
+	UndoLogic::instance()->storeUndo(fileName, "modify", newComplete.originalFileEntries, newComplete.fileEntryPositions);
 }
 
 string ParsedDataDeployer::returnErrorString()

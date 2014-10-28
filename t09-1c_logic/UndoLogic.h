@@ -10,16 +10,21 @@ class UndoLogic :
 {
 private:
 	static UndoLogic* _instance;
-	stack <stack<string>> lineStack;
-	stack <stack<int>> filePositionStack;
+	string fileName;
 
+	stack <stack<string>> undoLineStack;
+	stack <stack<int>> undoFilePositionStack;
 	stack <string> undoCase;
 
-	void undoAdd(string fileName);
-	void undoEdit(string fileName);
-	void undoDelete(string fileName);
-	void undoCompleter(string fileName, string commandType);
-	
+	stack <stack<string>> redoLineStack;
+	stack <stack<int>> redoFilePositionStack;
+	stack <string> redoCase;
+
+	void clearRedo();
+	void clearAll();
+	void checkFile(string fileName);
+	void add(string fileName, string action);
+	void modify(string fileName, string action, string commandType);
 
 protected:
 	UndoLogic();
@@ -29,17 +34,18 @@ public:
 	static UndoLogic* instance();
 	static void reset();
 	bool isUndoEmpty();
+	bool isRedoEmpty();
 
 	// add case
-	void storeUndo();
+	void storeUndo(string fileName);
 	// edit case
-	void storeUndo(string line, int position);
-	// delete case
-	void storeUndo(stack<string> lines, stack<int> filePositions);
-	//complete/unomplete case
-	void storeUndo(string commandCase, stack<int> filePositions);
+	void storeUndo(string fileName, string line, int position);
+	// delete case/complete case
+	void storeUndo(string fileName, string commandType, stack<string> lines, stack<int> filePositions);
+
 	
 	void undo(string fileName);
+	void redo(string fileName);
 };
 
 #endif
