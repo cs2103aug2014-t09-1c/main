@@ -23,7 +23,6 @@ private:
 	void clearRedo();
 	void clearAll();
 	void checkFile(string fileName);
-	void add(string fileName, string action);
 	void modify(string fileName, string action, string commandType);
 
 protected:

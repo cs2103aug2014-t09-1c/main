@@ -66,6 +66,18 @@ void UndoLogic::storeUndo(string fileName)
 	checkFile(fileName);
 	clearRedo();
 	undoCase.push("add");
+	
+	FileLogic fileHandler(fileName);
+	int position = fileHandler.getSize() - 1;
+	string line = fileHandler.getLineFromPositionNumber(position);
+	
+	stack<string> addString;
+	addString.push(line);
+	stack<int> positionStack;
+	positionStack.push(position);
+	
+	undoLineStack.push(addString);
+	undoFilePositionStack.push(positionStack);
 }
 
 void UndoLogic::storeUndo(string fileName, string line, int position)
@@ -110,7 +122,7 @@ void UndoLogic::undo(string fileName)
 		redoCase.push(caseType);
 
 		if (caseType == "add") {
-			add(fileName, "undo");
+			modify(fileName, "undo", "add");
 		}
 		else if (caseType == "modify") {
 			modify(fileName, "undo", "modify");
@@ -130,7 +142,7 @@ void UndoLogic::redo(string fileName)
 		undoCase.push(caseType);
 
 		if (caseType == "add") {
-			add(fileName, "redo");
+			modify(fileName, "redo", "add");
 		}
 		else if (caseType == "modify") {
 			modify(fileName, "redo", "modify");
@@ -139,28 +151,6 @@ void UndoLogic::redo(string fileName)
 			modify(fileName, "redo", "delete");
 		}
 	}
-}
-
-void UndoLogic::add(string fileName, string action)
-{
-	FileLogic fileHandler(fileName);
-	
-	if (action == "undo") {
-		int lastLine = fileHandler.getSize() - 1;
-		string line = fileHandler.getLineFromPositionNumber(lastLine);
-		stack<string> addString;
-		addString.push(line);
-		redoLineStack.push(addString);
-		fileHandler.deleteLine(lastLine);
-	}
-
-	else if (action == "redo") {
-		stack<string> lines = redoLineStack.top();
-		redoLineStack.pop();
-		string line = lines.top();
-		fileHandler.appendToFile(line);
-	}
-	
 }
 
 void UndoLogic::modify(string fileName, string action, string commandType)
@@ -198,12 +188,19 @@ void UndoLogic::modify(string fileName, string action, string commandType)
 		int position = positions.top();
 		positions.pop();
 		positionsStore.push(position);
-		string oldLine = fileHandler.getLineFromPositionNumber(position);
-		oldLinesStore.push(oldLine);
-		if (commandType == "modify" || (commandType == "delete" && action == "redo")) {
+		if (commandType == "modify" || 
+			(commandType == "delete" && action == "redo") ||
+			(commandType == "add" && action == "undo")) {
+			string oldLine = fileHandler.getLineFromPositionNumber(position);
+			oldLinesStore.push(oldLine);
 			fileHandler.deleteLine(position);
 		}
-		if (commandType == "modify" || (commandType == "delete" && action == "undo")) {
+		if (commandType == "modify" || 
+			(commandType == "delete" && action == "undo") ||
+			(commandType == "add" && action == "redo")) {
+			if (commandType == "delete" || commandType == "add") {
+				oldLinesStore.push(line);
+			}
 			fileHandler.addToPositionNumber(position, line);
 		}
 	}
