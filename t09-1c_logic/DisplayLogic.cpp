@@ -115,8 +115,8 @@ string DisplayLogic::formatContentsToLineEdit(int position, vector<string> keywo
 		if (end.length() == 5) {
 			end = end.substr(0, 2) + end.substr(3, 2);
 		}
-		else if (end.length() == 6) {
-			end = end.substr(0, 2) + end.substr(3, 3);
+		else if (end.length() == 7) {
+			end = end.substr(0, 2) + end.substr(3, 4);
 		}
 		string category = FileEntryFormatter::getAttributeEntry("category", line);
 
