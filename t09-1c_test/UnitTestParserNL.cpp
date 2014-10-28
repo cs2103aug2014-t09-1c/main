@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 #include "AddParser.h"
 #include "ParsedDataPackage.h"
+#include "TimeParser.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -11,120 +12,188 @@ namespace t091c_test
 	{
 	public:
 		
-		TEST_METHOD(ParserNLtest1)
+		TEST_METHOD(Event1)
+		{
+			AddParser add;
+			string event = add.extractEvent("meeting with boss on 101014 at 1700");
+			string expectedEvent = "meeting with boss";
+			Assert::AreEqual(expectedEvent, event);
+		}
+
+		TEST_METHOD(Event2)
+		{
+			AddParser add;
+			string event = add.extractEvent("meeting with boss");
+			string expectedEvent = "";
+			Assert::AreEqual(expectedEvent, event);
+		}
+
+		TEST_METHOD(Event3)
+		{
+			AddParser add;
+			string event = add.extractEvent("meeting with boss on 10101");
+			string expectedEvent = "";
+			Assert::AreEqual(expectedEvent, event);
+		}
+
+		TEST_METHOD(Event4)
+		{
+			AddParser add;
+			string event = add.extractEvent("meeting with boss on 1010124");
+			string expectedEvent = "";
+			Assert::AreEqual(expectedEvent, event);
+		}
+
+		TEST_METHOD(Event5)
+		{
+			AddParser add;
+			string event = add.extractEvent("meeting with boss on 101014 on");
+			string expectedEvent = "";
+			Assert::AreEqual(expectedEvent, event);
+		}
+
+		TEST_METHOD(Event6)
+		{
+			AddParser add;
+			string event = add.extractEvent("on 101014 at 1700");
+			string expectedEvent = "";
+			Assert::AreEqual(expectedEvent, event);
+		}
+
+		TEST_METHOD(Event7)
+		{
+			AddParser add;
+			string event = add.extractEvent("  on 101014 at 1700");
+			string expectedEvent = "";
+			Assert::AreEqual(expectedEvent, event);
+		}
+
+		TEST_METHOD(Date1)
 		{
 			AddParser add;
 			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 at 1700");
-			string expectedCategory = "";
-			string expectedTime = "17:00";
 			string expectedDate = "10/10/2014";
-			string expectedName = "meeting with boss";
-			Assert::AreEqual(expectedCategory, parsedData.category);
-			Assert::AreEqual(expectedTime, parsedData.start);
 			Assert::AreEqual(expectedDate, parsedData.date);
-			Assert::AreEqual(expectedName, parsedData.name);
 		}
 
-		TEST_METHOD(TimeTest1)
+		TEST_METHOD(Date2)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("at 1700");
-			string expectedCategory = "";
-			string expectedTime = "17:00";
+			ParsedDataPackage parsedData = add.parseNLandReturn("on 101014 at 1700");
 			string expectedDate = "";
-			string expectedName = "";
-			//Assert::AreEqual(expectedCategory, parsedData.category);
-			Assert::AreEqual(expectedTime, parsedData.end);
-			//Assert::AreEqual(expectedDate, parsedData.date);
-			//Assert::AreEqual(expectedName, parsedData.name);
-		}
-
-		TEST_METHOD(DateTest1)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("on 101014");
-			string expectedCategory = "";
-			string expectedTime = "";
-			string expectedDate = "10/10/2014";
-			string expectedName = "";
-			//Assert::AreEqual(expectedCategory, parsedData.category);
-			//Assert::AreEqual(expectedTime, parsedData.end);
 			Assert::AreEqual(expectedDate, parsedData.date);
-			//Assert::AreEqual(expectedName, parsedData.name);
 		}
 
-		TEST_METHOD(CategoryTest1)
+		TEST_METHOD(Time1)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss \"boss\"");
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 at 1700");
+			string expectedEndTime = "17:00";
+			Assert::AreEqual(expectedEndTime, parsedData.end);
+		}
+
+		TEST_METHOD(Time2a)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800");
+			string expectedStartTime = "17:00";
+			Assert::AreEqual(expectedStartTime, parsedData.start);
+		}
+
+		TEST_METHOD(Time2b)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800");
+			string expectedEndTime = "18:00";
+			Assert::AreEqual(expectedEndTime, parsedData.end);
+		}
+
+		TEST_METHOD(Time3a)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("on 101014 from 1700 to 1800");
+			string expectedStartTime = "";
+			Assert::AreEqual(expectedStartTime, parsedData.start);
+		}
+
+		TEST_METHOD(Time3b)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("on 101014 from 1700 to 1800");
+			string expectedEndTime = "";
+			Assert::AreEqual(expectedEndTime, parsedData.end);
+		}
+
+		TEST_METHOD(Time4a)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("from 1700 to 1800");
+			string expectedStartTime = "";
+			Assert::AreEqual(expectedStartTime, parsedData.start);
+		}
+
+		TEST_METHOD(Time4b)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("from 1700 to 1800");
+			string expectedEndTime = "";
+			Assert::AreEqual(expectedEndTime, parsedData.end);
+		}
+	
+		TEST_METHOD(Time5)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 at 17000");
+			string expectedEndTime = "";
+			Assert::AreEqual(expectedEndTime, parsedData.end);
+		}
+
+		TEST_METHOD(Time6a)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 17000 to 1800");
+			string expectedStartTime = "";
+			Assert::AreEqual(expectedStartTime, parsedData.start);
+		}
+
+		TEST_METHOD(Time6b)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 18000");
+			string expectedEndTime = "";
+			Assert::AreEqual(expectedEndTime, parsedData.end);
+		}
+
+		TEST_METHOD(Time7)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800+1");
+			string expectedEndTime = "18:00+1";
+			Assert::AreEqual(expectedEndTime, parsedData.end);
+		}
+
+		TEST_METHOD(Category1)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800 @boss");
 			string expectedCategory = "boss";
-			string expectedTime = "";
-			string expectedDate = "";
-			string expectedName = "";
 			Assert::AreEqual(expectedCategory, parsedData.category);
-			//Assert::AreEqual(expectedTime, parsedData.start);
-			//Assert::AreEqual(expectedDate, parsedData.date);
-			//Assert::AreEqual(expectedName, parsedData.name);
 		}
 
-		// This is a test case for float syntax partition
-		TEST_METHOD(NameTest1)
+		TEST_METHOD(Category2)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss");
-			string expectedCategory = "";
-			string expectedTime = "";
-			string expectedDate = "";
-			string expectedName = "meeting with boss";
-			//Assert::AreEqual(expectedCategory, parsedData.category);
-			//Assert::AreEqual(expectedTime, parsedData.start);
-			//Assert::AreEqual(expectedDate, parsedData.date);
-			Assert::AreEqual(expectedName, parsedData.name);
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800 @@meeting");
+			string expectedCategory = "meeting";
+			Assert::AreEqual(expectedCategory, parsedData.category);
 		}
 
-		// This is a test case for float syntax partition on keywords
-		TEST_METHOD(NameTest2)
+		TEST_METHOD(Category3)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting at NUS Starbucks");
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800 -meeting-");
 			string expectedCategory = "";
-			string expectedTime = "";
-			string expectedDate = "";
-			string expectedName = "meeting at NUS Starbucks";
-			//Assert::AreEqual(expectedCategory, parsedData.category);
-			//Assert::AreEqual(expectedTime, parsedData.start);
-			//Assert::AreEqual(expectedDate, parsedData.date);
-			Assert::AreEqual(expectedName, parsedData.name);
-		}
-
-		// This is a test case for float syntax partition on keywords
-		TEST_METHOD(NameTest3)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("Surf on 13 seas");
-			string expectedCategory = "";
-			string expectedTime = "";
-			string expectedDate = "";
-			string expectedName = "Surf on 13 seas";
-			//Assert::AreEqual(expectedCategory, parsedData.category);
-			//Assert::AreEqual(expectedTime, parsedData.start);
-			//Assert::AreEqual(expectedDate, parsedData.date);
-			Assert::AreEqual(expectedName, parsedData.name);
-		}
-
-		// This is a test case for float syntax partition on keywords
-		TEST_METHOD(NameTest4)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("from the rising sun at 10342 street on Sundays");
-			string expectedCategory = "";
-			string expectedTime = "";
-			string expectedDate = "";
-			string expectedName = "from the rising sun at 10342 street on Sundays";
-			//Assert::AreEqual(expectedCategory, parsedData.category);
-			//Assert::AreEqual(expectedTime, parsedData.start);
-			//Assert::AreEqual(expectedDate, parsedData.date);
-			Assert::AreEqual(expectedName, parsedData.name);
+			Assert::AreEqual(expectedCategory, parsedData.category);
 		}
 	};
 }
