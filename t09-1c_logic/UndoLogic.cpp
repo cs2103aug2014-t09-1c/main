@@ -189,15 +189,15 @@ void UndoLogic::modify(string fileName, string action, string commandType)
 		positions.pop();
 		positionsStore.push(position);
 		if (commandType == "modify" || 
-			(commandType == "delete" && action == "redo") ||
-			(commandType == "add" && action == "undo")) {
+		(commandType == "delete" && action == "redo") ||
+		(commandType == "add" && action == "undo")) {
 			string oldLine = fileHandler.getLineFromPositionNumber(position);
 			oldLinesStore.push(oldLine);
 			fileHandler.deleteLine(position);
 		}
 		if (commandType == "modify" || 
-			(commandType == "delete" && action == "undo") ||
-			(commandType == "add" && action == "redo")) {
+		(commandType == "delete" && action == "undo") ||
+		(commandType == "add" && action == "redo")) {
 			if (commandType == "delete" || commandType == "add") {
 				oldLinesStore.push(line);
 			}

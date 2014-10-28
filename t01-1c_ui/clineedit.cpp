@@ -13,6 +13,7 @@ CLineEdit::CLineEdit(QWidget *parent)
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     setCompleter(completer);
     connect(this, SIGNAL(returnPressed()),this, SLOT(sendToParser()));
+	connect(this, SIGNAL(toSetText(const QString&)), this, SLOT(setText(const QString&)));
 }
 
 CLineEdit::~CLineEdit()
@@ -95,4 +96,13 @@ void CLineEdit::keyPressEvent(QKeyEvent *e)
 void CLineEdit::updateCompleter(QStringList suggestions)
 {
 	c->update(suggestions);
+}
+
+void CLineEdit::updateLineText(string text, int cursorPosition)
+{
+	const QString string = QString::fromStdString(text);
+	if (cursorPosition >= 0) {
+		emit toSetText(string);
+		setCursorPosition(cursorPosition);
+	}
 }

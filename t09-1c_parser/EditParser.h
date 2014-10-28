@@ -43,6 +43,8 @@ public:
 
 	void setArguments(string input);
 	string argumentError();
+
+	static int convertToPosition(string argument);
 };
 
 #endif

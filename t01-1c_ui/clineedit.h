@@ -24,8 +24,10 @@ private slots:
 	void insertCompletion(const QString& completion);
     void sendToParser();
 	void updateCompleter(QStringList suggestions);
+	void updateLineText(string text, int cursorPosition);
 
 signals:
+	void toSetText(const QString & text);
 	void emitFeedback(QString feedback);
 	void sendText(string text);
 	void emitSuggestionSelected(string selection, string lineText);

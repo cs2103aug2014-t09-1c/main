@@ -86,3 +86,41 @@ vector<vector<string>> DisplayLogic::collectEventsFromDate(string date)
 	}
 	return toDisplay;
 }
+
+string DisplayLogic::formatContentsToLineEdit(int position, vector<string> keywords, string date, int displayCase)
+{
+	string lineAppend;
+	pair<vector<string>, vector<int>> events;
+	ArrangeLogic arranger(fileHandler);
+	if (displayCase == 0) {
+		events = arranger.getListOfEventsOnwardFrom(date);
+	}
+	else {
+		events = arranger.getListOfEventsWithKeywords(keywords);
+	}
+	vector<string> eventList = events.first;
+	int size = eventList.size();
+	if (position <= size) {
+		string line = eventList[position - 1];
+		string name = FileEntryFormatter::getAttributeEntry("name", line);
+		string date = FileEntryFormatter::getAttributeEntry("date", line);
+		if (date.length() == 10) {
+			date = date.substr(0, 2) + date.substr(3, 2) + date.substr(8, 2);
+		}
+		string start = FileEntryFormatter::getAttributeEntry("start", line);
+		if (start.length() == 5) {
+			start = start.substr(0, 2) + start.substr(3, 2);
+		}
+		string end = FileEntryFormatter::getAttributeEntry("end", line);
+		if (end.length() == 5) {
+			end = end.substr(0, 2) + end.substr(3, 2);
+		}
+		else if (end.length() == 6) {
+			end = end.substr(0, 2) + end.substr(3, 3);
+		}
+		string category = FileEntryFormatter::getAttributeEntry("category", line);
+
+		lineAppend = "[" + name + "]" + "[" + date + "]" + "[" + start + ((start != "") ? "-" : "") + end + "]" + "[" + category + "]";
+	}
+	return lineAppend;
+}

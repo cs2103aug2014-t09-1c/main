@@ -45,3 +45,13 @@ vector<ParsedDataPackage> EditParser::parseAndReturn(string parseInput)
 
 	return parsedDatas;
 }
+
+int EditParser::convertToPosition(string argument)
+{
+	int number = -1;
+	argument.erase(remove_if(argument.begin(), argument.end(), isspace), argument.end());
+	if (ParserHelperFunctions::isParameterStringANumber(argument)) {
+		number = std::stoi(argument);
+	}
+	return number;
+}

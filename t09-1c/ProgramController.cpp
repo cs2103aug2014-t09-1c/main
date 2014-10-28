@@ -165,6 +165,35 @@ vector<vector<string>> ProgramController::displayTable(string date)
 	return forTableDisplay;
 }
 
+pair<string, int> ProgramController::updateLineText(string inputText)
+{
+	string completer;
+	int position = -1;
+	if (inputText == "add") {
+		completer = "add [][][][]";
+		position = 5;
+	}
+	else {
+		CommandAndArgumentParser inputParse(inputText);
+		string command = inputParse.command;
+		string argument = inputParse.arguments;
+		if (command == "edit" && inputText.substr(inputText.length()-1, 1) == " ") {
+			int argPosition = EditParser::convertToPosition(argument);
+			if (argPosition >= 0)
+			{
+				DisplayLogic displayer(fileName);
+				string append = displayer.formatContentsToLineEdit(argPosition, searchKeywords, displayDate, displayCase);
+				completer = inputText + append;
+				if (completer != inputText) {
+					position = completer.find("[") + 1;
+				}
+			}
+		}
+	}
+	pair<string, int> toLineEdit(completer, position);
+	return toLineEdit;
+}
+
 void ProgramController::ConnectToDoListOutput(vector<string> vectorOutput)//input from other logic class a string lineEntry with attributes tags
 {
 	//send to UI e.g. >>> vectorOutput.parseFileToMemoryVector(FILENAME);

@@ -44,6 +44,7 @@ public:
 
 	vector<vector<string>> collectEventsWithKeywords(vector<string> keywords, string date);
 	vector<vector<string>> collectEventsFromDate(string date);
+	string formatContentsToLineEdit(int position, vector<string> keywords, string date, int displayCase);
 };
 
 #endif 
