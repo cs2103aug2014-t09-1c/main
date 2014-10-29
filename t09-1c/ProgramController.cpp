@@ -115,6 +115,22 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 		}
 
 	}
+	else if (command == "uncomplete"){
+		CompleteParser completeParsing;
+		dataPackage = completeParsing.parseAndReturn(arguments);
+		if (completeParsing.isInputValid())
+		{
+			//errorString = completeParsing.getErrorString();
+		}
+		else if (dataPackage.date.empty()) {
+			dataPackage.date = displayDate;
+			ParsedDataDeployer::executeUncomplete(dataPackage, searchKeywords, fileName, displayCase);
+		}
+		else {
+			ParsedDataDeployer::executeUncomplete(dataPackage, searchKeywords, fileName, displayCase);
+		}
+
+	}
 }
 
 vector<string> ProgramController::populateSuggestionBox(string input)
