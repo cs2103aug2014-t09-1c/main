@@ -165,7 +165,7 @@ string AddParser::extractEvent(string arguments)
 {
 	string event = "";
 	string dateCheck = "";
-	string keyword = "on";
+	string keyword = "on ";
 
 	size_t position1 = arguments.rfind(keyword);
 	size_t position2 = arguments.find(" ", position1 + 3, 1);
@@ -209,7 +209,7 @@ string AddParser::extractDateNL(string iterArguments)
 		return "";
 	}
 	else {
-		string keyword = "on";
+		string keyword = "on ";
 		size_t position1 = iterArguments.rfind(keyword);
 
 		date = TimeParser::formatDate(iterArguments.substr(position1 + 3, 6));
@@ -222,9 +222,9 @@ void AddParser::extractTimeNL(string iterArguments)
 {
 	string startTime = "";
 	string endTime = "";
-	string keyword1 = "at";
-	string keyword2 = "from";
-	string keyword3 = "to";
+	string keyword1 = "at ";
+	string keyword2 = "from ";
+	string keyword3 = "to ";
 	size_t position1 = iterArguments.rfind(keyword1);
 	size_t position2 = iterArguments.rfind(keyword2);
 	size_t position3 = iterArguments.rfind(keyword3);
