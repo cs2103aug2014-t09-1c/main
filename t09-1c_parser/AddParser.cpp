@@ -9,8 +9,12 @@
 // category is to be made optional. 
 // ie syntax can just be  [eventName][][][]
 
-// Natural Language Syntax: meeting with boss on 191014 at 1700 "boss"
-// Natural Language Syntax: meeting with boss on 191014 from 1700-1800 "boss"
+// Natural Language Syntax: meeting with boss on 191014 from 1700 to 1800 @boss - timed
+// Natural Language Syntax: meeting with boss on 191014 from 1700 to 1800+1 @boss - timed with next day
+// Natural Language Syntax: meeting with boss on 101014 at 1700 @boss - deadline
+// category is made optional in NL
+// **NOT IMPLEMENTED** Natural Language Syntax: meeting with boss @boss - float
+// **NOT IMPLEMENTED** Natural Language Syntax: meeting with boss - float without category 
 
 // Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
 // eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
@@ -149,93 +153,149 @@ ParsedDataPackage AddParser::parseAndReturn(string parseInput)
 
 ParsedDataPackage AddParser::parseNLandReturn(string parseInput)
 {
-	string arguments = parseInput;
+	parsedData.name = extractEvent(parseInput);
+	parsedData.date = extractDateNL(parseInput);
+	extractTimeNL(parseInput);
+	parsedData.category = extractCategory(parseInput);
+
+	return parsedData;
+}
+
+string AddParser::extractEvent(string arguments)
+{
 	string event = "";
-	string dateKeyword = "on";
-	string timeKeyword = "at";
-	string timeKeyword2 = "from";
-	string categoryKeyword = "\"";
+	string dateCheck = "";
+	string keyword = "on";
 
-	bool isDateExtracted = false;
-	bool isTimeExtracted = false;
-	bool isCategoryExtracted = false;
+	size_t position1 = arguments.rfind(keyword);
+	size_t position2 = arguments.find(" ", position1 + 3, 1);
 
-
-	// Parse Category
-	size_t found = arguments.rfind(categoryKeyword); 
-	size_t found2 = arguments.rfind(categoryKeyword, found);
-
-	if (found != string::npos && found2 != string::npos) {
-		string category = arguments.substr(found2, found - found2 + 1);
-		parsedData.category = category;
-		isCategoryExtracted = true;
-		arguments.resize(arguments.size() - found2); // Remove Category section of user's input
-	}
-	else if (found2 == string::npos) { // Only one " is found
-		setErrorString(ADD_PARSER_CATEGORY_ERROR);
+	if (position1 == string::npos || position2 == string::npos || position1 == 0) {
+		setErrorString(ADD_PARSER_ERROR);
 		setErrorTrue();
+
+		return "";		
 	}
 	else {
-		parsedData.category = "";
-	}
+		dateCheck = arguments.substr(position1 + 3, position2 - position1 - 3);
 
+		if (ParserHelperFunctions::isParameterStringANumber(dateCheck) && dateCheck.size() == 6) {
+			event = arguments.substr(0, position1 - 1);
 
-	// Parse Time
-	size_t found3 = arguments.rfind(timeKeyword); // Find last occurence of "at" which is most probably related to time
+			if ((event.find_first_not_of(' ') != string::npos)) {
+				return event;
+			}
+			else {
+				setErrorString(ADD_PARSER_NO_EVENT_ERROR);
+				setErrorTrue();
 
-	if (found3 != string::npos) {
-		string checkTime = arguments.substr(found3 + 3, 4);
+				return "";
+			}
+		}
+		else {
+			setErrorString(ADD_PARSER_ERROR);
+			setErrorTrue();
 
-		if (ParserHelperFunctions::isParameterStringANumber(checkTime)) {
-			size_t found4 = arguments.find(" ", found3 + 3, 1); // Find position of space behind time
-			string time = arguments.substr(found3 + 3, found4 - found3 + 3); // Extract any time string, 1700 or 1700-1900
-			extractTime(time);
-			isTimeExtracted = true;
-			arguments.resize(arguments.size() - found3); // Remove Time Section from user's input
+			return "";
 		}
 	}
-	
-	size_t found5 = arguments.rfind(timeKeyword2); // Find last occurence of "from" which is most probably related to time
+}
 
-	if (found5 != string::npos) {
-		if (isTimeExtracted = false) {
-			string checkTime2 = arguments.substr(found5 + 3, 4);
+string AddParser::extractDateNL(string iterArguments)
+{
+	string date = "";
 
-			if (ParserHelperFunctions::isParameterStringANumber(checkTime2)) {
-				size_t found6 = arguments.find(" ", found5 + 3, 1); // Find position of space behind time
-				string time = arguments.substr(found5 + 3, found6 - found5 + 3); // Extract any time string, 1700 or 1700-1900
-				extractTime(time);
-				isTimeExtracted = true;
-				arguments.resize(arguments.size() - found5); // Remove Time Section from users input
-			}
-		}	
+	if (parsedData.name.empty()) {
+		return "";
 	}
+	else {
+		string keyword = "on";
+		size_t position1 = iterArguments.rfind(keyword);
 
-	if (isTimeExtracted = false) {
+		date = TimeParser::formatDate(iterArguments.substr(position1 + 3, 6));
+
+		return date;
+	}
+}
+
+void AddParser::extractTimeNL(string iterArguments)
+{
+	string startTime = "";
+	string endTime = "";
+	string keyword1 = "at";
+	string keyword2 = "from";
+	string keyword3 = "to";
+	size_t position1 = iterArguments.rfind(keyword1);
+	size_t position2 = iterArguments.rfind(keyword2);
+	size_t position3 = iterArguments.rfind(keyword3);
+
+	if (parsedData.name == "" && parsedData.date == "") {
 		parsedData.start = "";
 		parsedData.end = "";
 	}
+	else if (position1 != string::npos) {
+		size_t position4 = iterArguments.find(" ", position1 + 3, 1);
+		endTime = iterArguments.substr(position1 + 3, position4 - position1 - 3);
+
+		if (ParserHelperFunctions::isParameterStringANumber(endTime) && endTime.size() == 4) {
+			endTime.insert(2, ":");
+			parsedData.end = endTime;
+		}
+		else {
+			setErrorString(ADD_PARSER_TIME_ERROR);
+			setErrorTrue();
+		}
+	}
+	else if (position2 != string::npos && position3 != string::npos) {
+		size_t position5 = iterArguments.find(" ", position2 + 5, 1);
+		startTime = iterArguments.substr(position2 + 5, position5 - position2 - 5);
 	
+		size_t position6 = iterArguments.find(" ", position3 + 3, 1);
+		endTime = iterArguments.substr(position3 + 3, position6 - position3 - 3);
 
-	// Parse Date
-	size_t found7 = arguments.rfind(dateKeyword); // Find last occurence of "on" which most probably be related to date
-	string checkDate = arguments.substr(found7 + 3, 6); // check format of string behind keyword "on"
+		bool isValidTimeForOneDay = startTime.size() == 4 && 
+			endTime.size() == 4 &&
+			ParserHelperFunctions::isParameterStringANumber(startTime) &&
+			ParserHelperFunctions::isParameterStringANumber(endTime);
+		bool isValidTimeSpanningTwoDays = startTime.size() == 4 && 
+			endTime.size() == 6 &&
+			ParserHelperFunctions::isParameterStringANumber(startTime) &&
+			ParserHelperFunctions::isParameterStringANumber(endTime.substr(0, 4)) &&
+			endTime.substr(4, 2) == "+1";
 
-	if (ParserHelperFunctions::isParameterStringANumber(checkDate)) {
-		parsedData.date = extractDate(checkDate);
-		isDateExtracted = true;
-		arguments.resize(arguments.size() - found7);
+		if (isValidTimeForOneDay || isValidTimeSpanningTwoDays) {
+			startTime.insert(2, ":");
+			endTime.insert(2, ":");
+			parsedData.start = startTime;
+			parsedData.end = endTime;
+		}
+		else {
+			setErrorString(ADD_PARSER_START_END_TIME_ERROR);
+			setErrorTrue();
+		}
 	}
 	else {
-		parsedData.date = "";
+		setErrorString(ADD_PARSER_TIME_ERROR);
+		setErrorTrue();
 	}
-	
+}
 
-	// Parse Event
-	parsedData.name = arguments; // After removing Category, Time and Date, event should be the only thing remaining
+string AddParser::extractCategory(string arguments)
+{
+	string category = "";
+	string keyword = "@";
+	size_t position1 = arguments.rfind(keyword);
 
-
-	return parsedData;
+	if (parsedData.name == "") {
+		return "";
+	}
+	else if (position1 != string::npos) {
+		category = arguments.substr(position1 + 1);
+		return category;
+	}
+	else {
+		return category;
+	}
 }
 
 void AddParser::setErrorString(string errorString)
