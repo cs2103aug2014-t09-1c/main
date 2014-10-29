@@ -49,7 +49,7 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 		{
 			ParsedDataDeployer::executeAdd(dataPackage, fileName);
 		}
-		
+
 	}
 	else if (command == "edit"){
 		EditParser editParsing;
@@ -108,12 +108,23 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 		}
 		else if (dataPackage.date.empty()) {
 			dataPackage.date = displayDate;
-			ParsedDataDeployer::executeComplete(dataPackage, searchKeywords, fileName , displayCase);
+			ParsedDataDeployer::executeComplete(dataPackage, searchKeywords, fileName, displayCase);
 		}
 		else {
 			ParsedDataDeployer::executeComplete(dataPackage, searchKeywords, fileName, displayCase);
 		}
-
+	}
+	else {
+		AddParser addParsing;
+		dataPackage = addParsing.parseNLandReturn(input);
+		if (addParsing.isInputValid())
+		{
+			errorString = addParsing.getErrorString();
+		}
+		else
+		{
+			ParsedDataDeployer::executeAdd(dataPackage, fileName);
+		}
 	}
 }
 
