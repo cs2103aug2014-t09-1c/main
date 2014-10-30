@@ -19,12 +19,13 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *e);
+	void moveToNextEntry();
 
 private slots:
 	void insertCompletion(const QString& completion);
     void sendToParser();
 	void updateCompleter(QStringList suggestions);
-	void updateLineText(string text, int cursorPosition);
+	void updateLineText(string text);
 
 signals:
 	void toSetText(const QString & text);

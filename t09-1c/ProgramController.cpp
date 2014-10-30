@@ -185,13 +185,11 @@ vector<vector<string>> ProgramController::displayTable(string date)
 	return forTableDisplay;
 }
 
-pair<string, int> ProgramController::updateLineText(string inputText)
+string ProgramController::updateLineText(string inputText)
 {
 	string completer;
-	int position = -1;
 	if (inputText == "add") {
 		completer = "add [][][][]";
-		position = 5;
 	}
 	else {
 		CommandAndArgumentParser inputParse(inputText);
@@ -204,14 +202,10 @@ pair<string, int> ProgramController::updateLineText(string inputText)
 				DisplayLogic displayer(fileName);
 				string append = displayer.formatContentsToLineEdit(argPosition, searchKeywords, displayDate, displayCase);
 				completer = inputText + append;
-				if (completer != inputText) {
-					position = completer.find("[") + 1;
-				}
 			}
 		}
 	}
-	pair<string, int> toLineEdit(completer, position);
-	return toLineEdit;
+	return completer;
 }
 
 void ProgramController::ConnectToDoListOutput(vector<string> vectorOutput)//input from other logic class a string lineEntry with attributes tags

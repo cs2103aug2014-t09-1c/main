@@ -26,7 +26,7 @@ int DL_Algorithm::findDLCost(string word, string dictWord)
 	vector<vector<int>> charTable(word.length(), vector<int>(dictWord.length()));
 
 	map<char, int> charIndexSource;
-	if (word.at(0) != dictWord.at(0)) {
+	if (tolower(word.at(0)) != tolower(dictWord.at(0))) {
 		charTable[0][0] = min(REPLACE_COST, DELETE_COST + INSERT_COST);
 	}
 	charIndexSource.insert(pair<char,int>(word.at(0), 0));
@@ -34,26 +34,26 @@ int DL_Algorithm::findDLCost(string word, string dictWord)
 	for (size_t i = 1; i < word.length(); ++i) {
 		int deleteDist = charTable[i - 1][0] + DELETE_COST;
 		int insertDist = (i + 1) * DELETE_COST + INSERT_COST;
-		int matchDist = i * DELETE_COST + (word.at(i) == dictWord.at(0) ? 0 : REPLACE_COST);
+		int matchDist = i * DELETE_COST + (tolower(word.at(i)) == tolower(dictWord.at(0)) ? 0 : REPLACE_COST);
 		charTable[i][0] = min(min(deleteDist, insertDist), matchDist);
 	}
 
 	for (size_t j = 1; j < dictWord.length(); ++j) {
 		int deleteDist = (j + 1) * INSERT_COST + DELETE_COST;
 		int insertDist = charTable[0][j - 1] + INSERT_COST;
-		int matchDist = j * INSERT_COST + (word.at(0) == dictWord.at(j) ? 0 : REPLACE_COST);
+		int matchDist = j * INSERT_COST + (tolower(word.at(0)) == tolower(dictWord.at(j)) ? 0 : REPLACE_COST);
 		charTable[0][j] = min(min(deleteDist, insertDist), matchDist);
 	}
 
 	for (size_t i = 1; i < word.length(); ++i) {
-		int sourceLetterMatchIndexMax = word.at(i) == dictWord.at(0) ? 0 : -1;
+		int sourceLetterMatchIndexMax = tolower(word.at(i)) == tolower(dictWord.at(0)) ? 0 : -1;
 		for (size_t j = 1; j < dictWord.length(); ++j) {
 			int swapCandidateIndex = charIndexSource[dictWord.at(j)];
 			int jToSwap = sourceLetterMatchIndexMax;
 			int deleteDist = charTable[i - 1][j] + DELETE_COST;
 			int insertDist = charTable[i][j - 1] + INSERT_COST;
 			int matchDistance = charTable[i - 1][j - 1];
-			if (word.at(i) != dictWord.at(j)) {
+			if (tolower(word.at(i)) != tolower(dictWord.at(j))) {
 				matchDistance += REPLACE_COST;
 			}
 			else {
@@ -78,7 +78,7 @@ int DL_Algorithm::findDLCost(string word, string dictWord)
 
 			charTable[i][j] = min(min(min(deleteDist, insertDist), matchDistance), distanceSwap);
 		}
-		charIndexSource.insert(pair<char,int>(word.at(i), i));
+		charIndexSource.insert(pair<char,int>(tolower(word.at(i)), i));
 	}
 	return charTable[word.length() - 1][dictWord.length() - 1];
 }

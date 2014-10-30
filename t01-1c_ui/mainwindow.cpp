@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->lineEdit, SIGNAL(emitFeedback(QString)), this, SLOT(sendFeedbackToController(QString)));
 	connect(ui->lineEdit, SIGNAL(emitSuggestionSelected(string, string)), this, SLOT(getSuggestionResponse(string, string)));
 	connect(this, SIGNAL(sendSuggestionContentsToCompleter(QStringList)), ui->lineEdit, SLOT(updateCompleter(QStringList)));
-	connect(this, SIGNAL(sendToLineEditAutoComplete(string, int)), ui->lineEdit, SLOT(updateLineText(string, int)));
+	connect(this, SIGNAL(sendToLineEditAutoComplete(string)), ui->lineEdit, SLOT(updateLineText(string)));
 	updateTableData();
 }
 
@@ -58,11 +58,9 @@ void MainWindow::sendFeedbackToController(QString text)
 	}
 	emit sendSuggestionContentsToCompleter(suggestions);
 	if (!isForCompleter) {
-		pair<string, int> lineEdit = control.updateLineText(inputText);
-		string newText = lineEdit.first;
-		int position = lineEdit.second;
-		if (position >= 0) {
-			emit sendToLineEditAutoComplete(newText, position);
+		string lineEdit = control.updateLineText(inputText);
+		if (!lineEdit.empty()) {
+			emit sendToLineEditAutoComplete(lineEdit);
 		}
 	}
 }

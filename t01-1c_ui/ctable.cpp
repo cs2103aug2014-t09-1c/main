@@ -28,6 +28,7 @@ CTable::CTable(QWidget *par)
     QStringList header;
     header << "Number" << "To-Do" << "Category" << "Start" << "Deadline/End" << "Complete?";
     setHorizontalHeaderLabels(header);
+	setWordWrap(true);
 }
 
 void CTable::createTableData(vector<vector<string>> listData)
@@ -38,16 +39,19 @@ void CTable::createTableData(vector<vector<string>> listData)
     int listSize = list.size();
     for (int i = 0; i < listSize; ++i) {
         insertRow(i);
-        QTableWidgetItem *num =
-                        new QTableWidgetItem(QString::number(i + 1));
+        QTableWidgetItem *num = new QTableWidgetItem(QString::number(i + 1));
 		num->setFlags(num->flags() ^ Qt::ItemIsEditable);
+		num->setTextAlignment(Qt::AlignCenter);
         setItem(i,0,num);
         for (int j = 0; j < 5; ++j) {
             QString stringGet = QString::fromStdString(list[i][j]);
-            QTableWidgetItem *item =
-                            new QTableWidgetItem(stringGet);
+            QTableWidgetItem *item = new QTableWidgetItem(stringGet);
 			item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+			if (j != 0) {
+				item->setTextAlignment(Qt::AlignCenter);
+			}
             setItem(i,j + 1, item);
+			verticalHeader()->setSectionResizeMode(i, QHeaderView::ResizeToContents);
         }
     }
    show();
