@@ -112,10 +112,16 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 		}
 		else if (dataPackage.date.empty()) {
 			dataPackage.date = displayDate;
-			ParsedDataDeployer::executeComplete(dataPackage, searchKeywords, fileName , displayCase);
+			for (int i = 0; i < completeParsing.getRepetition(); i++){
+				ParsedDataDeployer::executeComplete(dataPackage, searchKeywords, fileName, displayCase);
+				dataPackage.lineNum++;
+			}
 		}
 		else {
-			ParsedDataDeployer::executeComplete(dataPackage, searchKeywords, fileName, displayCase);
+			for (int i = 0; i < completeParsing.getRepetition(); i++){
+				ParsedDataDeployer::executeComplete(dataPackage, searchKeywords, fileName, displayCase);
+				dataPackage.lineNum++;
+			}
 		}
 
 	}
