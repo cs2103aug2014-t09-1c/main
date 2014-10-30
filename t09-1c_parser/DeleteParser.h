@@ -46,7 +46,9 @@ public:
 	void setErrorTrue();
 	bool isInputValid();
 	string getErrorString();
-	
+	void setRepetition(int numberForDeletion);
+	int getRepetition();
+	int repetition = 1;
 };
 
 #endif

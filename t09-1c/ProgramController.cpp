@@ -71,12 +71,16 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 		{
 			errorString = deleteParsing.getErrorString();
 		}
-		else if (dataPackage.date.empty()) {
-			dataPackage.date = displayDate;
-			ParsedDataDeployer::executeDelete(dataPackage, searchKeywords, fileName, displayCase);
+		else if (dataPackage.date.empty()) 
+		{	dataPackage.date = displayDate;
+			for (int i = 0; i < deleteParsing.getRepetition(); i++){
+				ParsedDataDeployer::executeDelete(dataPackage, searchKeywords, fileName, displayCase);
+			}
 		}
 		else {
-			ParsedDataDeployer::executeDelete(dataPackage, searchKeywords, fileName, displayCase);
+			for (int i = 0; i < deleteParsing.getRepetition(); i++){
+				ParsedDataDeployer::executeDelete(dataPackage, searchKeywords, fileName, displayCase);
+			}
 		}
 	}
 	else if (command == "search"){
