@@ -30,7 +30,7 @@ class DeleteParser :
 {
 private:
 	AddParser add;
-
+	int repetition = 1;
 public:
 	string excessInput;
 
@@ -48,7 +48,6 @@ public:
 	string getErrorString();
 	void setRepetition(int numberForDeletion);
 	int getRepetition();
-	int repetition = 1;
 };
 
 #endif

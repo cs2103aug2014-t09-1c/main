@@ -15,6 +15,8 @@ using namespace std;
 class CompleteParser :
 	public BaseClassParser
 {
+private:
+	int repetition = 1;
 public:
 	CompleteParser();
 	~CompleteParser();
@@ -24,7 +26,9 @@ public:
 	void setErrorString(string errorString);
 	void setErrorTrue();
 	bool isInputValid();
-
+	void setRepetition(int numberForDeletion);
+	int getRepetition();
+	
 };
 
 #endif
