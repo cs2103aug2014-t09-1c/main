@@ -61,7 +61,14 @@ void CLineEdit::insertCompletion(const QString & completion)
 
 void CLineEdit::keyPressEvent(QKeyEvent *e)
 {
-    if (c && c->popup()->isVisible()) {
+	switch (e->key())
+	{
+		case Qt::Key_Semicolon:
+			e->ignore();		
+			moveToNextEntry();
+			return;
+	}
+	if (c && c->popup()->isVisible() && c->popup()->currentIndex().row() >= 0) {
     // The following keys are forwarded by the completer to the widget
         switch (e->key())
         {
@@ -70,8 +77,8 @@ void CLineEdit::keyPressEvent(QKeyEvent *e)
             case Qt::Key_Escape:
             case Qt::Key_Tab:
             case Qt::Key_Backtab:
-            e->ignore();
-            return; // Let the completer do default behavior
+			e->ignore();
+			return;				// Let the completer do default behavior
         }
     }
 
@@ -98,11 +105,24 @@ void CLineEdit::updateCompleter(QStringList suggestions)
 	c->update(suggestions);
 }
 
-void CLineEdit::updateLineText(string text, int cursorPosition)
+void CLineEdit::updateLineText(string text)
 {
 	const QString string = QString::fromStdString(text);
-	if (cursorPosition >= 0) {
-		emit toSetText(string);
-		setCursorPosition(cursorPosition);
+	emit toSetText(string);
+	moveToNextEntry();
+}
+
+void CLineEdit::moveToNextEntry()
+{
+	QString openingType = "[";
+	QString closingType = "]";
+	int nextEntryPos = text().indexOf(openingType, cursorPosition());
+	if (nextEntryPos < 0) {
+		nextEntryPos = text().indexOf(openingType, 0);
+	}
+	if (nextEntryPos >= 0) {
+		setCursorPosition(nextEntryPos + 1);
+		int entryLength = text().indexOf(closingType, cursorPosition()) - nextEntryPos;
+		cursorForward(true, entryLength - 1);
 	}
 }

@@ -88,6 +88,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="UnitTestEditP.cpp" />
+    <ClCompile Include="UnitTestDeleteP.cpp" />
     <ClCompile Include="UnitTestParserNL.cpp" />
     <ClCompile Include="UnitTestSearch.cpp" />
     <ClCompile Include="stdafx.cpp">

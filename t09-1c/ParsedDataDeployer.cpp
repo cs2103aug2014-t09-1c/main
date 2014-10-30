@@ -91,6 +91,13 @@ void ParsedDataDeployer::executeComplete(ParsedDataPackage completePackage, vect
 	UndoLogic::instance()->storeUndo(fileName, "modify", newComplete.originalFileEntries, newComplete.fileEntryPositions);
 }
 
+void ParsedDataDeployer::executeUncomplete(ParsedDataPackage uncompletePackage, vector<string> keywords, string fileName, int displayCase)
+{
+	CompleteLogic newComplete(fileName, displayCase);
+	newComplete.uncomplete(uncompletePackage.date, keywords, uncompletePackage.lineNum, uncompletePackage.lineNum);
+	UndoLogic::instance()->storeUndo(fileName, "modify", newComplete.originalFileEntries, newComplete.fileEntryPositions);
+}
+
 string ParsedDataDeployer::returnErrorString()
 {
 	return error;

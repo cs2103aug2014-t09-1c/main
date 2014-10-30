@@ -6,6 +6,7 @@
 #include "ParsedDataPackage.h"
 #include "AddParser.h"
 #include <string>
+#include "ParserHelperFunctions.h""
 
 #define DELETE_PARSER_ERROR \
 	"Unable to Commit. Please refer to \"help\" for guide to input."
@@ -30,7 +31,7 @@ class DeleteParser :
 {
 private:
 	AddParser add;
-
+	int repetition = 1;
 public:
 	string excessInput;
 
@@ -46,7 +47,8 @@ public:
 	void setErrorTrue();
 	bool isInputValid();
 	string getErrorString();
-	
+	void setRepetition(int numberForDeletion);
+	int getRepetition();
 };
 
 #endif

@@ -20,6 +20,7 @@ public:
 	static void executeUndo(string fileName);
 	static void executeRedo(string fileName);
 	static void executeComplete(ParsedDataPackage completePackage, vector<string> keywords, string fileName, int displayCase);
+	static void executeUncomplete(ParsedDataPackage uncompletePackage, vector<string> keywords, string fileName, int displayCase);
 	static string returnErrorString();
 };
 #endif

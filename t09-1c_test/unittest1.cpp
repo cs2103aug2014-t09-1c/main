@@ -3,6 +3,7 @@
 #include "AddLogic.h"
 #include "FileEntryFormatter.h"
 #include "DL_Algorithm.h"
+#include "ProgramController.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -94,5 +95,26 @@ namespace t091c_test
 			Assert::AreEqual(check.findDLCost("190914", "19/09/2014"), 0);
 			Assert::AreEqual(check.findDLCost("170914", "19/09/2014"), 4);
 		}
+
+		TEST_METHOD(CONTROLLER_TEST)
+		{
+			ProgramController control ("trial2.txt");
+			control.executeEntry("add [hello there][][][]");
+			vector <string> out = control.populateSuggestionBox("search hello");
+			string expected = "hello there";
+			Assert::AreEqual(expected, out[0]);
+		}
+
+		TEST_METHOD(CONTROLLER2_TEST)
+		{
+			ProgramController control("trial2.txt");
+			control.executeEntry("add [hello there][151014][][]");
+			vector <string> out = control.populateSuggestionBox("search 151014");
+			string expected = "15/10/2014";
+			Assert::AreEqual(expected, out[0]);
+		}
+
+
+
 	};
 }
