@@ -6,6 +6,7 @@
 #include "ParsedDataPackage.h"
 #include "AddParser.h"
 #include <string>
+#include "ParserHelperFunctions.h""
 
 #define DELETE_PARSER_ERROR \
 	"Unable to Commit. Please refer to \"help\" for guide to input."

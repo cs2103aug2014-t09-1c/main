@@ -24,6 +24,14 @@ ParsedDataPackage CompleteParser::parseAndReturn(string parseInput)
 	{
 		string start = removedWhiteSpace.substr(0, positionHyphen);
 		string end = removedWhiteSpace.substr(positionHyphen + 1);
+		if (!ParserHelperFunctions::isParameterStringANumber(start)){
+			setErrorString(COMPLETE_PARSER_ERROR);
+			setErrorTrue();
+			return parsedData;
+		}
+		if (!ParserHelperFunctions::isParameterStringANumber(end)){
+			end = start;
+		}
 		setRepetition(stoi(end) - stoi(start) + 1);
 		parsedData.lineNum = stoi(start);
 	}

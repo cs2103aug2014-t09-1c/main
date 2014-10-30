@@ -56,6 +56,14 @@ ParsedDataPackage DeleteParser::parseAndReturn(string parseInput)
 	{
 		string start = getFirst.substr(0, positionHyphen);
 		string end = getFirst.substr(positionHyphen + 1);
+		if (!ParserHelperFunctions::isParameterStringANumber(start)){
+			setErrorString(DELETE_PARSER_LINE_NUM_ERROR);
+			setErrorTrue();
+			return parsedData;
+		}
+		if (!ParserHelperFunctions::isParameterStringANumber(end)){
+			end = start;
+		}
 		setRepetition(stoi(end) - stoi(start) + 1);
 		parsedData.lineNum = stoi(start);
 	}
