@@ -44,12 +44,20 @@ ParsedDataPackage DeleteParser::parseAndReturn(string parseInput)
 {
 	string delimiter = "[";
 	string getFirst = ParserHelperFunctions::removeWhiteSpace(parseInput.substr(0, parseInput.find(delimiter)));
-	
+	size_t positionHyphen = getFirst.find("-");//
+
 	if (ParserHelperFunctions::isParameterStringANumber(getFirst)) {
 		int lineNum = stoi(getFirst);
 		parsedData.lineNum = lineNum;
 		parseInput.erase(0, parseInput.find(delimiter));
 		excessInput = parseInput;
+	}
+	else if (positionHyphen != string::npos)
+	{
+		string start = getFirst.substr(0, positionHyphen);
+		string end = getFirst.substr(positionHyphen + 1);
+		setRepetition(stoi(end) - stoi(start) + 1);
+		parsedData.lineNum = stoi(start);
 	}
 	else {
 		parsedData.date = add.extractDate(parseInput);
@@ -79,4 +87,14 @@ bool DeleteParser::isInputValid()
 string DeleteParser::getErrorString()
 {
 	return error;
+}
+
+void DeleteParser::setRepetition(int numberForDeletion)
+{
+	repetition = numberForDeletion;
+}
+
+int DeleteParser::getRepetition()
+{
+	return repetition;
 }
