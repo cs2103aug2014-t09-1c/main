@@ -68,7 +68,7 @@ void CLineEdit::keyPressEvent(QKeyEvent *e)
 			moveToNextEntry();
 			return;
 	}
-    if (c && c->popup()->isVisible()) {
+	if (c && c->popup()->isVisible() && c->popup()->currentIndex().row() >= 0) {
     // The following keys are forwarded by the completer to the widget
         switch (e->key())
         {
@@ -77,8 +77,8 @@ void CLineEdit::keyPressEvent(QKeyEvent *e)
             case Qt::Key_Escape:
             case Qt::Key_Tab:
             case Qt::Key_Backtab:
-            e->ignore();
-            return; // Let the completer do default behavior
+			e->ignore();
+			return;				// Let the completer do default behavior
         }
     }
 
