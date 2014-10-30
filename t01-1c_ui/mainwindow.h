@@ -31,7 +31,7 @@ signals:
 	void sendTableData(vector<vector<string>> data);
 	void sendToSuggestionBox(QStringList suggestions);
 	void sendSuggestionContentsToCompleter(QStringList list);
-	void sendToLineEditAutoComplete(string text, int position);
+	void sendToLineEditAutoComplete(string text);
 };
 
 #endif // MAINWINDOW_H
