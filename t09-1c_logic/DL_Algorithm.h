@@ -13,7 +13,7 @@
 #define REPLACE_COST \
 	4
 #define SWAP_COST \
-	1
+	3
 
 #include <iostream>
 #include <algorithm>

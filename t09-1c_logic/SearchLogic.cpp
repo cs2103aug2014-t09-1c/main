@@ -19,6 +19,7 @@ SearchLogic::~SearchLogic()
 vector<string> SearchLogic::createKeywords(string input)
 {
 	DL_Algorithm diffCost;
+	transform(input.begin(), input.end(), input.begin(), ::tolower);
 
 	vector<string> suggestionsList;
 	vector<int> suggestionPriority;
@@ -31,6 +32,9 @@ vector<string> SearchLogic::createKeywords(string input)
 			int categoryDifference = diffCost.findDLCost(input, lineCategory);
 			if (categoryDifference <= NONDATETIMEMAXCOST)
 			{
+				string categoryChars = lineCategory;
+				transform(categoryChars.begin(), categoryChars.end(), categoryChars.begin(), ::tolower);
+				categoryDifference = (categoryChars.find(input) != string::npos) ? -1 : categoryDifference;
 				pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineCategory, categoryDifference);
 				suggestionsList = newSuggestions.first;
 				suggestionPriority = newSuggestions.second;
@@ -40,6 +44,9 @@ vector<string> SearchLogic::createKeywords(string input)
 			int nameDifference = diffCost.findDLCost(input, lineName);
 			if (nameDifference <= NONDATETIMEMAXCOST)
 			{
+				string nameChars = lineName;
+				transform(nameChars.begin(), nameChars.end(), nameChars.begin(), ::tolower);
+				nameDifference = (nameChars.find(input) != string::npos) ? -1 : nameDifference;
 				pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineName, nameDifference);
 				suggestionsList = newSuggestions.first;
 				suggestionPriority = newSuggestions.second;
