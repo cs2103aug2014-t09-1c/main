@@ -21,6 +21,15 @@ bool TimeLogic::getTimeFormatCheck()
 	return timeFormatCheck;
 }
 
+string TimeLogic::returnPlusOne()
+{
+	string plusOne;
+	if (isPlusOne) {
+		plusOne = "+1";
+	}
+	return plusOne;
+}
+
 string TimeLogic::getStringDate()
 {
 	return stringDate;
@@ -36,6 +45,7 @@ void TimeLogic::checkAndCorrectPlusOne()
 	if (stringTime.size() == 7 && stringTime.substr(5, 2) == "+1") {
 		stringTime = stringTime.substr(0, 5);
 		stringDate = addOneDay(stringDate);
+		isPlusOne = true;
 	}
 }
 
@@ -58,6 +68,38 @@ string TimeLogic::addOneDay(string date)
 		return buffer;
 	}
 	return date;
+}
+
+void TimeLogic::addHours(int hours, int mins)
+{
+	if (hours <= 23 && mins <= 59) {
+		string oldDate = stringDate;
+		if (getTimeFormatCheck()) {
+			time_t t = time(0);
+			struct tm * now = localtime(&t);
+			now->tm_year = year - 1900;
+			now->tm_mon = month - 1;
+			now->tm_mday = day;
+			now->tm_hour = hour + hours;
+			now->tm_min = min + mins;
+			time_t newTime = mktime(now);
+			struct tm * newTm = localtime(&newTime);
+			char newDt[80];
+			strftime(newDt, 80, "%d/%m/%Y", newTm);
+			string newDate = newDt;
+			if ((newDate != oldDate && !isPlusOne) || newDate == oldDate) {
+				if (newDate != oldDate) {
+					isPlusOne = true;
+				}
+				stringDate = newDate;
+				char newHHMM[80];
+				strftime(newHHMM, 80, "%H:%M", newTm);
+				string newTime = newHHMM;
+				stringTime = newTime;
+				convertStringToTimeLogic(stringDate, stringTime);
+			}
+		}
+	}
 }
 
 void TimeLogic::convertStringToTimeLogic(string dateString, string timeString)

@@ -33,7 +33,7 @@ public:
 	SearchLogic(string fileName);
 	~SearchLogic();
 	vector<string> createKeywords(string input);
-	vector<string> getFreeSlots(string date);
+	pair<string,string> getEarliestFreeSlot(string date, string fromTime, string toTime, int hoursToAdd, int minsToAdd);
 	
 
 };

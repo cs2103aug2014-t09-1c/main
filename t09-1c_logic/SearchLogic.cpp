@@ -160,34 +160,45 @@ bool SearchLogic::checkTimedTaskEligibility(string input, string line)
 	return isEligible;
 }
 
-vector<string> SearchLogic::getFreeSlots(string date)
+pair<string,string> SearchLogic::getEarliestFreeSlot(string date, string fromTime, string toTime, int hoursToAdd, int minsToAdd)
 {
-	vector<string> freeSlots;
-	TimeLogic checkDate(date, "00:00");
-	if (checkDate.getTimeFormatCheck()) {
-		vector<string> keyword;
-		keyword.push_back(date);
+	string start;
+	string end;
+	if (hoursToAdd <= 23 && minsToAdd <= 59) {
+		string iterTime = fromTime;
+		TimeLogic to(date, toTime);
+
+		vector<string> dateKey;
+		dateKey.push_back(date);
 		ArrangeLogic arranger(fileHandler);
-		vector<string> eventList = arranger.getListOfEventsWithKeywords(keyword).first;
-		int eventListSize = eventList.size();
-		string currTime = "00:00";
-		for (int i = 0; i < eventListSize; ++i) {
+		pair<vector<string>, vector<int>> list = arranger.getListOfEventsWithKeywords(dateKey);
+		vector<string> eventList = list.first;
+		int size = eventList.size();
+		for (int i = 0; i < size; ++i) {
 			string line = eventList[i];
 			if (FileEntryFormatter::getAttributeEntry("type", line) == "timed") {
-				string start = FileEntryFormatter::getAttributeEntry("start", line);
-				string end = FileEntryFormatter::getAttributeEntry("end", line);
-				TimeLogic startTime(date, start);
-				TimeLogic endTime(date, end);
-				TimeLogic currentTime(date, currTime);
-				if (startTime.getTimeFormatCheck() && endTime.getTimeFormatCheck()) {
-					if (currTime != start && TimeLogic::isFirstEarlierThanSecond(currentTime, startTime)) {
-						string freeSlot = currTime + ":" + start;
-						freeSlots.push_back(freeSlot);
-						currTime = end;
-					}
+				string lineDate = FileEntryFormatter::getAttributeEntry("date", line);
+				string lineStart = FileEntryFormatter::getAttributeEntry("start", line);
+				string lineEnd = FileEntryFormatter::getAttributeEntry("end", line);
+				TimeLogic lineStartTime(lineDate, lineStart);
+				TimeLogic addedTime(date, iterTime);
+				addedTime.addHours(hoursToAdd, minsToAdd);
+				if (TimeLogic::isFirstEarlierThanSecond(addedTime, to) &&
+					TimeLogic::isFirstEarlierThanSecond(addedTime, lineStartTime)) {
+					break;
+				}
+				else {
+					iterTime = lineEnd;
 				}
 			}
 		}
+		TimeLogic addedTime(date, iterTime);
+		addedTime.addHours(hoursToAdd, minsToAdd);
+		if (TimeLogic::isFirstEarlierThanSecond(addedTime, to)) {
+			start = iterTime;
+			end = addedTime.getStringTime() + addedTime.returnPlusOne();
+		}
 	}
-	return freeSlots;
+	pair<string, string> pairTime(start, end);
+	return pairTime;
 }

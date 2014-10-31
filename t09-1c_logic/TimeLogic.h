@@ -15,6 +15,8 @@ class TimeLogic
 {
 private:
 	bool timeFormatCheck = true;
+	bool isPlusOne = false;
+
 	string stringDate;
 	string stringTime;
 	
@@ -30,11 +32,13 @@ public:
 	TimeLogic(string date, string time); //time should be in "dd/mm/yyyy" & "HH:MM" format. NO EXCEPTIONS.
 	~TimeLogic();
 	bool getTimeFormatCheck();
+	string returnPlusOne();
 	void declareTimeFormatError();
 	string getStringDate();
 	string getStringTime();
 	void checkAndCorrectPlusOne();
 	string addOneDay(string date);
+	void addHours(int hours, int mins);
 
 	//These are functions which controller and logic can access staticlly
 	static bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
