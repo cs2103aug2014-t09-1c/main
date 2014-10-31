@@ -3,7 +3,6 @@
 #include "AddParser.h"
 #include "ParsedDataPackage.h"
 #include "TimeParser.h"
-#include "ProgramController.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -195,14 +194,6 @@ namespace t091c_test
 			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800 -meeting-");
 			string expectedCategory = "";
 			Assert::AreEqual(expectedCategory, parsedData.category);
-		}
-
-		TEST_METHOD(IntergrationTest1)
-		{
-			ProgramController controller("hello2.txt");
-			controller.executeEntry("watch a midnight movie on 031214 from 1700 to 1800");
-			controller.executeEntry("search watch a midnight movie");
-			string expectedArgument = "111014";
 		}
 	};
 }
