@@ -37,6 +37,10 @@ BaseClassLogic::BaseClassLogic(vector<string> testVector, string date, vector<st
 	isTestMode = true;
 }
 
+BaseClassLogic::~BaseClassLogic()
+{
+}
+
 void BaseClassLogic::toLog(string log)
 {
 	FileLogic logger("log.txt");
@@ -396,7 +400,7 @@ void BaseClassLogic::execute(map<string, int> fromToPositions, int executionCase
 	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
 }
 
-void BaseClassLogic::execute(int position, map<string, string> lineEntries)
+void BaseClassLogic::execute(map<string, int> position, map<string, string> lineEntries)
 {
 	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
 }

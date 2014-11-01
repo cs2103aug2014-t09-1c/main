@@ -76,16 +76,17 @@ void EditLogic::checkPosValidity(int position, int size)
 
 void EditLogic::editEntries(map<string, string> lineEntries)
 {
-	editAttributedEntryFromLineEntry(NAME_ATTRIBUTE, lineEntries[NAME_ATTRIBUTE], lineEntry);
-	editAttributedEntryFromLineEntry(DATE_ATTRIBUTE, lineEntries[DATE_ATTRIBUTE], lineEntry);
-	editAttributedEntryFromLineEntry(START_ATTRIBUTE, lineEntries[START_ATTRIBUTE], lineEntry);
-	editAttributedEntryFromLineEntry(END_ATTRIBUTE, lineEntries[END_ATTRIBUTE], lineEntry);
-	editAttributedEntryFromLineEntry(CATEGORY_ATTRIBUTE, lineEntries[CATEGORY_ATTRIBUTE], lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(NAME_ATTRIBUTE, lineEntries[NAME_ATTRIBUTE], lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(DATE_ATTRIBUTE, lineEntries[DATE_ATTRIBUTE], lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(START_ATTRIBUTE, lineEntries[START_ATTRIBUTE], lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, lineEntries[END_ATTRIBUTE], lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(CATEGORY_ATTRIBUTE, lineEntries[CATEGORY_ATTRIBUTE], lineEntry);
 }
 
-void EditLogic::execute(int position, map<string, string> lineEntries)
+void EditLogic::execute(map<string, int> position, map<string, string> lineEntries)
 {
-	int pos = position - 1;
+	int intPos = position[FROM_POSITION];
+	int pos = intPos - 1;
 	vector<int> positions = getSortedLinePositions();
 	int size = positions.size();
 	try {

@@ -28,7 +28,7 @@ public:
 	~DisplayLogic();
 
 	vector<vector<string>> displayEvents();
-	string formatContentsToLineEdit(int position, vector<string> keywords, string date, int displayCase);
+	string formatContentsToLineEdit(int position);
 };
 
 #endif 

@@ -9,8 +9,9 @@
 
 string ParsedDataDeployer::error = "";
 
-ParsedDataDeployer::ParsedDataDeployer()
+ParsedDataDeployer::ParsedDataDeployer(string fileName)
 {
+	this->fileName = fileName;
 }
 
 
@@ -18,84 +19,89 @@ ParsedDataDeployer::~ParsedDataDeployer()
 {
 }
 
-void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage, string fileName)
+void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage)
 {
-	AddLogic newAdd(fileName);
-	newAdd.appendToLineEntry("name", addPackage.name);
-	newAdd.appendToLineEntry("date", addPackage.date);	
-	newAdd.appendToLineEntry("start", addPackage.start);
-	newAdd.appendToLineEntry("end", addPackage.end);
-	newAdd.appendToLineEntry("category", addPackage.category);
-	newAdd.commitAdd();
-	if (newAdd.errorPresent) {
+	try {
+		AddLogic newAdd(fileName);
+		BaseClassLogic * add = &newAdd;
+		add->execute(addPackage.getLineEntries());
 		UndoLogic::instance()->storeUndo(fileName);
 	}
-	else {
-		error = newAdd.getErrorString();
+	catch (const exception& ex){
+	
 	}
 }
 
-void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, vector<string> keywords, string fileName, int displayCase)
+void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, string date, vector<string> keywords, int displayCase)
 {
-	DeleteLogic deleter(fileName, displayCase);
-	deleter.deleteEntry(deletePackage.date, keywords, deletePackage.lineNum);
-	if (!deleter.deletedPosition.empty()) {
-		UndoLogic::instance()->storeUndo(fileName, "delete", deleter.deletedEntry, deleter.deletedPosition);
+	try {
+		DeleteLogic newDelete(fileName, date, keywords, displayCase);
+		BaseClassLogic * deleter = &newDelete;
+		deleter->execute(deletePackage.getStartEndPositions());
+		UndoLogic::instance()->storeUndo(fileName, "delete", deleter->getLinesForUndo(), deleter->getPosForUndo());
+	}
+	catch (const exception& ex){
+
 	}
 }
 
-void ParsedDataDeployer::executeEdit(vector<ParsedDataPackage> editPackages, vector<string> keywords, string fileName, int displayCase)
+void ParsedDataDeployer::executeEdit(ParsedDataPackage editPackage, string date , vector<string> keywords, int displayCase)
 {
-	ParsedDataPackage deletePackage = editPackages[0];
-	ParsedDataPackage addPackage = editPackages[1];
+	try {
+	EditLogic newEdit(fileName, date, keywords, displayCase);
+	BaseClassLogic * edit = &newEdit;
+	edit->execute(editPackage.getStartEndPositions(), editPackage.getLineEntries());
+	UndoLogic::instance()->storeUndo(fileName, "modify", edit->getLinesForUndo(), edit->getPosForUndo());
+	}
+	catch (const exception& ex){
 
-	EditLogic newEdit(fileName, deletePackage.date, keywords, deletePackage.lineNum, displayCase);
-	newEdit.appendEntry("name", addPackage.name);
-	newEdit.appendEntry("date", addPackage.date);
-	newEdit.appendEntry("start", addPackage.start);
-	newEdit.appendEntry("end", addPackage.end);
-	newEdit.appendEntry("category", addPackage.category);
-
-	newEdit.editEntry();
-
-	if (newEdit.successfulEdit) {
-		UndoLogic::instance()->storeUndo(fileName, newEdit.oldLine, newEdit.oldPosition);
 	}
 }
 
-vector<string> ParsedDataDeployer::executeSearch(string searchPackage, string fileName)//search for either name, date or category
+vector<string> ParsedDataDeployer::executeSearch(string searchPackage)//search for either name, date or category
 {
 	SearchLogic newSearch(fileName);
 	return newSearch.createKeywords(searchPackage);
-	
-
 }
-void ParsedDataDeployer::executeUndo(string fileName)
+
+void ParsedDataDeployer::executeUndo()
 {
 	if (!UndoLogic::instance()->isUndoEmpty()) {
 		UndoLogic::instance()->undo(fileName);
 	}
 }
 
-void ParsedDataDeployer::executeRedo(string fileName)
+void ParsedDataDeployer::executeRedo()
 {
 	if (!UndoLogic::instance()->isRedoEmpty()) {
 		UndoLogic::instance()->redo(fileName);
 	}
 }
 
-void ParsedDataDeployer::executeComplete(ParsedDataPackage completePackage, vector<string> keywords, string fileName, int displayCase)
+void ParsedDataDeployer::executeComplete(ParsedDataPackage completePackage, string date, vector<string> keywords, int displayCase)
 {
-	CompleteLogic newComplete(fileName, displayCase);
-	newComplete.complete(completePackage.date, keywords, completePackage.lineNum, completePackage.lineNum);
-	UndoLogic::instance()->storeUndo(fileName, "modify", newComplete.originalFileEntries, newComplete.fileEntryPositions);
+	try {
+		CompleteLogic newComplete(fileName, date, keywords, displayCase);
+		BaseClassLogic * completer = &newComplete;
+		completer->execute(completePackage.getStartEndPositions(), 1);
+		UndoLogic::instance()->storeUndo(fileName, "modify", completer->getLinesForUndo(), completer->getPosForUndo());
+	}
+	catch (const exception& ex){
+
+	}
 }
 
-void ParsedDataDeployer::executeUncomplete(ParsedDataPackage uncompletePackage, vector<string> keywords, string fileName, int displayCase)
+void ParsedDataDeployer::executeUncomplete(ParsedDataPackage uncompletePackage, string date, vector<string> keywords, int displayCase)
 {
-	CompleteLogic newComplete(fileName, displayCase);
-	newComplete.uncomplete(uncompletePackage.date, keywords, uncompletePackage.lineNum, uncompletePackage.lineNum);
-	UndoLogic::instance()->storeUndo(fileName, "modify", newComplete.originalFileEntries, newComplete.fileEntryPositions);
+	try {
+		CompleteLogic newComplete(fileName, date, keywords, displayCase);
+		BaseClassLogic * completer = &newComplete;
+		completer->execute(uncompletePackage.getStartEndPositions(), 0);
+		UndoLogic::instance()->storeUndo(fileName, "modify", completer->getLinesForUndo(), completer->getPosForUndo());
+	}
+	catch (const exception& ex){
+
+	}
 }
 
 string ParsedDataDeployer::returnErrorString()

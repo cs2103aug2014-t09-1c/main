@@ -28,7 +28,7 @@ public:
 	EditLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
 	~EditLogic();
 
-	void execute(int position, map<string, string> lineEntries);
+	void execute(map<string, int> position, map<string, string> lineEntries);
 	
 	string getLineEntry();
 };

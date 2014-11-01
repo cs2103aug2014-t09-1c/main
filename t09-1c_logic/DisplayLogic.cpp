@@ -70,10 +70,10 @@ vector<vector<string>> DisplayLogic::displayEvents()
 	return toDisplay;
 }
 
-string DisplayLogic::formatContentsToLineEdit(int position, vector<string> keywords, string date, int displayCase)
+string DisplayLogic::formatContentsToLineEdit(int position)
 {
 	string lineAppend;
-	vector<string> eventList = getEntriesVector();
+	vector<string> eventList = getSortedLineEntries();
 	int size = eventList.size();
 	if (position <= size) {
 		string line = eventList[position - 1];

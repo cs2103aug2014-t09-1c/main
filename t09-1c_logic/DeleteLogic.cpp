@@ -14,6 +14,10 @@ DeleteLogic::DeleteLogic(vector<string> testVector, string date, vector<string> 
 {
 }
 
+DeleteLogic::~DeleteLogic()
+{
+}
+
 void DeleteLogic::checkFromToValidity(int fromPosition, int toPosition, int size)
 {
 	if (fromPosition >= size || fromPosition < 0 || toPosition >= size || toPosition < 0) {
