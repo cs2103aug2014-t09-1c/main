@@ -4,7 +4,6 @@
 
 #include "BaseClassParser.h"
 #include "ParsedDataPackage.h"
-#include <string>
 
 #define ADD_PARSER_ERROR \
 	"Unable to Commit. Please enter the correct format."
@@ -18,8 +17,6 @@
 	"Please enter a valid HHMM-HHMM start-end time format!"
 #define ADD_PARSER_TIME_ERROR \
 	"Please enter a valid time format!"
-
-using namespace std;
 
 // Syntax: [eventName][date][start-end][category] - timed
 // Syntax: [eventName][date][deadline][category] - deadline
@@ -42,20 +39,16 @@ class AddParser :
 	public BaseClassParser
 {
 private:
-	ParsedDataPackage parsedData;
-	string error;
+	string extractLeadingBracketContent(string arguments);
+	string nextArguments(string arguments);
+	string extractDate(string arguments);
+	void extractTime(string arguments);
+
 public:
 	AddParser();
 	~AddParser();
 	ParsedDataPackage parseAndReturn(string parseInput);
 	ParsedDataPackage parseNLandReturn(string parseInput); // parse Natural Language and Return
-
-	string argumentError();
-
-	string extractLeadingBracketContent(string arguments);
-	string nextArguments(string arguments);
-	string extractDate(string arguments);
-	void extractTime(string arguments);
 
 	// Natural Language Parsing
 	string extractEvent(string arguments);
@@ -63,10 +56,6 @@ public:
 	void extractTimeNL(string arguments);
 	string extractCategory(string arguments);
 
-	void setErrorString(string errorString);
-	void setErrorTrue();
-	bool isInputValid();
-	string getErrorString();
 };
 
 #endif

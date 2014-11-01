@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "CompleteParser.h"
-#include "ParserHelperFunctions.h"
 
-CompleteParser::CompleteParser()
+CompleteParser::CompleteParser() : BaseClassParser()
 {
 }
 
@@ -13,29 +12,32 @@ CompleteParser::~CompleteParser()
 
 ParsedDataPackage CompleteParser::parseAndReturn(string parseInput)
 {
-	string removedWhiteSpace = ParserHelperFunctions::removeWhiteSpace(parseInput);
-	if (ParserHelperFunctions::isParameterStringANumber(removedWhiteSpace)) {
-		parsedData.lineNum = stoi(removedWhiteSpace);
+	string removedWhiteSpace = removeWhiteSpace(parseInput);
+	string toLowerCase = toLowerCaseString(parseInput);
+	string delimeter = DELIMETER;
+	if (toLowerCase.find(delimeter) != string::npos) {
+		string firstNum = toLowerCase.substr(0, toLowerCase.find(delimeter));
+		if (isParameterStringANumber(firstNum)) {
+			insertAttribute(FROM_POSITION,stoi(firstNum));
+		}
+		else{
+			throw runtime_error(COMPLETE_PARSER_ERROR);
+		}
+		string secondNum = firstNum;
+		secondNum.erase(0, toLowerCase.find(delimeter));
+		if (isParameterStringANumber(secondNum)) {
+			insertAttribute(TO_POSITION, stoi(firstNum));
+		}
+		else{
+			throw runtime_error(COMPLETE_PARSER_ERROR);
+		}
+	}
+	if (isParameterStringANumber(removedWhiteSpace)) {
+		insertAttribute(FROM_POSITION, stoi(removedWhiteSpace));
+		insertAttribute(TO_POSITION, stoi(removedWhiteSpace));
 		return parsedData;
 	}
 	else {
-		setErrorString(COMPLETE_PARSER_ERROR);
-		setErrorTrue();
-		return parsedData;
+		throw runtime_error(COMPLETE_PARSER_ERROR);
 	}
-}
-
-void CompleteParser::setErrorString(string errorString)
-{
-	error = errorString;
-}
-
-void CompleteParser::setErrorTrue()
-{
-	errorPresent = true;
-}
-
-bool CompleteParser::isInputValid()
-{
-	return errorPresent;
 }

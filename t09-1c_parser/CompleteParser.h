@@ -6,7 +6,10 @@
 #include "ParsedDataPackage.h"
 
 #define COMPLETE_PARSER_ERROR \
-	"Please enter the line number of the task you wish to mark as completed!"
+	"Please enter valid <from> and <to> line numbers"
+
+#define DELIMETER \
+	"to"
 
 using namespace std;
 
@@ -22,10 +25,6 @@ public:
 	~CompleteParser();
 
 	ParsedDataPackage parseAndReturn(string parseInput);
-
-	void setErrorString(string errorString);
-	void setErrorTrue();
-	bool isInputValid();
 	
 };
 

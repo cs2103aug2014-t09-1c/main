@@ -18,6 +18,8 @@ private:
 	static int determineDaysToAdd(string day, bool isNextPresent);
 	static string printDate(struct tm* date);
 	static int determineDayIndex(string day);
+	static string toLowerCaseString(string input);
+	static int findMatchingStringIndex(string str, vector<string> lst);
 
 protected:
 
