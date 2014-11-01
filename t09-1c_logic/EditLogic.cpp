@@ -1,70 +1,108 @@
 #include "stdafx.h"
 #include "EditLogic.h"
-#include "FileEntryFormatter.h"
 
-
-
-EditLogic::EditLogic(string fileName, string date, vector<string> keywords, int position, int displayCase)
+EditLogic::EditLogic(string fileName, string date, vector<string> keywords, int displayCase) try : BaseClassLogic(fileName, date, keywords, displayCase)
 {
-	this->displayCase = displayCase;
-	this->fileName = fileName;
-	initiateLineText();
-	deleteLine(date, keywords, position);
-
 }
 
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+EditLogic::EditLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase) : BaseClassLogic(testVector, date, keywords, displayCase)
+{
+}
 
 EditLogic::~EditLogic()
 {
 }
 
-void EditLogic::initiateLineText() 
+void EditLogic::redetermineType()
 {
-	string creationDate = FileEntryFormatter::createAttributedEntry("CreationDate", TimeLogic::getTimeNowInString());
-	lineText = FileEntryFormatter::addAttributedEntryToLineEntry(creationDate, lineText);
-}
+	bool isNameEmpty = getAttributeEntry(NAME_ATTRIBUTE, lineEntry) == "";
+	bool isDateEmpty = getAttributeEntry(DATE_ATTRIBUTE, lineEntry) == "";
+	bool isStartTimeEmpty = getAttributeEntry(START_ATTRIBUTE, lineEntry) == "";
+	bool isEndTimeEmpty = getAttributeEntry(END_ATTRIBUTE, lineEntry) == "";
 
-void EditLogic::deleteLine(string date, vector<string> keywords, int position)
-{
-	DeleteLogic deleter(fileName, displayCase);
-	deleter.deleteEntry(date, keywords, position);
-	oldLine = deleter.deletedEntry.top();
-	oldPosition = deleter.deletedPosition.top();
-}
-
-void EditLogic::appendEntry(string attribute, string entry)
-{
-	string newEntry = FileEntryFormatter::createAttributedEntry(attribute, entry);
-	lineText = FileEntryFormatter::addAttributedEntryToLineEntry(newEntry, lineText);
-}
-
-bool EditLogic::verifyLine()
-{
-	AddLogic addFunction(fileName);
-	addFunction.setLineEntry(lineText);
-	if (addFunction.isEntryValid()) {
-		lineText = addFunction.getLineEntry();
-		return true;
+	if (isStartTimeEmpty) {
+		if (isEndTimeEmpty) {
+			if (isDateEmpty) {
+				if (isNameEmpty) {
+				}
+				else {
+					editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "float", lineEntry);
+				}
+			}
+			else {
+				lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, "23:59", lineEntry);
+				editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "deadline", lineEntry);
+			}
+		}
+		else {
+			editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "deadline", lineEntry);
+		}
 	}
 	else {
-		return false;
+		editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "timed", lineEntry);
 	}
-}
-void EditLogic::appendOldCreationDate() 
-{
-	string oldDate = FileEntryFormatter::getAttributeEntry("CreationDate", oldLine);
-	lineText = FileEntryFormatter::editAttributedEntryFromLineEntry("CreationDate", oldDate, lineText);
 }
 
-void EditLogic::editEntry()
+void EditLogic::resetCompletion()
 {
-	FileLogic fileHandler(fileName);
-	if (verifyLine() && oldPosition > -1) {
-		appendOldCreationDate();
-		fileHandler.addToPositionNumber(oldPosition, lineText);
-		successfulEdit = true;
+	editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, "no", lineEntry);
+}
+
+void EditLogic::editValidChecks()
+{
+	if (!isDateAndTimeCorrect(lineEntry)) {
+		throw runtime_error(EDIT_LOGIC_TIME_DATE_ERROR);
 	}
 	else {
-		fileHandler.addToPositionNumber(oldPosition, oldLine);
+		redetermineType();
+		string type = getAttributeEntry(TYPE_ATTRIBUTE, lineEntry);
+		if (type == "") {
+			throw runtime_error(EDIT_LOGIC_MISSING_ERROR);
+		}
+	}
+}
+
+void EditLogic::checkPosValidity(int position, int size)
+{
+	if (position >= size || position < 0) {
+		throw runtime_error(EDIT_SLOT_EXCESS_ERROR);
+	}
+}
+
+void EditLogic::editEntries(map<string, string> lineEntries)
+{
+	editAttributedEntryFromLineEntry(NAME_ATTRIBUTE, lineEntries[NAME_ATTRIBUTE], lineEntry);
+	editAttributedEntryFromLineEntry(DATE_ATTRIBUTE, lineEntries[DATE_ATTRIBUTE], lineEntry);
+	editAttributedEntryFromLineEntry(START_ATTRIBUTE, lineEntries[START_ATTRIBUTE], lineEntry);
+	editAttributedEntryFromLineEntry(END_ATTRIBUTE, lineEntries[END_ATTRIBUTE], lineEntry);
+	editAttributedEntryFromLineEntry(CATEGORY_ATTRIBUTE, lineEntries[CATEGORY_ATTRIBUTE], lineEntry);
+}
+
+void EditLogic::execute(int position, map<string, string> lineEntries)
+{
+	int pos = position - 1;
+	vector<int> positions = getSortedLinePositions();
+	int size = positions.size();
+	try {
+		checkPosValidity(pos, size);
+		int filePosition = positions[pos];
+		oldLinePosforUndo.push(filePosition);
+		lineEntry = getLineFromPositionNumber(filePosition);
+		OldLineEntriesForUndo.push(lineEntry);
+		editEntries(lineEntries);
+		resetCompletion();
+		editValidChecks();
+		editLine(filePosition, lineEntry);
+		if (isTestMode) {
+			updateSortedEntries();
+		}
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
 	}
 }

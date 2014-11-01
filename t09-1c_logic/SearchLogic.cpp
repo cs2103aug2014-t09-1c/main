@@ -1,16 +1,20 @@
 #include "stdafx.h"
 #include "SearchLogic.h"
-#include "ArrangeLogic.h"
-#include "FileEntryFormatter.h"
-#include "FileLogic.h"
-#include "TimeLogic.h"
 #include "DL_Algorithm.h"
 
 
-SearchLogic::SearchLogic(string fileName) : fileHandler(fileName)
+SearchLogic::SearchLogic(string fileName) try : BaseClassLogic(fileName)
 {
 }
 
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+SearchLogic::SearchLogic(vector<string> testVector) : BaseClassLogic(testVector)
+{
+}
 
 SearchLogic::~SearchLogic()
 {
@@ -21,91 +25,71 @@ vector<string> SearchLogic::createKeywords(string input)
 	DL_Algorithm diffCost;
 	transform(input.begin(), input.end(), input.begin(), ::tolower);
 
-	vector<string> suggestionsList;
-	vector<int> suggestionPriority;
 	if (input.length() >= MIMUMUM_LENGTH) {
-		int numberOfEvents = fileHandler.getSize();
+		int numberOfEvents = getEntriesSize();
 		for (int i = 0; i < numberOfEvents; ++i) {
-			string line = fileHandler.getLineFromPositionNumber(i);
-			
-			string lineCategory = FileEntryFormatter::getAttributeEntry("category", line);
+			string line = getLineFromPositionNumber(i);
+			string lineCategory = getAttributeEntry(CATEGORY_ATTRIBUTE, line);
 			int categoryDifference = diffCost.findDLCost(input, lineCategory);
-			if (categoryDifference <= NONDATETIMEMAXCOST)
-			{
+			if (categoryDifference <= NONDATETIMEMAXCOST) {
 				string categoryChars = lineCategory;
 				transform(categoryChars.begin(), categoryChars.end(), categoryChars.begin(), ::tolower);
 				categoryDifference = (categoryChars.find(input) != string::npos) ? -1 : categoryDifference;
-				pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineCategory, categoryDifference);
-				suggestionsList = newSuggestions.first;
-				suggestionPriority = newSuggestions.second;
+				determinePriority(lineCategory, categoryDifference);
 			}
 
-			string lineName = FileEntryFormatter::getAttributeEntry("name", line);
+			string lineName = getAttributeEntry(NAME_ATTRIBUTE, line);
 			int nameDifference = diffCost.findDLCost(input, lineName);
-			if (nameDifference <= NONDATETIMEMAXCOST)
-			{
+			if (nameDifference <= NONDATETIMEMAXCOST) {
 				string nameChars = lineName;
 				transform(nameChars.begin(), nameChars.end(), nameChars.begin(), ::tolower);
 				nameDifference = (nameChars.find(input) != string::npos) ? -1 : nameDifference;
-				pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineName, nameDifference);
-				suggestionsList = newSuggestions.first;
-				suggestionPriority = newSuggestions.second;
+				determinePriority(lineName, nameDifference);
 			}
 
-			string lineDate = FileEntryFormatter::getAttributeEntry("date", line);
-			string lineEnd = FileEntryFormatter::getAttributeEntry("end", line);
-			TimeLogic endDateTime(lineDate, lineEnd);
-			string endDate = endDateTime.getStringDate();
+			string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+			string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
+			TimeLogic endDateTime = createTimeLogic(lineDate, lineEnd);
+			string endDate = getStringDate(endDateTime);
 			
 			int lineDateDifference = diffCost.findDLCost(input, lineDate);
 			int endDateDifference = diffCost.findDLCost(input, endDate);
 
 			if (lineDateDifference <= DATETIMEMAXCOST || endDateDifference <= DATETIMEMAXCOST) {
-				TimeLogic dateCheck(lineDate, "00:00");
-				if (dateCheck.getTimeFormatCheck() && endDateTime.getTimeFormatCheck()) {
-					pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, lineDate, lineDateDifference);
-					suggestionsList = newSuggestions.first;
-					suggestionPriority = newSuggestions.second;
-					newSuggestions = determinePriority(suggestionsList, suggestionPriority, endDate, endDateDifference);
-					suggestionsList = newSuggestions.first;
-					suggestionPriority = newSuggestions.second;
+				TimeLogic dateCheck = createTimeLogic(lineDate, "00:00");
+				if (getTimeFormatCheck(dateCheck) && getTimeFormatCheck(dateCheck)) {
+					determinePriority(lineDate, lineDateDifference);
+					determinePriority(endDate, endDateDifference);
 				}
 			}
-			
-			string endTime = endDateTime.getStringTime();
+			string endTime = getStringTime(endDateTime);
 			int endDifference = diffCost.findDLCost(input, endTime);
 
 			if (endDifference <= DATETIMEMAXCOST)
 			{
 				if (endDateTime.getTimeFormatCheck()) {
-					pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, endTime, endDifference);
-					suggestionsList = newSuggestions.first;
-					suggestionPriority = newSuggestions.second;
+					determinePriority(endTime, endDifference);
 				}
 			}
 
-			if (FileEntryFormatter::getAttributeEntry("type", line) == "timed") {
+			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == "timed") {
 				if (checkTimedTaskEligibility(input, line)) {
-					pair<vector<string>, vector<int>> newSuggestions = determinePriority(suggestionsList, suggestionPriority, input, 0);
-					suggestionsList = newSuggestions.first;
-					suggestionPriority = newSuggestions.second;
+					determinePriority(input, 0);
 				}
 			}
 		}
 		
 	}
-	return suggestionsList;
+	return keywords;
 }
 
-pair<vector<string>, vector<int>> SearchLogic::determinePriority(vector<string> list, vector<int> priority, string keyword, int diffCost) 
+void SearchLogic::determinePriority(string keyword, int diffCost) 
 {
-	vector<string> suggestionsList = list;
-	vector<int> priorityList = priority;
-	int size = suggestionsList.size();
+	int size = keywords.size();
 
 	bool isCopy = false;
 	for (int i = 0; i < size; ++i) {
-		string suggestion = suggestionsList[i];
+		string suggestion = keywords[i];
 		if (keyword == suggestion) {
 			isCopy = true;
 			break;
@@ -113,49 +97,47 @@ pair<vector<string>, vector<int>> SearchLogic::determinePriority(vector<string> 
 	}
 
 	if (!isCopy) {
-		if (suggestionsList.size() == 0) {
-			suggestionsList.push_back(keyword);
-			priorityList.push_back(diffCost);
+		if (keywords.size() == 0) {
+			keywords.push_back(keyword);
+			keywordPriority.push_back(diffCost);
 		}
 		else {
 			for (int i = 0; i < size; ++i) {
-				if (priorityList[i] >= diffCost) {
+				if (keywordPriority[i] >= diffCost) {
 					vector<string>::iterator it1;
-					it1 = suggestionsList.begin() + i;
-					suggestionsList.insert(it1, keyword);
+					it1 = keywords.begin() + i;
+					keywords.insert(it1, keyword);
 
 					vector<int>::iterator it2;
-					it2 = priorityList.begin() + i;
-					priorityList.insert(it2, diffCost);
+					it2 = keywordPriority.begin() + i;
+					keywordPriority.insert(it2, diffCost);
 
-					if (suggestionsList.size() > SUGGESTIONS_LIMIT) {
-						suggestionsList.resize(SUGGESTIONS_LIMIT);
+					if (keywords.size() > SUGGESTIONS_LIMIT) {
+						keywords.resize(SUGGESTIONS_LIMIT);
 					}
 					break;
 				}
 			}
 		}
 	}
-	pair<vector<string>, vector<int>> newLists(suggestionsList, priorityList);
-	return newLists;
 }
 
 bool SearchLogic::checkTimedTaskEligibility(string input, string line)
 {
 	bool isEligible;
 
-	string date = FileEntryFormatter::getAttributeEntry("date", line);
-	string start = FileEntryFormatter::getAttributeEntry("start", line);
-	string end = FileEntryFormatter::getAttributeEntry("end", line);
+	string date = getAttributeEntry(DATE_ATTRIBUTE, line);
+	string start = getAttributeEntry(START_ATTRIBUTE, line);
+	string end = getAttributeEntry(END_ATTRIBUTE, line);
 
-	TimeLogic startTime(date, start);
-	TimeLogic endTime(date, end);
-	TimeLogic inputTime(date, input);
+	TimeLogic startTime = createTimeLogic(date, start);
+	TimeLogic endTime = createTimeLogic(date, end);
+	TimeLogic inputTime = createTimeLogic(date, input);
 
-	isEligible = TimeLogic::isFirstEarlierThanSecond(startTime, inputTime) && TimeLogic::isFirstEarlierThanSecond(inputTime, endTime);
+	isEligible = isFirstEarlierThanSecond(startTime, inputTime) && isFirstEarlierThanSecond(inputTime, endTime);
 	if (!isEligible && end.substr(5, 2) == "+1") {
-		TimeLogic inputTimePlusOne(date, input + "+1");
-		isEligible = TimeLogic::isFirstEarlierThanSecond(startTime, inputTimePlusOne) && TimeLogic::isFirstEarlierThanSecond(inputTimePlusOne, endTime);
+		TimeLogic inputTimePlusOne = createTimeLogic(date, input + "+1");
+		isEligible = isFirstEarlierThanSecond(startTime, inputTimePlusOne) && isFirstEarlierThanSecond(inputTimePlusOne, endTime);
 	}
 	return isEligible;
 }
@@ -170,21 +152,19 @@ pair<string,string> SearchLogic::getEarliestFreeSlot(string date, string fromTim
 
 		vector<string> dateKey;
 		dateKey.push_back(date);
-		ArrangeLogic arranger(fileHandler);
-		pair<vector<string>, vector<int>> list = arranger.getListOfEventsWithKeywords(dateKey);
-		vector<string> eventList = list.first;
+		getListOfEventsHaving(dateKey);
+		vector<string> eventList = getSortedLineEntries();
 		int size = eventList.size();
 		for (int i = 0; i < size; ++i) {
 			string line = eventList[i];
-			if (FileEntryFormatter::getAttributeEntry("type", line) == "timed") {
-				string lineDate = FileEntryFormatter::getAttributeEntry("date", line);
-				string lineStart = FileEntryFormatter::getAttributeEntry("start", line);
-				string lineEnd = FileEntryFormatter::getAttributeEntry("end", line);
-				TimeLogic lineStartTime(lineDate, lineStart);
-				TimeLogic addedTime(date, iterTime);
-				addedTime.addHours(hoursToAdd, minsToAdd);
-				if (TimeLogic::isFirstEarlierThanSecond(addedTime, to) &&
-					TimeLogic::isFirstEarlierThanSecond(addedTime, lineStartTime)) {
+			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == "timed") {
+				string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+				string lineStart = getAttributeEntry(START_ATTRIBUTE, line);
+				string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
+				TimeLogic lineStartTime = createTimeLogic(lineDate, lineStart);
+				TimeLogic addedTime = createTimeLogic(date, iterTime);
+				addedTime = addHours(addedTime, hoursToAdd, minsToAdd);
+				if (isFirstEarlierThanSecond(addedTime, to) && isFirstEarlierThanSecond(addedTime, lineStartTime)) {
 					break;
 				}
 				else {
@@ -192,11 +172,11 @@ pair<string,string> SearchLogic::getEarliestFreeSlot(string date, string fromTim
 				}
 			}
 		}
-		TimeLogic addedTime(date, iterTime);
-		addedTime.addHours(hoursToAdd, minsToAdd);
-		if (TimeLogic::isFirstEarlierThanSecond(addedTime, to)) {
+		TimeLogic addedTime = createTimeLogic(date, iterTime);
+		addedTime = addHours(addedTime, hoursToAdd, minsToAdd);
+		if (isFirstEarlierThanSecond(addedTime, to)) {
 			start = iterTime;
-			end = addedTime.getStringTime() + addedTime.returnPlusOne();
+			end = getStringTime(addedTime) + returnPlusOne(addedTime);
 		}
 	}
 	pair<string, string> pairTime(start, end);

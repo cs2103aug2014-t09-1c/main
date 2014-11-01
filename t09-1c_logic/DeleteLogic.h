@@ -3,25 +3,22 @@
 #define DELETE_LOGIC
 
 #include "BaseClassLogic.h"
-#include "ArrangeLogic.h"
-#include <stack>
 
+#define SLOT_IN_EXCESS \
+	"Chosen number(s) out of bounds"
 
 class DeleteLogic :
 	public BaseClassLogic
 {
 private:
-	FileLogic fileHandler;
-	int displayCase;
+	void checkFromToValidity(int fromPosition, int toPosition, int size);
 
 public:
-	DeleteLogic(string fileName, int displayCase);
+	DeleteLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	DeleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
 	~DeleteLogic();
 
-	stack<string> deletedEntry;
-	stack<int> deletedPosition;
-
-	void deleteEntry(string date, vector<string> keywords, int position);
+	void execute(map<string, int> fromToPositions);
 };
 
 #endif

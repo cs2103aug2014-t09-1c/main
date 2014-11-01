@@ -1,30 +1,29 @@
 #pragma once
+#ifndef COMPLETE_LOGIC
+#define COMPLETE_LOGIC
+
 #include "BaseClassLogic.h"
-#include "ArrangeLogic.h"
-#include "FileLogic.h"
-#include <stack>
+
+#define SLOT_IN_EXCESS \
+	"Chosen number(s) out of bounds"
 
 class CompleteLogic :
 	public BaseClassLogic
 {
 
 private:
-	FileLogic fileHandler;
-	int displayCase;
-
-	void completer(string date, vector<string> keywords, int fromPosition, int toPosition, bool complete);
+	void editCompletion(int fromPosition, int toPosition, bool complete);
+	void checkFromToValidity(int fromPosition, int toPosition, int size);
 
 public:
-	CompleteLogic(string fileName, int displayCase);
+	CompleteLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	CompleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
 	~CompleteLogic();
+
+	void execute(map<string, int> fromToPositions, int executionCase);
 	
-	stack<string> originalFileEntries;
-	stack<int> fileEntryPositions;
-	string commandType;
-
-	void complete(string date, vector<string> keywords, int fromPosition, int toPosition);
-	void uncomplete(string date, vector<string> keywords, int fromPosition, int toPosition);
-
+	stack<string> getLinesForUndo();
+	stack<int> getPosForUndo();
 
 };
-
+#endif

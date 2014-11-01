@@ -1,16 +1,18 @@
 #include "stdafx.h"
 #include "AddLogic.h"
-#include "FileEntryFormatter.h"
-#include <string>
-#include <iostream>
 
-
-AddLogic::AddLogic(string fileName) : fileHandler(fileName)
+AddLogic::AddLogic(string fileName) try : BaseClassLogic(fileName)
 {
-	string creationDate = FileEntryFormatter::createAttributedEntry("CreationDate", TimeLogic::getTimeNowInString());
-	lineEntry = FileEntryFormatter::addAttributedEntryToLineEntry(creationDate, lineEntry);
 }
 
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+AddLogic::AddLogic(vector<string> testVector) : BaseClassLogic(testVector)
+{
+}
 
 AddLogic::~AddLogic()
 {
@@ -21,23 +23,18 @@ string AddLogic::getLineEntry()
 	return lineEntry;
 }
 
-void AddLogic::setLineEntry(string newLineEntry)
-{
-	lineEntry = newLineEntry;
-}
-
 void AddLogic::appendToLineEntry(string attribute, string entry)
 {
-	string attributedEntry = FileEntryFormatter::createAttributedEntry(attribute, entry);
-	lineEntry = FileEntryFormatter::addAttributedEntryToLineEntry(attributedEntry, lineEntry);
+	string attributedEntry = createAttributedEntry(attribute, entry);
+	lineEntry = addAttributedEntryToLineEntry(attributedEntry, lineEntry);
 }
 
 void AddLogic::determineType()
 {
-	bool isNameEmpty = FileEntryFormatter::getAttributeEntry("name", lineEntry) == "";
-	bool isDateEmpty = FileEntryFormatter::getAttributeEntry("date", lineEntry) == "";
-	bool isStartTimeEmpty = FileEntryFormatter::getAttributeEntry("start", lineEntry) == "";
-	bool isEndTimeEmpty = FileEntryFormatter::getAttributeEntry("end", lineEntry) == "";
+	bool isNameEmpty = getAttributeEntry(NAME_ATTRIBUTE, lineEntry) == "";
+	bool isDateEmpty = getAttributeEntry(DATE_ATTRIBUTE, lineEntry) == "";
+	bool isStartTimeEmpty = getAttributeEntry(START_ATTRIBUTE, lineEntry) == "";
+	bool isEndTimeEmpty = getAttributeEntry(END_ATTRIBUTE, lineEntry) == "";
 	
 	if (isStartTimeEmpty) {
 		if (isEndTimeEmpty) {
@@ -45,168 +42,60 @@ void AddLogic::determineType()
 				if (isNameEmpty) {
 				}
 				else {
-					appendToLineEntry("type", "float");
+					appendToLineEntry(TYPE_ATTRIBUTE, "float");
 				}
 			}
 			else {
-				lineEntry = FileEntryFormatter::editAttributedEntryFromLineEntry("end", "23:59", lineEntry);
-				appendToLineEntry("type", "deadline");
+				lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, "23:59", lineEntry);
+				appendToLineEntry(TYPE_ATTRIBUTE, "deadline");
 			}
 		}
 		else {
-			appendToLineEntry("type", "deadline");
+			appendToLineEntry(TYPE_ATTRIBUTE, "deadline");
 		}
 	}
 	else {
-		appendToLineEntry("type", "timed");
-	}
-	appendToLineEntry("complete", "no");
-}
-
-bool AddLogic::isDateAndTimeCorrect()
-{
-	string date = FileEntryFormatter::getAttributeEntry("date", lineEntry);
-	string startTime = FileEntryFormatter::getAttributeEntry("start", lineEntry);
-	string endTime = FileEntryFormatter::getAttributeEntry("end", lineEntry);
-
-	if (startTime.empty()) {
-		if (endTime.empty()) {
-			if (date.empty()) {
-				return true;
-			}
-			else {
-				TimeLogic check(date, "23:59");
-				return check.getTimeFormatCheck();
-			}
-		}
-		else {
-			TimeLogic check(date, endTime);
-			return check.getTimeFormatCheck();
-		}
-	}
-	else {
-		TimeLogic checkStart(date, startTime);
-		TimeLogic checkEnd(date, endTime);
-		
-		return (checkStart.getTimeFormatCheck() && checkEnd.getTimeFormatCheck()
-			&& TimeLogic::isFirstEarlierThanSecond(checkStart,checkEnd) &&
-			startTime != endTime);
+		appendToLineEntry(TYPE_ATTRIBUTE, "timed");
 	}
 }
 
-bool AddLogic::isSlotFree() {
-	bool slotFree = true;
-	string startTime = FileEntryFormatter::getAttributeEntry("start", lineEntry);
-	string endTime = FileEntryFormatter::getAttributeEntry("end", lineEntry);
-	string date = FileEntryFormatter::getAttributeEntry("date", lineEntry);
-	
-	if (startTime != "" && endTime != "" && date != "") {
-		TimeLogic start(date, startTime);
-		TimeLogic end(date, endTime);
-		int size = fileHandler.getSize();
-		
-		for (int i = 0; i < size; ++i) {
-			string line = fileHandler.getLineFromPositionNumber(i);
-			
-			if (FileEntryFormatter::getAttributeEntry("type", line) == "timed") {
-				string start2 = FileEntryFormatter::getAttributeEntry("start", line);
-				string end2 = FileEntryFormatter::getAttributeEntry("end", line);
-				string date2 = FileEntryFormatter::getAttributeEntry("date", line);
-				TimeLogic startTime2(date2, start2);
-				TimeLogic endTime2(date2, end2);
-				
-				if (startTime2.getTimeFormatCheck() && endTime2.getTimeFormatCheck()) {
-					if (date == date2 && startTime == start2 && endTime == end2) {
-						slotFree = false;
-						break;
-					}
-
-					if (startTime != start2 && startTime != end2) {
-						if (TimeLogic::isFirstEarlierThanSecond(startTime2, start) &&
-							TimeLogic::isFirstEarlierThanSecond(start, endTime2)) {
-							slotFree = false;
-							break;
-						}
-					}
-
-					if (endTime != start2 && endTime != end2) {
-						if (TimeLogic::isFirstEarlierThanSecond(startTime2, end) &&
-							TimeLogic::isFirstEarlierThanSecond(end, endTime2)) {
-							slotFree = false;
-							break;
-						}
-					}
-					
-					if (endTime != start2 && startTime != start2) {
-						if (TimeLogic::isFirstEarlierThanSecond(start, startTime2) &&
-							TimeLogic::isFirstEarlierThanSecond(startTime2, end)) {
-							slotFree = false;
-							break;
-						}
-					}
-
-					if (endTime != end2 && startTime != end2) {
-						if (TimeLogic::isFirstEarlierThanSecond(start, endTime2) &&
-							TimeLogic::isFirstEarlierThanSecond(endTime2, end)) {
-							slotFree = false;
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
-	return slotFree;
+void AddLogic::addCompleteEntry()
+{
+	appendToLineEntry(COMPLETE_ATTRIBUTE, "no");
 }
 
-void AddLogic::setErrorString(string errorString)
+void AddLogic::validChecks() 
 {
-	error = errorString;
-}
-
-string AddLogic::getErrorString()
-{
-	return error;
-}
-
-bool AddLogic::isEntryValid() 
-{
-	bool isValid = false;
-	if (!isDateAndTimeCorrect()) {
-		setErrorString(ADD_LOGIC_TIME_DATE_ERROR);
-		//Time error: Invalid date and time. 
-		return isValid;
+	if (!isDateAndTimeCorrect(lineEntry)) {
+		throw runtime_error(ADD_LOGIC_TIME_DATE_ERROR);
 	}
 	else {
 		determineType();
-		string type = FileEntryFormatter::getAttributeEntry("type", lineEntry);
+		string type = getAttributeEntry(TYPE_ATTRIBUTE, lineEntry);
 		if (type == "") {
-			setErrorString(ADD_LOGIC_MISSING_ERROR);
-			//format error: No event detected. 
-			return isValid;
-		}
-		else {
-			/*if (type == "timed" && !isSlotFree()) {
-				setErrorString(ADD_LOGIC_NO_SLOT_ERROR);
-				//no slots: No slots are available. 
-				return isValid;
-			}
-			else {*/
-				isValid = true;
-				return isValid;
-			//}
+			throw runtime_error(ADD_LOGIC_MISSING_ERROR);
 		}
 	}
 }
 
-void AddLogic::commitAdd()
+void AddLogic::execute(map<string,string> lineEntries)
 {
-	if (isEntryValid()) {
+	appendToLineEntry(CREATION_ATTRIBUTE, getTimeNowInString());
+	appendToLineEntry(NAME_ATTRIBUTE, lineEntries[NAME_ATTRIBUTE]);
+	appendToLineEntry(DATE_ATTRIBUTE, lineEntries[DATE_ATTRIBUTE]);
+	appendToLineEntry(START_ATTRIBUTE, lineEntries[START_ATTRIBUTE]);
+	appendToLineEntry(END_ATTRIBUTE, lineEntries[END_ATTRIBUTE]);
+	appendToLineEntry(CATEGORY_ATTRIBUTE, lineEntries[CATEGORY_ATTRIBUTE]);
+	addCompleteEntry();
 
-		fileHandler.appendToFile(lineEntry);
+	try{
+		validChecks();
+		appendToFile(lineEntry);
+		if (isTestMode) {
+			updateSortedEntries();
+		}
 	}
-
-	else {
-		errorPresent = false;
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
 	}
 }

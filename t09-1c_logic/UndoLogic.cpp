@@ -1,8 +1,5 @@
 #include "stdafx.h"
 #include "UndoLogic.h"
-#include <stack>
-#include "FileLogic.h"
-#include "FileEntryFormatter.h"
 
 UndoLogic* UndoLogic::_instance = 0;
 

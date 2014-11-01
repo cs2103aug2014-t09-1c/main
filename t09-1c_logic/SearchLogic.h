@@ -3,9 +3,6 @@
 #define SEARCH_LOGIC
 
 #include "BaseClassLogic.h"
-#include <string>
-#include <iostream>
-#include <vector>
 
 #define SUGGESTIONS_LIMIT \
 	20
@@ -21,16 +18,17 @@ class SearchLogic :
 {
 
 private:
-
-	FileLogic fileHandler;
+	vector<string> keywords;
+	vector<int> keywordPriority;
 
 	int getSimilarityMatch(string keyword, string type, string entry);
 	bool checkTimedTaskEligibility(string input, string line);
-	pair<vector<string>, vector<int>> determinePriority(vector<string> list, vector<int> priority, string keyword, int diffCost);
+	void determinePriority(string keyword, int diffCost);
 
 public:
 	
 	SearchLogic(string fileName);
+	SearchLogic(vector<string> testVector);
 	~SearchLogic();
 	vector<string> createKeywords(string input);
 	pair<string,string> getEarliestFreeSlot(string date, string fromTime, string toTime, int hoursToAdd, int minsToAdd);

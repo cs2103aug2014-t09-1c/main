@@ -43,7 +43,7 @@
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\t09-1c_parser;$(SolutionDir)\t09-1c_output;$(SolutionDir)\t09-1c_logic;$(SolutionDir)\t09-1c_fileAccess;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\t09-1c_parser;$(SolutionDir)\t09-1c_output;$(SolutionDir)\t09-1c_logic;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\t09-1c_parser;$(SolutionDir)\t09-1c_output;$(SolutionDir)\t09-1c_logic;$(SolutionDir)\t09-1c_fileAccess;</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -67,6 +67,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -97,9 +98,6 @@
   <ItemGroup>
     <ProjectReference Include="..\t09-1c_logic\t09-1c_logic.vcxproj">
       <Project>{d1287356-60fb-4240-a50d-516ecbcb9d4e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\t09-1c_output\t09-1c_output.vcxproj">
-      <Project>{817c9e26-b8cf-4855-bd9f-101c045ae20a}</Project>
     </ProjectReference>
     <ProjectReference Include="..\t09-1c_parser\t09-1c_parser.vcxproj">
       <Project>{a8403f36-1f55-4b00-a938-b7dab4caf6d4}</Project>

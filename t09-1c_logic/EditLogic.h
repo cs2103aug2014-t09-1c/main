@@ -3,33 +3,34 @@
 #define EDIT_LOGIC
 
 #include "BaseClassLogic.h"
-#include "ArrangeLogic.h"
-#include "AddLogic.h"
-#include "DeleteLogic.h"
+
+#define EDIT_LOGIC_TIME_DATE_ERROR \
+	"Edit Failed. Please enter a valid DDMMYY date and HHMM time!"
+#define EDIT_LOGIC_MISSING_ERROR \
+	"Edit Failed. Please enter at least a name, a date, a start time or an end time!"
+#define EDIT_SLOT_EXCESS_ERROR \
+	"Edit Failed. Selected number is out of bounds."
 
 class EditLogic :
 	public BaseClassLogic
 {
 private:
-	string fileName;
+	string lineEntry;
 
-	string lineText;
+	void redetermineType();
+	void resetCompletion();
+	void editValidChecks();
+	void checkPosValidity(int position, int size);
+	void editEntries(map<string, string> lineEntries);
 
-	int displayCase;
-
-	void initiateLineText();
-	void deleteLine(string date, vector<string> keywords, int position);
-	bool verifyLine();
-	void appendOldCreationDate();
 public:
-	EditLogic(string fileName, string date, vector<string> keywords, int position, int displayCase);
+	EditLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	EditLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
 	~EditLogic();
-	bool successfulEdit = false;
-	string oldLine;
-	int oldPosition;
+
+	void execute(int position, map<string, string> lineEntries);
 	
-	void appendEntry(string attriibute, string entry);
-	void editEntry();
+	string getLineEntry();
 };
 
 #endif

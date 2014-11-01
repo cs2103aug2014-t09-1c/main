@@ -2,11 +2,10 @@
 #ifndef UNDO_LOGIC
 #define UNDO_LOGIC
 
-#include "BaseClassLogic.h"
 #include "stack"
+#include "FileLogic.h"
 
-class UndoLogic :
-	public BaseClassLogic
+class UndoLogic
 {
 private:
 	static UndoLogic* _instance;

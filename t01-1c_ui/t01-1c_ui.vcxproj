@@ -303,6 +303,15 @@
     <ProjectReference Include="..\t09-1c\t09-1c.vcxproj">
       <Project>{7a58e25a-aa11-4516-ad00-504f7786a783}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\t09-1c_fileAccess\t09-1c_fileAccess.vcxproj">
+      <Project>{0422fb22-bd84-4276-8724-8b7b2d461972}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\t09-1c_logic\t09-1c_logic.vcxproj">
+      <Project>{d1287356-60fb-4240-a50d-516ecbcb9d4e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\t09-1c_parser\t09-1c_parser.vcxproj">
+      <Project>{a8403f36-1f55-4b00-a938-b7dab4caf6d4}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

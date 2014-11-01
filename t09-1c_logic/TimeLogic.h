@@ -19,6 +19,7 @@ private:
 
 	string stringDate;
 	string stringTime;
+	int year, month, day, hour, min;
 	
 	//Set-Up TimeLogic Functions
 	void convertStringToTimeLogic(string dateString, string timeString);
@@ -26,18 +27,16 @@ private:
 	void convertAndInsertTime(string time);
 	bool isDateValid(int day, int mon, int year);
 	bool isTimeValid(int hour, int min);
+	void checkAndCorrectPlusOne();
+	string addOneDay(string date);
 
 public:
-	int year, month, day, hour, min;
 	TimeLogic(string date, string time); //time should be in "dd/mm/yyyy" & "HH:MM" format. NO EXCEPTIONS.
 	~TimeLogic();
 	bool getTimeFormatCheck();
 	string returnPlusOne();
-	void declareTimeFormatError();
 	string getStringDate();
 	string getStringTime();
-	void checkAndCorrectPlusOne();
-	string addOneDay(string date);
 	void addHours(int hours, int mins);
 
 	//These are functions which controller and logic can access staticlly
