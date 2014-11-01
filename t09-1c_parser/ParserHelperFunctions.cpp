@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ParserHelperFunctions.h"
+#include <unordered_set>
 
 
 ParserHelperFunctions::ParserHelperFunctions()
@@ -49,4 +50,19 @@ string ParserHelperFunctions::removeWhiteSpace(string parameter)
 {
 	parameter.erase(remove(parameter.begin(), parameter.end(), ' '), parameter.end());
 	return parameter;
+}
+
+bool ParserHelperFunctions::isDayValid(string day)
+{
+	unordered_set<string> set = { "mon", "tues", "wed", "thurs", "fri",
+		"monday", "tuesday", "wednesday", "thursday", "friday" };
+
+	unordered_set<string>::const_iterator got = set.find(day);
+
+	if (got == set.end()) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }

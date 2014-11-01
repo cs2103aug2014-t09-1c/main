@@ -179,7 +179,8 @@ string AddParser::extractEvent(string arguments)
 	else {
 		dateCheck = arguments.substr(position1 + 3, position2 - position1 - 3);
 
-		if (ParserHelperFunctions::isParameterStringANumber(dateCheck) && dateCheck.size() == 6) {
+		if ((ParserHelperFunctions::isParameterStringANumber(dateCheck) && dateCheck.size() == 6) || 
+			dateCheck == "next" || ParserHelperFunctions::isDayValid(dateCheck)) {
 			event = arguments.substr(0, position1 - 1);
 
 			if ((event.find_first_not_of(' ') != string::npos)) {
@@ -203,18 +204,65 @@ string AddParser::extractEvent(string arguments)
 
 string AddParser::extractDateNL(string iterArguments)
 {
+	string keyword = "on ";
+
+	size_t position1 = iterArguments.rfind(keyword);
+	size_t position2 = iterArguments.find(" ", position1 + 3, 1);
+	size_t position3 = iterArguments.find(" ", position2 + 1, 1);
+
 	string date = "";
+	string dateCheck = iterArguments.substr(position1 + 3, position2 - position1 - 3);
+	string day = iterArguments.substr(position2 + 1, position3 - position2 - 1);
 
 	if (parsedData.name.empty()) {
 		return "";
 	}
-	else {
-		string keyword = "on ";
-		size_t position1 = iterArguments.rfind(keyword);
+	else if (ParserHelperFunctions::isParameterStringANumber(dateCheck) && dateCheck.size() == 6) {
 
 		date = TimeParser::formatDate(iterArguments.substr(position1 + 3, 6));
 
 		return date;
+	}
+	else if (dateCheck == "next") {
+		if (ParserHelperFunctions::isDayValid(day)) {
+			date = dateCheck + " " + day;
+
+			string newDateFormat = TimeParser::parseDayOfWeek(date);
+			if (newDateFormat != date) { //parseDayOfWeek returns unchanged if error
+				return newDateFormat;
+			}
+			else {
+				setErrorString(ADD_PARSER_DAY_OF_WEEK_ERROR);
+				setErrorTrue();
+
+				return "";
+			}
+		}
+		else {
+			setErrorString(ADD_PARSER_DAY_OF_WEEK_ERROR);
+			setErrorTrue();
+
+			return "";
+		}
+	}
+	else if (ParserHelperFunctions::isDayValid(dateCheck)) {
+		string newDateFormat = TimeParser::parseDayOfWeek(dateCheck);
+
+		if (newDateFormat != dateCheck) { //parseDayOfWeek returns unchanged if error
+			return newDateFormat;
+		}
+		else {
+			setErrorString(ADD_PARSER_DAY_OF_WEEK_ERROR);
+			setErrorTrue();
+
+			return "";
+		}
+	}
+	else {
+		setErrorString(ADD_PARSER_ERROR);
+		setErrorTrue();
+
+		return "";
 	}
 }
 
