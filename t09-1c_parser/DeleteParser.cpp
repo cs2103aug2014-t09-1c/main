@@ -26,7 +26,7 @@ ParsedDataPackage DeleteParser::parseAndReturn(string parseInput)
 		string secondNum = firstNum;
 		secondNum.erase(0, toLowerCase.find(delimeter));
 		if (isParameterStringANumber(secondNum)) {
-			insertAttribute(TO_POSITION, stoi(firstNum));
+			insertAttribute(TO_POSITION, stoi(secondNum));
 		}
 		else{
 			throw runtime_error(DELETE_PARSER_ERROR);
