@@ -62,6 +62,9 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 			BaseClassParser * searchParse = &searchParsing;
 			string argument = searchParse->parseSearchArgs(arguments);
 			searchKeywords = deployer.executeSearch(argument);
+			if (!searchKeywords.empty()) {
+				displayCase = 1;
+			}
 		}
 		else if (command == "undo"){
 			deployer.executeUndo();
