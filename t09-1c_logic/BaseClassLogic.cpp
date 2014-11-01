@@ -170,6 +170,8 @@ vector<int> BaseClassLogic::getSortedLinePositions()
 
 void BaseClassLogic::updateSortedEntries()
 {
+	sortedLineEntries.clear();
+	sortedLineFilePositions.clear();
 	if (displayCase == 0){
 		getListOfEventsHome(date);
 	}
