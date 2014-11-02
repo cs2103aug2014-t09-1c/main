@@ -153,6 +153,7 @@ pair<string, string> SearchLogic::getEarliestFreeSlot(map<string, string> fromTo
 	string start;
 	string end;
 	if (hoursToAdd <= 23 && minsToAdd <= 59) {
+		string iterDate = date;
 		string iterTime = fromTime;
 		TimeLogic to(date, toTime);
 
@@ -169,19 +170,22 @@ pair<string, string> SearchLogic::getEarliestFreeSlot(map<string, string> fromTo
 				string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
 				TimeLogic lineStartTime = createTimeLogic(lineDate, lineStart);
 				TimeLogic lineEndTime = createTimeLogic(lineDate, lineEnd);
-				TimeLogic addedTime = createTimeLogic(date, iterTime);
+				TimeLogic addedTime = createTimeLogic(iterDate, iterTime);
+				bool isLineEndingEarlier = isFirstEarlierThanSecond(lineEndTime, addedTime);
 				addedTime = addHours(addedTime, hoursToAdd, minsToAdd);
-				if ((isFirstEarlierThanSecond(addedTime, to) && isFirstEarlierThanSecond(addedTime, lineStartTime)) || isFirstEarlierThanSecond(lineEndTime, addedTime)) {
+				if ((isFirstEarlierThanSecond(addedTime, to) && isFirstEarlierThanSecond(addedTime, lineStartTime))) {
 					break;
 				}
-				else {
-					iterTime = lineEnd;
+				else if (!isLineEndingEarlier) {
+					iterDate = getStringDate(lineEndTime);
+					iterTime = getStringTime(lineEndTime);
 				}
 			}
 		}
-		TimeLogic addedTime = createTimeLogic(date, iterTime);
+		TimeLogic addedTime = createTimeLogic(iterDate, iterTime);
 		addedTime = addHours(addedTime, hoursToAdd, minsToAdd);
 		if (isFirstEarlierThanSecond(addedTime, to)) {
+			date = iterDate;
 			start = iterTime;
 			end = getStringTime(addedTime) + returnPlusOne(addedTime);
 		}
