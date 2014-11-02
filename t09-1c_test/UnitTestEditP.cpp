@@ -11,7 +11,7 @@ namespace t091c_test
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
+		/*TEST_METHOD(TestMethod1)
 		{
 			EditParser test;
 			string input = "1 [Exam][291114][1100][Important]";
@@ -26,7 +26,7 @@ namespace t091c_test
 			Assert::AreEqual(output[1].date, testOutput3);
 			Assert::AreEqual(output[1].end, testOutput4);
 			Assert::AreEqual(output[1].category, testOutput5);
-		}
+		}*/
 
 	};
 }
