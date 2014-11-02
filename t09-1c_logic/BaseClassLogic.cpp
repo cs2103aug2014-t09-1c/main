@@ -218,9 +218,10 @@ void BaseClassLogic::getListOfEventsHome(string fromDate)
 		else {
 			string lineDateString = getAttributeEntry(DATE_ATTRIBUTE, line);
 			TimeLogic lineDate = createTimeLogic(lineDateString, "00:00");
+			bool isNotCompleted = getAttributeEntry(COMPLETE_ATTRIBUTE, line) == "no";
 
 			if (getTimeFormatCheck(lineDate)) {
-				if (isFirstEarlierThanSecond(dateQualifier, lineDate)) {
+				if (isFirstEarlierThanSecond(dateQualifier, lineDate) || isNotCompleted) {
 					addNonFloatEventToEntry(i);
 				}
 			}

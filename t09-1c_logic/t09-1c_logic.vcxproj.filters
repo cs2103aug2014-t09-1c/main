@@ -51,9 +51,6 @@
     <ClInclude Include="TimeLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ArrangeLogic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DL_Algorithm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,9 +87,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TimeLogic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ArrangeLogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DL_Algorithm.cpp">

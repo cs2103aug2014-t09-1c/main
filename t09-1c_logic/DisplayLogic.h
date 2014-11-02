@@ -13,6 +13,8 @@
 	"And Beyond"
 #define TODAY \
 	"Today, "
+#define LAPSED \
+	"Lapsed"
 
 using namespace std;
 
