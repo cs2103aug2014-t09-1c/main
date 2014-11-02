@@ -168,9 +168,10 @@ pair<string, string> SearchLogic::getEarliestFreeSlot(map<string, string> fromTo
 				string lineStart = getAttributeEntry(START_ATTRIBUTE, line);
 				string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
 				TimeLogic lineStartTime = createTimeLogic(lineDate, lineStart);
+				TimeLogic lineEndTime = createTimeLogic(lineDate, lineEnd);
 				TimeLogic addedTime = createTimeLogic(date, iterTime);
 				addedTime = addHours(addedTime, hoursToAdd, minsToAdd);
-				if (isFirstEarlierThanSecond(addedTime, to) && isFirstEarlierThanSecond(addedTime, lineStartTime)) {
+				if ((isFirstEarlierThanSecond(addedTime, to) && isFirstEarlierThanSecond(addedTime, lineStartTime)) || isFirstEarlierThanSecond(lineEndTime, addedTime)) {
 					break;
 				}
 				else {

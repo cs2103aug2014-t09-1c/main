@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <fstream>
 #include "ParsedDataDeployer.h"
 #include "CommandAndArgumentParser.h"
 #include "AddParser.h"
@@ -12,7 +13,6 @@
 #include "EditParser.h"
 #include "SearchParser.h"
 #include "ParsedDataPackage.h"
-#include "FileLogic.h"
 
 
 class ProgramController
@@ -40,8 +40,6 @@ public:
 	vector<vector<string>> displayTable(string date);
 	string updateLineText(string inputText, bool isEnterPressed);
 	void ConnectToCommandFeedback(string input);
-	void ConnectToDoListOutput(vector<string> newLineEntry);
-	void ConnectToDoListOutput(int position, string newLineEntry);
 };
 
 #endif

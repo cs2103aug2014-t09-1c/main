@@ -4,6 +4,13 @@
 #include <QKeyEvent>
 #include <vector>
 
+const QString& numHeader = NUMBER_HEADER;
+const QString& toDoHeader = TODO_HEADER;
+const QString& categoryHeader = CATEGORY_HEADER;
+const QString& startHeader = START_TIME_HEADER;
+const QString& endHeader = END_TIME_HEADER;
+const QString& completeHeader = COMPLETE_HEADER;
+
 CTable::CTable()
 {
 }
@@ -19,14 +26,14 @@ CTable::CTable(QWidget *par)
     setColumnCount(6);
     horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     horizontalHeader()->setFont(QFont("Segoe UI", 8));
-    setColumnWidth(0,  51);
-    setColumnWidth(1,  222);
-    setColumnWidth(2,  120);
-    setColumnWidth(3,  118);
-    setColumnWidth(4,  118);
-    setColumnWidth(5,  63);
+    setColumnWidth(NUMBER_FIELD,  NUMBER_COLUMN_WIDTH);
+    setColumnWidth(TODO_FIELD,  TODO_COLUMN_WIDTH);
+    setColumnWidth(CATEGORY_FIELD,  CATEGORY_COLUMN_WIDTH);
+    setColumnWidth(START_TIME_FIELD,  START_TIME_COLUMN_WIDTH);
+    setColumnWidth(END_TIME_FIELD,  END_TIME_COLUMN_WIDTH);
+    setColumnWidth(COMPLETE_FIELD,  COMPLETE_COLUMN_WIDTH);
     QStringList header;
-    header << "Number" << "To-Do" << "Category" << "Start" << "Deadline/End" << "Complete?";
+    header << numHeader<< toDoHeader << categoryHeader << startHeader << endHeader << completeHeader;
     setHorizontalHeaderLabels(header);
 	setWordWrap(true);
 }
@@ -36,13 +43,17 @@ void CTable::createTableData(vector<vector<string>> listData)
 	vector<vector<string>> list = listData;
     clearContents();
 	setRowCount(0);
+	int eventsToday = 0;
+	int completedTodaysEvents = 0;
+
     int listSize = list.size();
     for (int i = 0; i < listSize; ++i) {
         insertRow(i);
         QTableWidgetItem *num = new QTableWidgetItem(QString::number(i + 1));
 		num->setFlags(num->flags() ^ Qt::ItemIsEditable);
 		num->setTextAlignment(Qt::AlignCenter);
-        setItem(i,0,num);
+        setItem(i,NUMBER_FIELD,num);
+		bool isToday = false;
         for (int j = 0; j < 5; ++j) {
             QString stringGet = QString::fromStdString(list[i][j]);
             QTableWidgetItem *item = new QTableWidgetItem(stringGet);
@@ -50,11 +61,26 @@ void CTable::createTableData(vector<vector<string>> listData)
 			if (j != 0) {
 				item->setTextAlignment(Qt::AlignCenter);
 			}
+			if (j == 3) {
+				if (stringGet.contains(QString("Today"))) {
+					++eventsToday;
+					isToday = true;
+				}
+			}
+			if (j == 4) {
+				if (stringGet == "yes" && isToday) {
+					++completedTodaysEvents;
+				}
+				if (stringGet == "Lapsed") {
+					item->setBackground(QBrush(Qt::red, Qt::FDiagPattern));
+				}
+			}
             setItem(i,j + 1, item);
 			verticalHeader()->setSectionResizeMode(i, QHeaderView::ResizeToContents);
         }
     }
-   show();
+	emit emitAddValToProgressBar(completedTodaysEvents, eventsToday);
+	show();
 }
 
 void CTable::initialiseHighlight()

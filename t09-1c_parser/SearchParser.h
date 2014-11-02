@@ -12,6 +12,10 @@
 	"Please enter a valid day of the week!"
 #define SEARCH_PARSER_NO_TYPE_ERROR \
 	"Please enter a type of \"name\", \"date\" or \"category!\""
+#define FREE_SLOT_RANGE_ERROR \
+	"Range time must be in HHMM-HHMM format"
+#define FREE_SLOT_DURATION_ERROR \
+	"Duration must be in HHMM format (max 2359)"
 
 
 #include "BaseClassParser.h"

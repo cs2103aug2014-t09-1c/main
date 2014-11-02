@@ -26,12 +26,15 @@ private slots:
 	void sendInputToController(string text);
 	void getSuggestionResponse(string selection, string lineText);
 	void sendFeedbackToController(QString text, bool isEnterPressed);
+	void getProgressBarValueAdd(int value, int maximum);
 
 signals:
 	void sendTableData(vector<vector<string>> data);
 	void sendToSuggestionBox(QStringList suggestions);
 	void sendSuggestionContentsToCompleter(QStringList list);
 	void sendToLineEditAutoComplete(string text);
+	void sendMaxToProgressBar(int maximum);
+	void sendValToProgressBar(int value);
 };
 
 #endif // MAINWINDOW_H

@@ -70,7 +70,7 @@ string SearchParser::parseSearchArgs(string parseInput)
 void SearchParser::checkTimeisRange(string input)
 {
 	if (input.size() < 9) {
-		throw runtime_error("Range time must be in HHMM-HHMM format");
+		throw runtime_error(FREE_SLOT_RANGE_ERROR);
 	}
 }
 
@@ -78,7 +78,7 @@ void SearchParser::checkDurationisValid(string input)
 {
 	string checkInput = removeWhiteSpace(input);
 	if (!isParameterStringANumber(checkInput) && checkInput.size() != 4) {
-		throw runtime_error("Duration must be in HHMM format");
+		throw runtime_error(FREE_SLOT_DURATION_ERROR);
 	}
 }
 

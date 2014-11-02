@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->lineEdit, SIGNAL(emitSuggestionSelected(string, string)), this, SLOT(getSuggestionResponse(string, string)));
 	connect(this, SIGNAL(sendSuggestionContentsToCompleter(QStringList)), ui->lineEdit, SLOT(updateCompleter(QStringList)));
 	connect(this, SIGNAL(sendToLineEditAutoComplete(string)), ui->lineEdit, SLOT(updateLineText(string)));
+	connect(ui->tableWidget, SIGNAL(emitAddValToProgressBar(int, int)), this, SLOT(getProgressBarValueAdd(int, int)));
+	connect(this, SIGNAL(sendMaxToProgressBar(int)), ui->progressBar, SLOT(setMaximum(int)));
+	connect(this, SIGNAL(sendValToProgressBar(int)), ui->progressBar, SLOT(setValue(int)));
 	updateTableData();
 }
 
@@ -63,4 +66,10 @@ void MainWindow::sendFeedbackToController(QString text, bool isEnterPressed)
 			emit sendToLineEditAutoComplete(lineEdit);
 		}
 	}
+}
+
+void MainWindow::getProgressBarValueAdd(int value, int maximum)
+{
+	emit sendMaxToProgressBar(maximum);
+	emit sendValToProgressBar(value);
 }

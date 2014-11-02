@@ -86,6 +86,10 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 			deployer.executeUncomplete(dataPackage, displayDate, searchKeywords, displayCase);
 		}
 		else if (command == "slot") {
+			//This will be handled by updateLineText(). This will ensure exception does not occur.
+		}
+		else {
+			throw runtime_error("No Actionable Commands for Input Found");
 		}
 	}
 	catch (const exception& ex){
@@ -131,53 +135,56 @@ vector<vector<string>> ProgramController::refreshTableDisplay()
 
 vector<vector<string>> ProgramController::displayTable(string date)
 {
-	
-	DisplayLogic displayer(fileName, displayDate, searchKeywords, displayCase);
-	vector<vector<string>> forTableDisplay = displayer.displayEvents();
-	return forTableDisplay;
+	vector<vector<string>> forTableDisplay;
+	try {
+		DisplayLogic displayer(fileName, displayDate, searchKeywords, displayCase);
+		forTableDisplay = displayer.displayEvents();
+		return forTableDisplay;
+	}
+	catch (const exception& ex){
+		return forTableDisplay;
+	}
 }
 
 string ProgramController::updateLineText(string inputText, bool isEnterPressed)
-{
+{ 
 	string completer;
-	if (inputText == "add") {
-		completer = "add [][][][]";
-	}
-	if (inputText == "slot") {
-		completer = "slot [][][]";
-	}
-	else {
-		CommandAndArgumentParser inputParse(inputText);
-		string command = inputParse.command;
-		string argument = inputParse.arguments;
-		if (command == "edit" && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
-			EditParser editor;
-			int argPosition = editor.convertToPosition(argument);
-			if (argPosition >= 0)
-			{
-				DisplayLogic displayer(fileName, displayDate, searchKeywords, displayCase);
-				string append = displayer.formatContentsToLineEdit(argPosition);
-				completer = inputText + append;
+	try{
+		if (inputText == "add") {
+			completer = "add [][][][]";
+		}
+		if (inputText == "slot") {
+			completer = "slot [][][]";
+		}
+		else {
+			CommandAndArgumentParser inputParse(inputText);
+			string command = inputParse.command;
+			string argument = inputParse.arguments;
+			if (command == "edit" && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
+				EditParser editor;
+				int argPosition = editor.convertToPosition(argument);
+				if (argPosition >= 0)
+				{
+					DisplayLogic displayer(fileName, displayDate, searchKeywords, displayCase);
+					string append = displayer.formatContentsToLineEdit(argPosition);
+					completer = inputText + append;
+				}
+			}
+			else if (command == "slot" && isEnterPressed) {
+				SearchParser search;
+				dataPackage = search.parsefreeSlotCheck(argument);
+				SearchLogic searcher(fileName);
+				pair <string, string> result = searcher.getEarliestFreeSlot(dataPackage.getLineEntries(), dataPackage.getStartEndPositions());
+				if (!result.first.empty() && !result.second.empty()) {
+					completer = "add [][" + result.first + "][" + result.second + "][]";
+				}
 			}
 		}
-		else if (command == "slot" && isEnterPressed) {
-			SearchParser search;
-			dataPackage = search.parsefreeSlotCheck(argument);
-			SearchLogic searcher(fileName);
-			pair <string, string> result = searcher.getEarliestFreeSlot(dataPackage.getLineEntries(), dataPackage.getStartEndPositions());
-			if (!result.first.empty() && !result.second.empty()) {
-				completer = "add [][" + result.first + "][" + result.second + "][]";
-			}
-		}
+		return completer;
 	}
-	return completer;
-}
-
-void ProgramController::ConnectToDoListOutput(vector<string> vectorOutput)//input from other logic class a string lineEntry with attributes tags
-{
-	//send to UI e.g. >>> vectorOutput.parseFileToMemoryVector(FILENAME);
-
-
+	catch (const exception& ex){
+		return completer;
+	}
 }
 
 
