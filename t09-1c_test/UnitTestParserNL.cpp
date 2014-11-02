@@ -195,5 +195,53 @@ namespace t091c_test
 			string expectedCategory = "";
 			Assert::AreEqual(expectedCategory, parsedData.category);
 		}
+
+		TEST_METHOD(OverallTest1)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on tuesday from 1700 to 1800 @meeting");
+			string expectedEvent = "meeting with boss";
+			string expectedDate = "04/11/2014";
+			string expectedStartTime = "17:00";
+			string expectedEndTime = "18:00";
+			string expectedCategory = "meeting";
+			Assert::AreEqual(expectedEvent, parsedData.name);
+			Assert::AreEqual(expectedDate, parsedData.date);
+			Assert::AreEqual(expectedStartTime, parsedData.start);
+			Assert::AreEqual(expectedEndTime, parsedData.end);
+			Assert::AreEqual(expectedCategory, parsedData.category);
+		}
+
+		TEST_METHOD(OverallTest2)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on next wed from 1700 to 1800 @meeting");
+			string expectedEvent = "meeting with boss";
+			string expectedDate = "05/11/2014";
+			string expectedStartTime = "17:00";
+			string expectedEndTime = "18:00";
+			string expectedCategory = "meeting";
+			Assert::AreEqual(expectedEvent, parsedData.name);
+			Assert::AreEqual(expectedDate, parsedData.date);
+			Assert::AreEqual(expectedStartTime, parsedData.start);
+			Assert::AreEqual(expectedEndTime, parsedData.end);
+			Assert::AreEqual(expectedCategory, parsedData.category);
+		}
+
+		TEST_METHOD(OverallTest3)
+		{
+			AddParser add;
+			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on wed from 1700 to 1800 @meeting");
+			string expectedEvent = "meeting with boss";
+			string expectedDate = "05/11/2014";
+			string expectedStartTime = "17:00";
+			string expectedEndTime = "18:00";
+			string expectedCategory = "meeting";
+			Assert::AreEqual(expectedEvent, parsedData.name);
+			Assert::AreEqual(expectedDate, parsedData.date);
+			Assert::AreEqual(expectedStartTime, parsedData.start);
+			Assert::AreEqual(expectedEndTime, parsedData.end);
+			Assert::AreEqual(expectedCategory, parsedData.category);
+		}
 	};
 }

@@ -20,6 +20,7 @@ public:
 	static bool isParameterStringEmpty(string parameter);
 	static bool isParameterStringANumber(string parameter);
 	static string removeWhiteSpace(string parameter);
+	static bool isDayValid(string day);
 };
 
 #endif

@@ -73,10 +73,10 @@ void AddParser::extractTime(string iterArguments)
 	}
 }
 
-ParsedDataPackage AddParser::parseAndReturn(string parseInput) 
+ParsedDataPackage AddParser::parseAndReturn(string parseInput)
 {
 	try {
-		insertAttribute(NAME_ATTRIBUTE , extractLeadingBracketContent(parseInput));
+		insertAttribute(NAME_ATTRIBUTE, extractLeadingBracketContent(parseInput));
 		parseInput = nextArguments(parseInput);
 		insertAttribute(DATE_ATTRIBUTE, extractDate(parseInput));
 		parseInput = nextArguments(parseInput);
@@ -114,7 +114,7 @@ string AddParser::extractEvent(string arguments)
 	size_t position2 = arguments.find(" ", position1 + 3, 1);
 
 	if (position1 == string::npos || position2 == string::npos || position1 == 0) {
-		throw runtime_error(ADD_PARSER_ERROR);	
+		throw runtime_error(ADD_PARSER_ERROR);
 	}
 	else {
 		dateCheck = arguments.substr(position1 + 3, position2 - position1 - 3);
@@ -182,15 +182,15 @@ void AddParser::extractTimeNL(string iterArguments)
 	else if (position2 != string::npos && position3 != string::npos) {
 		size_t position5 = iterArguments.find(" ", position2 + 5, 1);
 		startTime = iterArguments.substr(position2 + 5, position5 - position2 - 5);
-	
+
 		size_t position6 = iterArguments.find(" ", position3 + 3, 1);
 		endTime = iterArguments.substr(position3 + 3, position6 - position3 - 3);
 
-		bool isValidTimeForOneDay = startTime.size() == 4 && 
+		bool isValidTimeForOneDay = startTime.size() == 4 &&
 			endTime.size() == 4 &&
 			isParameterStringANumber(startTime) &&
 			isParameterStringANumber(endTime);
-		bool isValidTimeSpanningTwoDays = startTime.size() == 4 && 
+		bool isValidTimeSpanningTwoDays = startTime.size() == 4 &&
 			endTime.size() == 6 &&
 			isParameterStringANumber(startTime) &&
 			isParameterStringANumber(endTime.substr(0, 4)) &&
