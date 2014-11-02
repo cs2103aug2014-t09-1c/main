@@ -25,7 +25,7 @@ private:
 private slots:
 	void sendInputToController(string text);
 	void getSuggestionResponse(string selection, string lineText);
-	void sendFeedbackToController(QString text);
+	void sendFeedbackToController(QString text, bool isEnterPressed);
 
 signals:
 	void sendTableData(vector<vector<string>> data);

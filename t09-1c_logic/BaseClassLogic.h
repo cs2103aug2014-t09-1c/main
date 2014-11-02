@@ -58,7 +58,7 @@ protected:
 	BaseClassLogic(string fileName, string date, vector<string> keywords, int displayCase);
 	BaseClassLogic(vector<string> testVector);
 	BaseClassLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
-	
+	virtual ~BaseClassLogic();
 
 	bool isTestMode = false;
 	void toLog(string log);
@@ -104,8 +104,6 @@ protected:
 	stack<int> oldLinePosforUndo;
 
 public:
-	virtual ~BaseClassLogic();
-
 	/*These are the public interface methods for the FileLogic class.
 	  These methods are the only necessary methods for automated testing purposes.
 	  Consult FileLogic.h or this file for more information about these methods. */

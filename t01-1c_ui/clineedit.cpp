@@ -22,9 +22,11 @@ CLineEdit::~CLineEdit()
 
 void CLineEdit::sendToParser()
 {
-	string inputText = text().toUtf8().constData();
+	QString originalText = text();
+	string inputText = originalText.toUtf8().constData();
 	emit sendText(inputText);
 	clear();
+	emit emitFeedback(originalText, true);
 }
 
 void CLineEdit::setCompleter(CCompleter *completer)
@@ -96,7 +98,7 @@ void CLineEdit::keyPressEvent(QKeyEvent *e)
         return;
     }
 
-	emit emitFeedback(text());
+	emit emitFeedback(text(), false);
     c->popup()->setCurrentIndex(c->completionModel()->index(-1, 0));
 }
 

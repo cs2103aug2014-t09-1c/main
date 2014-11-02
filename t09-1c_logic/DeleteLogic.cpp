@@ -25,20 +25,33 @@ void DeleteLogic::checkFromToValidity(int fromPosition, int toPosition, int size
 	}
 }
 
+vector<int> DeleteLogic::reAdjustPos(vector<int> pos, int deletedPos)
+{
+	vector<int> positions = pos;
+	int posSize = positions.size();
+	for (int i = 0; i < posSize; ++i) {
+		if (positions[i] > deletedPos) {
+			--positions[i];
+		}
+	}
+	return positions;
+}
+
 void DeleteLogic::execute(map<string, int> fromToPositions)
 {
 	vector<int> positions = getSortedLinePositions();
-	int positionSize = positions.size();
+	int positionSize = getSortedLinePositions().size();
 	int startPosition = fromToPositions[FROM_POSITION] - 1;
 	int toPosition = fromToPositions[TO_POSITION] - 1;
 	try {
 		checkFromToValidity(startPosition, toPosition, positionSize);
-		for (int i = startPosition; i <= toPosition; ++i) {
+		for (int i = toPosition; i >= startPosition; --i) {
 			int filePosition = positions[i];
 			oldLinePosforUndo.push(filePosition);
 			string line = getLineFromPositionNumber(filePosition);
 			OldLineEntriesForUndo.push(line);
 			deleteLine(filePosition);
+			positions = reAdjustPos(positions, filePosition);
 		}
 		if (isTestMode) {
 			updateSortedEntries();

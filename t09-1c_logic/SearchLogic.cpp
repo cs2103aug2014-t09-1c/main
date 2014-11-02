@@ -142,8 +142,14 @@ bool SearchLogic::checkTimedTaskEligibility(string input, string line)
 	return isEligible;
 }
 
-pair<string,string> SearchLogic::getEarliestFreeSlot(string date, string fromTime, string toTime, int hoursToAdd, int minsToAdd)
+pair<string, string> SearchLogic::getEarliestFreeSlot(map<string, string> fromToTime, map<string, int> duration)
 {
+	string date = fromToTime[DATE_ATTRIBUTE];
+	string fromTime = fromToTime[START_ATTRIBUTE];
+	string toTime = fromToTime[END_ATTRIBUTE];
+	int hoursToAdd = duration[FROM_POSITION];
+	int minsToAdd = duration[TO_POSITION];
+
 	string start;
 	string end;
 	if (hoursToAdd <= 23 && minsToAdd <= 59) {
@@ -179,6 +185,11 @@ pair<string,string> SearchLogic::getEarliestFreeSlot(string date, string fromTim
 			end = getStringTime(addedTime) + returnPlusOne(addedTime);
 		}
 	}
-	pair<string, string> pairTime(start, end);
+	string uiDate, uiTime;
+	if (!start.empty() && !end.empty()) {
+		uiDate = date.substr(0, 2) + date.substr(3, 2) + date.substr(8, 2);
+		uiTime = start.substr(0, 2) + start.substr(3, 2) + "-" + end.substr(0, 2) + end.substr(3, end.size()-3);
+	}
+	pair<string, string> pairTime(uiDate, uiTime);
 	return pairTime;
 }

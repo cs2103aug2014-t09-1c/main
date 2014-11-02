@@ -6,6 +6,7 @@
 #include "DisplayLogic.h"
 #include "TimeParser.h"
 #include "CompleteParser.h"
+#include "SearchLogic.h"
 
 //after an input is scanned by UI method, call to method sendToParse is made to send input to Parser
 //after Parser returns the variables in ParsedDataPackage, send the details to logic
@@ -62,6 +63,9 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 			BaseClassParser * searchParse = &searchParsing;
 			string argument = searchParse->parseSearchArgs(arguments);
 			searchKeywords = deployer.executeSearch(argument);
+			if (!searchKeywords.empty()) {
+				displayCase = 1;
+			}
 		}
 		else if (command == "undo"){
 			deployer.executeUndo();
@@ -80,6 +84,8 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 			BaseClassParser * completeParse = &completeParsing;
 			dataPackage = completeParse->parseAndReturn(arguments);
 			deployer.executeUncomplete(dataPackage, displayDate, searchKeywords, displayCase);
+		}
+		else if (command == "slot") {
 		}
 	}
 	catch (const exception& ex){
@@ -131,17 +137,20 @@ vector<vector<string>> ProgramController::displayTable(string date)
 	return forTableDisplay;
 }
 
-string ProgramController::updateLineText(string inputText)
+string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 {
 	string completer;
 	if (inputText == "add") {
 		completer = "add [][][][]";
 	}
+	if (inputText == "slot") {
+		completer = "slot [][][]";
+	}
 	else {
 		CommandAndArgumentParser inputParse(inputText);
 		string command = inputParse.command;
 		string argument = inputParse.arguments;
-		if (command == "edit" && inputText.substr(inputText.length() - 1, 1) == " ") {
+		if (command == "edit" && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
 			EditParser editor;
 			int argPosition = editor.convertToPosition(argument);
 			if (argPosition >= 0)
@@ -149,6 +158,15 @@ string ProgramController::updateLineText(string inputText)
 				DisplayLogic displayer(fileName, displayDate, searchKeywords, displayCase);
 				string append = displayer.formatContentsToLineEdit(argPosition);
 				completer = inputText + append;
+			}
+		}
+		else if (command == "slot" && isEnterPressed) {
+			SearchParser search;
+			dataPackage = search.parsefreeSlotCheck(argument);
+			SearchLogic searcher(fileName);
+			pair <string, string> result = searcher.getEarliestFreeSlot(dataPackage.getLineEntries(), dataPackage.getStartEndPositions());
+			if (!result.first.empty() && !result.second.empty()) {
+				completer = "add [][" + result.first + "][" + result.second + "][]";
 			}
 		}
 	}

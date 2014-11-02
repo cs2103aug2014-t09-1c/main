@@ -12,6 +12,7 @@ class DeleteLogic :
 {
 private:
 	void checkFromToValidity(int fromPosition, int toPosition, int size);
+	vector<int> reAdjustPos(vector<int> pos, int deletedPos);
 
 public:
 	DeleteLogic(string fileName, string date, vector<string> keywords, int displayCase);
