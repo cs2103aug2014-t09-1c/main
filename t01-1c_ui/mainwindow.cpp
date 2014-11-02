@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 	connect(ui->lineEdit, SIGNAL(sendText(string)), this, SLOT(sendInputToController(string)));
 	connect(this, SIGNAL(sendTableData(vector<vector<string>>)), ui->tableWidget, SLOT(createTableData(vector<vector<string>>)));
-	connect(ui->lineEdit, SIGNAL(emitFeedback(QString)), this, SLOT(sendFeedbackToController(QString)));
+	connect(ui->lineEdit, SIGNAL(emitFeedback(QString, bool)), this, SLOT(sendFeedbackToController(QString, bool)));
 	connect(ui->lineEdit, SIGNAL(emitSuggestionSelected(string, string)), this, SLOT(getSuggestionResponse(string, string)));
 	connect(this, SIGNAL(sendSuggestionContentsToCompleter(QStringList)), ui->lineEdit, SLOT(updateCompleter(QStringList)));
 	connect(this, SIGNAL(sendToLineEditAutoComplete(string)), ui->lineEdit, SLOT(updateLineText(string)));
@@ -40,7 +40,7 @@ void MainWindow::getSuggestionResponse(string selection, string lineText)
 	updateTableData();
 }
 
-void MainWindow::sendFeedbackToController(QString text)
+void MainWindow::sendFeedbackToController(QString text, bool isEnterPressed)
 {
 	bool isForCompleter = false;
 	QStringList suggestions;
@@ -58,7 +58,7 @@ void MainWindow::sendFeedbackToController(QString text)
 	}
 	emit sendSuggestionContentsToCompleter(suggestions);
 	if (!isForCompleter) {
-		string lineEdit = control.updateLineText(inputText);
+		string lineEdit = control.updateLineText(inputText, isEnterPressed);
 		if (!lineEdit.empty()) {
 			emit sendToLineEditAutoComplete(lineEdit);
 		}

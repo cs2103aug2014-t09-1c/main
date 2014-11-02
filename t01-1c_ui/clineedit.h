@@ -29,7 +29,7 @@ private slots:
 
 signals:
 	void toSetText(const QString & text);
-	void emitFeedback(QString feedback);
+	void emitFeedback(QString feedback, bool isEnterPressed);
 	void sendText(string text);
 	void emitSuggestionSelected(string selection, string lineText);
 

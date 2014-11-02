@@ -38,7 +38,7 @@ public:
 	void executeSuggestionSelection(string selection, string lineText);
 	vector<vector<string>> refreshTableDisplay();
 	vector<vector<string>> displayTable(string date);
-	string updateLineText(string inputText);
+	string updateLineText(string inputText, bool isEnterPressed);
 	void ConnectToCommandFeedback(string input);
 	void ConnectToDoListOutput(vector<string> newLineEntry);
 	void ConnectToDoListOutput(int position, string newLineEntry);

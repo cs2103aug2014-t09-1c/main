@@ -31,7 +31,7 @@ public:
 	SearchLogic(vector<string> testVector);
 	~SearchLogic();
 	vector<string> createKeywords(string input);
-	pair<string,string> getEarliestFreeSlot(string date, string fromTime, string toTime, int hoursToAdd, int minsToAdd);
+	pair<string,string> getEarliestFreeSlot(map<string,string> fromToTime, map<string, int> duration);
 	
 
 };

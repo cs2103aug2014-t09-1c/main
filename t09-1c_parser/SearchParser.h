@@ -31,12 +31,20 @@ class SearchParser :
 	public BaseClassParser
 {
 private:
+	string extractLeadingBracketContent(string arguments);
+	string nextArguments(string arguments);
+	string extractDate(string arguments);
+	void extractTime(string arguments);
+	void checkTimeisRange(string input);
+	void checkDurationisValid(string input);
+	void getDuration(string input);
 
 public:
 	SearchParser();
 	
 	~SearchParser();
 	string parseSearchArgs(string parseInput);
+	ParsedDataPackage parsefreeSlotCheck(string parseInput);
 
 };
 
