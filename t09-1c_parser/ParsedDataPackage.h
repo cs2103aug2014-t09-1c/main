@@ -1,14 +1,36 @@
 #pragma once
+#ifndef PARSED_DATA_PACKAGE
+#define PARSED_DATA_PACKAGE
+
 #include "stdafx.h"
 #include <string>
+#include <map>
+#include <vector>
+#include "assert.h"
+
 
 using namespace std;
 
 class ParsedDataPackage
 {
+
+private:
+	map<string, string> lineEntries;
+	map<string, int> startEndPositions;
+
+	bool isDuplicate(string attribute);
+	vector<string> insertedAttributes;
+
 public:
 	ParsedDataPackage();
 	~ParsedDataPackage();
+
+	map<string, string> getLineEntries();
+	map<string, int> getStartEndPositions();
+	void insertAttribute(string attribute, string entry);
+	void insertAttribute(string attribute, int entry);
+
+	
 
 	//all data related to event info to be stored are represented here.
 	string name; //event name
@@ -18,4 +40,5 @@ public:
 	string category; // Empty string for uncategorised
 	int lineNum; //line to delete or edit
 };
+#endif
 

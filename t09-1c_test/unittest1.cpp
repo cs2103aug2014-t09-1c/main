@@ -4,6 +4,7 @@
 #include "FileEntryFormatter.h"
 #include "DL_Algorithm.h"
 #include "ProgramController.h"
+#include "SearchLogic.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -96,25 +97,14 @@ namespace t091c_test
 			Assert::AreEqual(check.findDLCost("170914", "19/09/2014"), 4);
 		}
 
-		TEST_METHOD(CONTROLLER_TEST)
+		TEST_METHOD(Search_CHEck)
 		{
-			ProgramController control ("trial2.txt");
-			control.executeEntry("add [hello there][][][]");
-			vector <string> out = control.populateSuggestionBox("search hello");
-			string expected = "hello there";
-			Assert::AreEqual(expected, out[0]);
+			SearchLogic search("ex.txt");
+			pair <string, string> result = search.getEarliestFreeSlot("13/10/2014", "23:00", "03:00+1", 2 , 30);
+			string first = "23:00";
+			string second = "01:30+1";
+			Assert::AreEqual(result.first, first);
+			Assert::AreEqual(result.second, second);
 		}
-
-		TEST_METHOD(CONTROLLER2_TEST)
-		{
-			ProgramController control("trial2.txt");
-			control.executeEntry("add [hello there][151014][][]");
-			vector <string> out = control.populateSuggestionBox("search 151014");
-			string expected = "15/10/2014";
-			Assert::AreEqual(expected, out[0]);
-		}
-
-
-
 	};
 }

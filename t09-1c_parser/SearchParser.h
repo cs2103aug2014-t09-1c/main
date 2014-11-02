@@ -31,25 +31,13 @@ class SearchParser :
 	public BaseClassParser
 {
 private:
-	ParsedDataPackage parsedData;
-	string type;
-	string error;
+
 public:
 	SearchParser();
 	
 	~SearchParser();
-	string parseAndReturn(string parseInput);
+	string parseSearchArgs(string parseInput);
 
-	string argumentError();
-
-	string findTypeAndGetArgument(string arguments);
-	//string nextArguments(string arguments);
-	string extractDate(string arguments);
-
-	void setErrorString(string errorString);
-	void setErrorTrue();
-	bool isInputValid();
-	string getErrorString();
 };
 
 #endif

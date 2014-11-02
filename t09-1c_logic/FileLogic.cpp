@@ -1,14 +1,22 @@
 #include "stdafx.h"
 #include "FileLogic.h"
 
-
-
 FileLogic::FileLogic(string fileName) : memoryHandler()
 {
 	this->fileName = fileName;
-	fileAccess();
+	try {
+		fileAccess();
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
 }
 
+FileLogic::FileLogic(vector<string> testVector) : memoryHandler()
+{
+	memoryHandler.setVector(testVector);
+	isTestMode = true;
+}
 
 FileLogic::~FileLogic()
 {
@@ -19,17 +27,19 @@ int FileLogic::getSize()
 	return memoryHandler.getVectorSize();
 }
 
-bool FileLogic::fileAccess()
+vector<string> FileLogic::getVector()
+{
+	return memoryHandler.getVector();
+}
+
+void FileLogic::fileAccess()
 {
 	if (FileController::checkFile(fileName))
 	{
 		memoryHandler.setVector(FileController::parseFileToMemoryVector(fileName));
-		vectorSize = memoryHandler.getVectorSize();
-		return true;
 	}
 	else {
-		//sendToOutput(FileController::declareFileAccessError);
-		return false;
+		throw runtime_error(FILE_ACCESS_ERROR);
 	}
 }
 
@@ -40,47 +50,49 @@ string FileLogic::getFileName()
 
 void FileLogic::changeFile(string fileName)
 {
-	if (fileAccess()) {
-		this->fileName = fileName;
+	this->fileName = fileName;
+	try {
+		fileAccess();
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
 	}
 }
 
 string FileLogic::getLineFromPositionNumber(int position)
 {
-	if (fileAccess() && position < vectorSize) {
+	if (position < getSize()) {
 		return memoryHandler.getLineEntry(position);
 	}
-	else{
+	else {
 		return "";
 	}
 }
 
 void FileLogic::appendToFile(string lineEntry)
 {
-	if (fileAccess()) {
-		memoryHandler.appendLineEntry(lineEntry);
+	memoryHandler.appendLineEntry(lineEntry);
+	if (!isTestMode) {
 		FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
-		vectorSize++;
 	}
 }
 
 void FileLogic::addToPositionNumber(int position, string lineEntry)
 {
-	if (fileAccess()) {
-		if (vectorSize >= position) {
-			memoryHandler.insertLineEntry(position, lineEntry);
+	if (getSize() >= position) {
+		memoryHandler.insertLineEntry(position, lineEntry);
+		if (!isTestMode) {
 			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
-			vectorSize++;
 		}
 	}
 }
 
 void FileLogic::editLine(int position, string lineEntry) 
 {
-	if (fileAccess()) {
-		if (memoryHandler.getVectorSize() > position) {
-			memoryHandler.deleteLineEntry(position);
-			memoryHandler.insertLineEntry(position, lineEntry);
+	if (memoryHandler.getVectorSize() > position) {
+		memoryHandler.deleteLineEntry(position);
+		memoryHandler.insertLineEntry(position, lineEntry);
+		if (!isTestMode) {
 			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
 		}
 	}
@@ -88,11 +100,35 @@ void FileLogic::editLine(int position, string lineEntry)
 
 void FileLogic::deleteLine(int position)
 {
-	if (fileAccess()) {
-		if (memoryHandler.getVectorSize() > position) {
-			memoryHandler.deleteLineEntry(position);
+	if (memoryHandler.getVectorSize() > position) {
+		memoryHandler.deleteLineEntry(position);
+		if (!isTestMode) {
 			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
-			vectorSize = vectorSize -1;
 		}
 	}
+}
+
+string FileLogic::createAttributedEntry(string attribute, string entry)
+{
+	return FileEntryFormatter::createAttributedEntry(attribute, entry);
+}
+
+string FileLogic::getAttributeEntry(string attribute, string lineEntry)
+{
+	return FileEntryFormatter::getAttributeEntry(attribute, lineEntry);
+}
+
+string FileLogic::addAttributedEntryToLineEntry(string attributedEntry, string lineEntry)
+{
+	return FileEntryFormatter::addAttributedEntryToLineEntry(attributedEntry, lineEntry);
+}
+
+string FileLogic::deleteAttributedEntryFromLineEntry(string attribute, string lineEntry)
+{
+	return FileEntryFormatter::deleteAttributedEntryFromLineEntry(attribute, lineEntry);
+}
+
+string FileLogic::editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry)
+{
+	return FileEntryFormatter::editAttributedEntryFromLineEntry(attribute, newAttributeEntry, lineEntry);
 }

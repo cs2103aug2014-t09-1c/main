@@ -27,7 +27,8 @@ private:
 	string command;
 	string arguments;
 	ParsedDataPackage dataPackage;
-	vector<ParsedDataPackage> dataPackages;
+
+	ParsedDataDeployer deployer;
 
 public:
 	ProgramController(string filename);

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TimeParser.h"
-#include "ParserHelperFunctions.h"
 #include <sstream>
+#include <algorithm>
 
 const vector<string> longDays = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" };
 const vector<string> shortDays = { "sun", "mon", "tue", "wed", "thu", "fri", "sat" };
@@ -52,9 +52,9 @@ int TimeParser::determineDaysToAdd(string day, bool isNextPresent)
 int TimeParser::determineDayIndex(string day)
 {
 	int index = -1;
-	index = ParserHelperFunctions::findMatchingStringIndex(day, longDays);
+	index = findMatchingStringIndex(day, longDays);
 	if (index == -1) {
-		index = ParserHelperFunctions::findMatchingStringIndex(day, shortDays);
+		index = findMatchingStringIndex(day, shortDays);
 	}
 	return index;
 }
@@ -72,7 +72,7 @@ string TimeParser::parseDayOfWeek(string date)
 {
 	string dateToModify = date;
 	bool isNext = false;
-	dateToModify = ParserHelperFunctions::toLowerCaseString(dateToModify);
+	dateToModify = toLowerCaseString(dateToModify);
 	if (dateToModify.substr(0, 5) == "next ") {
 		isNext = true;
 		dateToModify.erase(0, 5);
@@ -102,4 +102,23 @@ string TimeParser::formatDate(string date)
 	string hundredsyear = to_string(year / 100);
 	date.insert(6, hundredsyear);
 	return date;
+}
+
+string TimeParser::toLowerCaseString(string input)
+{
+	transform(input.begin(), input.end(), input.begin(), ::tolower);
+	return input;
+}
+
+int TimeParser::findMatchingStringIndex(string str, vector<string> lst)
+{
+	int index = -1;
+	int lstSize = lst.size();
+	for (int i = 0; i < lstSize; ++i) {
+		if (lst[i] == str) {
+			index = i;
+			break;
+		}
+	}
+	return index;
 }

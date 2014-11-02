@@ -1,34 +1,50 @@
 #include "stdafx.h"
 #include "DeleteLogic.h"
-#include <string>
 
-DeleteLogic::DeleteLogic(string fileName, int displayCase) : fileHandler(fileName)
+DeleteLogic::DeleteLogic(string fileName, string date, vector<string> keywords, int displayCase) try : BaseClassLogic(fileName, date, keywords, displayCase)
 {
-	this->displayCase = displayCase;
 }
 
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+DeleteLogic::DeleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase) : BaseClassLogic(testVector, date, keywords, displayCase)
+{
+}
 
 DeleteLogic::~DeleteLogic()
 {
 }
 
-void DeleteLogic::deleteEntry(string date, vector<string> keywords, int position) 
+void DeleteLogic::checkFromToValidity(int fromPosition, int toPosition, int size)
 {
-	ArrangeLogic arranger(fileHandler);
-	pair<vector<string>, vector<int>> list;
-	if (displayCase == 0) {
-		list = arranger.getListOfEventsOnwardFrom(date);
+	if (fromPosition >= size || fromPosition < 0 || toPosition >= size || toPosition < 0) {
+		throw runtime_error(SLOT_IN_EXCESS);
 	}
-	else {
-		list = arranger.getListOfEventsWithKeywords(keywords);
-	}
-	vector<string> lines = list.first;
-	vector<int> positions = list.second;
-	int positionSize = positions.size();
-	if (position - 1 < positionSize) {
-		deletedEntry.push(lines[position - 1]);
-		deletedPosition.push(positions[position - 1]);
-		fileHandler.deleteLine(positions[position - 1]);
-	}
+}
 
+void DeleteLogic::execute(map<string, int> fromToPositions)
+{
+	vector<int> positions = getSortedLinePositions();
+	int positionSize = positions.size();
+	int startPosition = fromToPositions[FROM_POSITION] - 1;
+	int toPosition = fromToPositions[TO_POSITION] - 1;
+	try {
+		checkFromToValidity(startPosition, toPosition, positionSize);
+		for (int i = startPosition; i <= toPosition; ++i) {
+			int filePosition = positions[i];
+			oldLinePosforUndo.push(filePosition);
+			string line = getLineFromPositionNumber(filePosition);
+			OldLineEntriesForUndo.push(line);
+			deleteLine(filePosition);
+		}
+		if (isTestMode) {
+			updateSortedEntries();
+		}
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
 }

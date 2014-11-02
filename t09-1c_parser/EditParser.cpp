@@ -1,23 +1,8 @@
 #include "stdafx.h"
 #include "EditParser.h"
-#include "TimeParser.h"
-#include "ParserHelperFunctions.h"
-#include <string>
+#include <algorithm>
 
-// Syntax: [eventName][date][start-end][category] - timed
-// Syntax: [eventName][date][deadline][category] - deadline
-// Syntax: [eventName][][][category] - float
-// category is to be made optional. 
-// ie syntax can just be  [eventName][][][]
-// Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
-// eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
-// eg. Watch movie 191014 1700 to 1800
-
-// Delete Syntax: delete [010914][2]
-
-// Edit Syntax: edit [010914][3] [eventName][date][start-end][category]
-
-EditParser::EditParser()
+EditParser::EditParser() : BaseClassParser()
 {
 }
 
@@ -26,31 +11,87 @@ EditParser::~EditParser()
 {
 }
 
-string EditParser::argumentError()
+void EditParser::getPositionNumber(string input)
 {
-	return EDIT_PARSER_ERROR;
+	size_t position1 = input.find("[");
+	string pos = input.substr(0, position1);
+	pos = removeWhiteSpace(pos);
+	if (isParameterStringANumber(pos)) {
+		insertAttribute(FROM_POSITION, stoi(pos));
+	}
+	else {
+		throw runtime_error(EDIT_PARSER_ERROR);
+	}
 }
 
-void EditParser::setArguments(string input)
+string EditParser::extractLeadingBracketContent(string arguments)
 {
-	arguments = input;
+	string contents = "";
+	size_t position1 = arguments.find("[");
+	size_t position2 = arguments.find("]");
+
+	if (position1 == string::npos || position2 == string::npos) {
+		return contents;
+	}
+	else {
+		contents = arguments.substr(position1 + 1, position2 - position1 - 1);
+		return contents;
+	}
 }
 
-vector<ParsedDataPackage> EditParser::parseAndReturn(string parseInput)
+string EditParser::nextArguments(string argument)
 {
-	vector<ParsedDataPackage> parsedDatas;
+	string delimiter = "]";
+	argument.erase(0, argument.find(delimiter) + 1);
+	return argument;
+}
 
-	parsedDatas.push_back(del.parseAndReturn(parseInput));
-	parsedDatas.push_back(add.parseAndReturn(del.excessInput));
+string EditParser::extractDate(string iterArguments)
+{
+	try{
+		string date = extractLeadingBracketContent(iterArguments);
+		string resultDate = getDate(date);
+		return resultDate;
+	}
+	catch (const exception& ex){
+		throw runtime_error(ex.what());
+	}
+}
 
-	return parsedDatas;
+void EditParser::extractTime(string iterArguments)
+{
+	try {
+		string time = extractLeadingBracketContent(iterArguments);
+		getAndStoreTimes(time);
+	}
+	catch (const exception& ex){
+		throw runtime_error(ex.what());
+	}
+}
+
+ParsedDataPackage EditParser::parseAndReturn(string parseInput)
+{
+	try {
+		getPositionNumber(parseInput);
+		insertAttribute(NAME_ATTRIBUTE, extractLeadingBracketContent(parseInput));
+		parseInput = nextArguments(parseInput);
+		insertAttribute(DATE_ATTRIBUTE, extractDate(parseInput));
+		parseInput = nextArguments(parseInput);
+		extractTime(parseInput);
+		parseInput = nextArguments(parseInput);
+		insertAttribute(CATEGORY_ATTRIBUTE, extractLeadingBracketContent(parseInput));
+		return parsedData;
+	}
+	catch (const exception& ex){
+		throw runtime_error(ex.what());
+	}
 }
 
 int EditParser::convertToPosition(string argument)
 {
 	int number = -1;
 	argument.erase(remove_if(argument.begin(), argument.end(), isspace), argument.end());
-	if (ParserHelperFunctions::isParameterStringANumber(argument)) {
+	if (isParameterStringANumber(argument)) {
 		number = std::stoi(argument);
 	}
 	return number;

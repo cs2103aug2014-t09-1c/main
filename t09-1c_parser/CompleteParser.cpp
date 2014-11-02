@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "CompleteParser.h"
-#include "ParserHelperFunctions.h"
 
-CompleteParser::CompleteParser()
+CompleteParser::CompleteParser() : BaseClassParser()
 {
 }
 
@@ -13,56 +12,33 @@ CompleteParser::~CompleteParser()
 
 ParsedDataPackage CompleteParser::parseAndReturn(string parseInput)
 {
-	string removedWhiteSpace = ParserHelperFunctions::removeWhiteSpace(parseInput);
-	size_t positionHyphen = removedWhiteSpace.find("-");
-
-	if (ParserHelperFunctions::isParameterStringANumber(removedWhiteSpace))
-	{
-		parsedData.lineNum = stoi(removedWhiteSpace);
+	string removedWhiteSpace = removeWhiteSpace(parseInput);
+	string toLowerCase = toLowerCaseString(removedWhiteSpace);
+	string delimeter = DELIMETER;
+	if (toLowerCase.find(delimeter) != string::npos) {
+		string firstNum = toLowerCase.substr(0, toLowerCase.find(delimeter));
+		if (isParameterStringANumber(firstNum)) {
+			insertAttribute(FROM_POSITION,stoi(firstNum));
+		}
+		else{
+			throw runtime_error(COMPLETE_PARSER_ERROR);
+		}
+		string secondNum = toLowerCase;
+		secondNum.erase(0, toLowerCase.find(delimeter) + delimeter.length());
+		if (isParameterStringANumber(secondNum)) {
+			insertAttribute(TO_POSITION, stoi(secondNum));
+		}
+		else{
+			throw runtime_error(COMPLETE_PARSER_ERROR);
+		}
+		return parsedData;
 	}
-	else if (positionHyphen != string::npos)
-	{
-		string start = removedWhiteSpace.substr(0, positionHyphen);
-		string end = removedWhiteSpace.substr(positionHyphen + 1);
-		if (!ParserHelperFunctions::isParameterStringANumber(start)){
-			setErrorString(COMPLETE_PARSER_ERROR);
-			setErrorTrue();
-			return parsedData;
-		}
-		if (!ParserHelperFunctions::isParameterStringANumber(end)){
-			end = start;
-		}
-		setRepetition(stoi(end) - stoi(start) + 1);
-		parsedData.lineNum = stoi(start);
+	else if (isParameterStringANumber(removedWhiteSpace)) {
+		insertAttribute(FROM_POSITION, stoi(removedWhiteSpace));
+		insertAttribute(TO_POSITION, stoi(removedWhiteSpace));
+		return parsedData;
 	}
 	else {
-		setErrorString(COMPLETE_PARSER_ERROR);
-		setErrorTrue();
+		throw runtime_error(COMPLETE_PARSER_ERROR);
 	}
-	return parsedData;
-}
-
-void CompleteParser::setErrorString(string errorString)
-{
-	error = errorString;
-}
-
-void CompleteParser::setErrorTrue()
-{
-	errorPresent = true;
-}
-
-bool CompleteParser::isInputValid()
-{
-	return errorPresent;
-}
-
-void CompleteParser::setRepetition(int numberForCompletion)
-{
-	repetition = numberForCompletion;
-}
-
-int CompleteParser::getRepetition()
-{
-	return repetition;
 }

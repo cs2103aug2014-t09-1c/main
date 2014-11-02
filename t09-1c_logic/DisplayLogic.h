@@ -1,26 +1,10 @@
 #pragma once
-
 #ifndef DISPLAY_LOGIC
 #define DISPLAY_LOGIC
 
+#include "BaseClassLogic.h"
 #include <iostream>
-#include "FileLogic.h"
-#include <vector>
 
-#define DETAIL_AT_POS_0 \
-	"name"
-#define DETAIL_AT_POS_1 \
-	"category"
-#define DETAIL_AT_POS_2A \
-	"date"
-#define DETAIL_AT_POS_2B \
-	"start"
-#define DETAIL_AT_POS_3A \
-	"date"
-#define DETAIL_AT_POS_3B \
-	"end"
-#define DETAIL_AT_POS_4 \
-	"complete"
 #define NO_START_STRING \
 	"In Progress"
 #define FLOAT_START_STRING \
@@ -33,18 +17,18 @@
 using namespace std;
 
 class DisplayLogic
+	: public BaseClassLogic
 {
 private:
-	FileLogic fileHandler;
-	vector<string> putToVectorEventDatails(string line, bool includeDate, string date);
+	vector<string> putToVectorEventDatails(string line);
 
 public:
-	DisplayLogic(string fileName);
+	DisplayLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	DisplayLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
 	~DisplayLogic();
 
-	vector<vector<string>> collectEventsWithKeywords(vector<string> keywords, string date);
-	vector<vector<string>> collectEventsFromDate(string date);
-	string formatContentsToLineEdit(int position, vector<string> keywords, string date, int displayCase);
+	vector<vector<string>> displayEvents();
+	string formatContentsToLineEdit(int position);
 };
 
 #endif 

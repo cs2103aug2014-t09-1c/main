@@ -168,11 +168,6 @@ bool TimeLogic::isTimeValid(int hour, int min)
 	return true;
 }
 
-void TimeLogic::declareTimeFormatError() 
-{
-	timeFormatCheck = false;
-}
-
 bool TimeLogic::isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2)
 {
 	bool boolStore = false;

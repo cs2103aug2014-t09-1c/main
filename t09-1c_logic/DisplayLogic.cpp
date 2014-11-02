@@ -1,35 +1,36 @@
 #include "stdafx.h"
 #include "DisplayLogic.h"
-#include "ArrangeLogic.h"
-#include "FileEntryFormatter.h"
-#include "TimeLogic.h"
 
-
-
-DisplayLogic::DisplayLogic(string fileName) : fileHandler(fileName)
+DisplayLogic::DisplayLogic(string fileName, string date, vector<string> keywords, int displayCase) try : BaseClassLogic(fileName, date, keywords, displayCase)
 {
 }
 
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+DisplayLogic::DisplayLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase) : BaseClassLogic(testVector, date, keywords, displayCase)
+{
+}
 
 DisplayLogic::~DisplayLogic()
 {
 }
 
-vector<string> DisplayLogic::putToVectorEventDatails(string line, bool includeDate, string date)
+vector<string> DisplayLogic::putToVectorEventDatails(string line)
 {
 	vector<string> eventVector;
-	eventVector.push_back(FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_0, line));
-	eventVector.push_back(FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_1, line));
+	eventVector.push_back(getAttributeEntry(NAME_ATTRIBUTE, line));
+	eventVector.push_back(getAttributeEntry(CATEGORY_ATTRIBUTE, line));
 	
 	string pos2;
-	if (FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_2B, line) != "") {
-		if (FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_2A, line) == date) {
-			pos2 = (includeDate ? TODAY : "")
-				+ FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_2B, line);
+	if (getAttributeEntry(START_ATTRIBUTE, line) != "") {
+		if (getAttributeEntry(DATE_ATTRIBUTE, line) == getDate()) {
+			pos2 = TODAY + getAttributeEntry(START_ATTRIBUTE, line);
 		}
 		else {
-			pos2 = (includeDate ? FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_2A, line) + " " : "")
-				+ FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_2B, line);
+			pos2 = getAttributeEntry(DATE_ATTRIBUTE, line) + " " + getAttributeEntry(START_ATTRIBUTE, line);
 		}
 	}
 	else {
@@ -37,17 +38,14 @@ vector<string> DisplayLogic::putToVectorEventDatails(string line, bool includeDa
 	}
 
 	string pos3;
-	TimeLogic endDate(FileEntryFormatter::getAttributeEntry("date", line),
-		FileEntryFormatter::getAttributeEntry("end", line));
+	TimeLogic endDate = createTimeLogic(getAttributeEntry(DATE_ATTRIBUTE, line), getAttributeEntry(END_ATTRIBUTE, line));
 
-	if (endDate.getStringTime() != "") {
-		if (endDate.getStringDate() == date) {
-			pos3 = (includeDate ? TODAY : "")
-				+ endDate.getStringTime();
+	if (getStringTime(endDate) != "") {
+		if (getStringDate(endDate) == getDate()) {
+			pos3 = TODAY + getStringTime(endDate);
 		}
 		else {
-			pos3 = (includeDate ? endDate.getStringDate() + " " : "")
-				+ endDate.getStringTime();
+			pos3 = getStringDate(endDate) + " " + endDate.getStringTime();
 		}
 	}
 	else {
@@ -56,69 +54,46 @@ vector<string> DisplayLogic::putToVectorEventDatails(string line, bool includeDa
 	}
 	eventVector.push_back(pos2);
 	eventVector.push_back(pos3);
-	eventVector.push_back(FileEntryFormatter::getAttributeEntry(DETAIL_AT_POS_4, line));
+	eventVector.push_back(getAttributeEntry(COMPLETE_ATTRIBUTE, line));
 
 	return eventVector;
 }
 
-vector<vector<string>> DisplayLogic::collectEventsWithKeywords(vector<string> keywords, string date)
+vector<vector<string>> DisplayLogic::displayEvents()
 {
 	vector<vector<string>> toDisplay;
-	ArrangeLogic arranger(fileHandler);
-	pair<vector<string>, vector<int>> events = arranger.getListOfEventsWithKeywords(keywords);
-	vector<string> eventList = events.first;
+	vector<string> eventList = getSortedLineEntries();
 	for (size_t i = 0; i < eventList.size(); ++i) {
-		vector<string> parsedEvent = putToVectorEventDatails(eventList[i], true, date);
+		vector<string> parsedEvent = putToVectorEventDatails(eventList[i]);
 		toDisplay.push_back(parsedEvent);
 	}
 	return toDisplay;
 }
 
-vector<vector<string>> DisplayLogic::collectEventsFromDate(string date)
-{
-	vector<vector<string>> toDisplay;
-	ArrangeLogic arranger(fileHandler);
-	pair<vector<string>, vector<int>> events = arranger.getListOfEventsOnwardFrom(date);
-	vector<string> eventList = events.first;
-	for (size_t i = 0; i < eventList.size(); ++i) {
-		vector<string> parsedEvent = putToVectorEventDatails(eventList[i], true, date);
-		toDisplay.push_back(parsedEvent);
-	}
-	return toDisplay;
-}
-
-string DisplayLogic::formatContentsToLineEdit(int position, vector<string> keywords, string date, int displayCase)
+string DisplayLogic::formatContentsToLineEdit(int position)
 {
 	string lineAppend;
-	pair<vector<string>, vector<int>> events;
-	ArrangeLogic arranger(fileHandler);
-	if (displayCase == 0) {
-		events = arranger.getListOfEventsOnwardFrom(date);
-	}
-	else {
-		events = arranger.getListOfEventsWithKeywords(keywords);
-	}
-	vector<string> eventList = events.first;
+	vector<string> eventList = getSortedLineEntries();
 	int size = eventList.size();
 	if (position <= size) {
 		string line = eventList[position - 1];
-		string name = FileEntryFormatter::getAttributeEntry("name", line);
-		string date = FileEntryFormatter::getAttributeEntry("date", line);
+		string name = getAttributeEntry(NAME_ATTRIBUTE, line);
+		string date = getAttributeEntry(DATE_ATTRIBUTE, line);
 		if (date.length() == 10) {
 			date = date.substr(0, 2) + date.substr(3, 2) + date.substr(8, 2);
 		}
-		string start = FileEntryFormatter::getAttributeEntry("start", line);
+		string start = getAttributeEntry(START_ATTRIBUTE, line);
 		if (start.length() == 5) {
 			start = start.substr(0, 2) + start.substr(3, 2);
 		}
-		string end = FileEntryFormatter::getAttributeEntry("end", line);
+		string end = getAttributeEntry(END_ATTRIBUTE, line);
 		if (end.length() == 5) {
 			end = end.substr(0, 2) + end.substr(3, 2);
 		}
 		else if (end.length() == 7) {
 			end = end.substr(0, 2) + end.substr(3, 4);
 		}
-		string category = FileEntryFormatter::getAttributeEntry("category", line);
+		string category = getAttributeEntry(CATEGORY_ATTRIBUTE, line);
 
 		lineAppend = "[" + name + "]" + "[" + date + "]" + "[" + start + ((start != "") ? "-" : "") + end + "]" + "[" + category + "]";
 	}

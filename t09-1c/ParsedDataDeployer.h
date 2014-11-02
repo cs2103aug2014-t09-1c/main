@@ -3,24 +3,24 @@
 #define PARSE_DATA_DEPLOYER
 
 #include "ParsedDataPackage.h"
-#include <vector>
 
 class ParsedDataDeployer
 {
 private:
 	static string error;
+	string fileName;
 
 public:
-	ParsedDataDeployer();
+	ParsedDataDeployer(string fileName);
 	~ParsedDataDeployer();
-	static void executeAdd(ParsedDataPackage addPackage, string fileName);
-	static void executeDelete(ParsedDataPackage deletePackage, vector<string> keywords, string fileName, int displayCase);
-	static void executeEdit(vector<ParsedDataPackage> editPackages, vector<string> keywords, string fileName, int displayCase);
-	static vector<string> executeSearch(string searchPackage, string fileName);
-	static void executeUndo(string fileName);
-	static void executeRedo(string fileName);
-	static void executeComplete(ParsedDataPackage completePackage, vector<string> keywords, string fileName, int displayCase);
-	static void executeUncomplete(ParsedDataPackage uncompletePackage, vector<string> keywords, string fileName, int displayCase);
-	static string returnErrorString();
+	void executeAdd(ParsedDataPackage addPackage);
+	void executeDelete(ParsedDataPackage deletePackage, string date, vector<string> keywords, int displayCase);
+	void executeEdit(ParsedDataPackage editPackage, string date, vector<string> keywords, int displayCase);
+	vector<string> executeSearch(string fileName);
+	void executeUndo();
+	void executeRedo();
+	void executeComplete(ParsedDataPackage completePackage, string date, vector<string> keywords, int displayCase);
+	void executeUncomplete(ParsedDataPackage uncompletePackage, string date, vector<string> keywords, int displayCase);
+	string returnErrorString();
 };
 #endif
