@@ -38,7 +38,10 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 			displayCase = 0;
 			searchKeywords.clear();
 		}
-
+		else if (command == "all") {
+			displayCase = -1;
+			searchKeywords.clear();
+		}
 		else if (command == "add") {
 			AddParser addParsing;
 			BaseClassParser * addParse = &addParsing;

@@ -175,6 +175,9 @@ void BaseClassLogic::updateSortedEntries()
 	if (displayCase == 0){
 		getListOfEventsHome(date);
 	}
+	else if (displayCase == -1) {
+		getAllEntries();
+	}
 	else{
 		getListOfEventsHaving(keywords);
 	}

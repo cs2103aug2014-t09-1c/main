@@ -71,6 +71,14 @@ void MainWindow::sendFeedbackToController(QString text, bool isEnterPressed)
 void MainWindow::getProgressBarValueAdd()
 {
 	pair<int, int> stats = control.getCompletedStatToday();
-	emit sendMaxToProgressBar(stats.second);
-	emit sendValToProgressBar(stats.first);
+	if (stats.second > 0) {
+		ui->progressBar->setFormat("%v/%m");
+		emit sendMaxToProgressBar(stats.second);
+		emit sendValToProgressBar(stats.first);
+	}
+	else {
+		ui->progressBar->setFormat("Nothing to do today!");
+		emit sendMaxToProgressBar(1);
+		emit sendValToProgressBar(1);
+	}
 }

@@ -31,6 +31,7 @@ string EditParser::extractLeadingBracketContent(string arguments)
 	size_t position2 = arguments.find("]");
 
 	if (position1 == string::npos || position2 == string::npos) {
+		throw runtime_error(EDIT_PARSER_ERROR);
 		return contents;
 	}
 	else {
