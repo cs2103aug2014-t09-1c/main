@@ -31,6 +31,7 @@ public:
 
 	vector<vector<string>> displayEvents();
 	string formatContentsToLineEdit(int position);
+	
 };
 
 #endif 

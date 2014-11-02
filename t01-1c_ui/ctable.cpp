@@ -43,9 +43,6 @@ void CTable::createTableData(vector<vector<string>> listData)
 	vector<vector<string>> list = listData;
     clearContents();
 	setRowCount(0);
-	int eventsToday = 0;
-	int completedTodaysEvents = 0;
-
     int listSize = list.size();
     for (int i = 0; i < listSize; ++i) {
         insertRow(i);
@@ -53,7 +50,6 @@ void CTable::createTableData(vector<vector<string>> listData)
 		num->setFlags(num->flags() ^ Qt::ItemIsEditable);
 		num->setTextAlignment(Qt::AlignCenter);
         setItem(i,NUMBER_FIELD,num);
-		bool isToday = false;
         for (int j = 0; j < 5; ++j) {
             QString stringGet = QString::fromStdString(list[i][j]);
             QTableWidgetItem *item = new QTableWidgetItem(stringGet);
@@ -61,16 +57,7 @@ void CTable::createTableData(vector<vector<string>> listData)
 			if (j != 0) {
 				item->setTextAlignment(Qt::AlignCenter);
 			}
-			if (j == 3) {
-				if (stringGet.contains(QString("Today"))) {
-					++eventsToday;
-					isToday = true;
-				}
-			}
 			if (j == 4) {
-				if (stringGet == "yes" && isToday) {
-					++completedTodaysEvents;
-				}
 				if (stringGet == "Lapsed") {
 					item->setBackground(QBrush(Qt::red, Qt::FDiagPattern));
 				}
@@ -79,7 +66,6 @@ void CTable::createTableData(vector<vector<string>> listData)
 			verticalHeader()->setSectionResizeMode(i, QHeaderView::ResizeToContents);
         }
     }
-	emit emitAddValToProgressBar(completedTodaysEvents, eventsToday);
 	show();
 }
 

@@ -194,3 +194,20 @@ pair<string, string> SearchLogic::getEarliestFreeSlot(map<string, string> fromTo
 	pair<string, string> pairTime(uiDate, uiTime);
 	return pairTime;
 }
+
+pair<int, int> SearchLogic::getTodayCompletionStat(string todayDate)
+{
+	vector<string> dateKey;
+	dateKey.push_back(todayDate);
+	getListOfEventsHaving(dateKey);
+	vector<string> eventList = getSortedLineEntries();
+	int completed = 0;
+	int eventsToday = eventList.size();
+	for (int i = 0; i < eventsToday; ++i) {
+		if (getAttributeEntry(COMPLETE_ATTRIBUTE, eventList[i]) == "yes") {
+			++completed;
+		}
+	}
+	pair<int, int> stats(completed, eventsToday);
+	return stats;
+}

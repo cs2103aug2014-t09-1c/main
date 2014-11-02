@@ -101,3 +101,4 @@ string DisplayLogic::formatContentsToLineEdit(int position)
 	}
 	return lineAppend;
 }
+

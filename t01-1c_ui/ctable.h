@@ -62,9 +62,6 @@ public slots:
 	void createTableData(vector<vector<string>> listData);
 private slots:
     void selectRowSlot(const QModelIndex & selected, const QModelIndex & deselected);
-signals:
-	void emitAddValToProgressBar(int value, int maximum);
-
 
 };
 

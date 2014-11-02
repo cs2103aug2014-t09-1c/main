@@ -26,7 +26,7 @@ private slots:
 	void sendInputToController(string text);
 	void getSuggestionResponse(string selection, string lineText);
 	void sendFeedbackToController(QString text, bool isEnterPressed);
-	void getProgressBarValueAdd(int value, int maximum);
+	void getProgressBarValueAdd();
 
 signals:
 	void sendTableData(vector<vector<string>> data);

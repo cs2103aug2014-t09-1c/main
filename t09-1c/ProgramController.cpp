@@ -26,7 +26,6 @@ ProgramController::~ProgramController()
 	file.close();
 }
 
-
 void ProgramController::executeEntry(string input)//placeholder input for scanned input from UI
 {
 	CommandAndArgumentParser inputParse(input);
@@ -184,6 +183,18 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 	}
 	catch (const exception& ex){
 		return completer;
+	}
+}
+
+pair<int, int> ProgramController::getCompletedStatToday()
+{
+	pair<int, int> stats;
+	try {
+		SearchLogic searcher(fileName);
+		return searcher.getTodayCompletionStat(displayDate);
+	}
+	catch (const exception& ex){
+		return stats;
 	}
 }
 

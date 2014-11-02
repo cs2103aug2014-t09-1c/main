@@ -40,6 +40,7 @@ public:
 	vector<vector<string>> displayTable(string date);
 	string updateLineText(string inputText, bool isEnterPressed);
 	void ConnectToCommandFeedback(string input);
+	pair<int, int> getCompletedStatToday();
 };
 
 #endif
