@@ -241,14 +241,14 @@ string BaseClassParser::getDateNL(string arguments)
 	}
 	else if (isParameterStringANumber(dateCheck) && dateCheck.size() == 6) {
 
-		date = TimeParser::formatDate(arguments.substr(position1 + 4, 6));
+		date = formatDate(arguments.substr(position1 + 4, 6));
 
 		return date;
 	}
 	else if (dateCheck == "next") {
 		date = dateCheck + " " + day;
 
-		string newDateFormat = TimeParser::parseDayOfWeek(date);
+		string newDateFormat = parseDayOfWeek(date);
 		if (newDateFormat != date) { //parseDayOfWeek returns unchanged if error
 			return newDateFormat;
 		}
@@ -257,7 +257,7 @@ string BaseClassParser::getDateNL(string arguments)
 		}
 	}
 	else {
-		string newDateFormat = TimeParser::parseDayOfWeek(dateCheck);
+		string newDateFormat = parseDayOfWeek(dateCheck);
 
 		if (newDateFormat != dateCheck) { //parseDayOfWeek returns unchanged if error
 			return newDateFormat;

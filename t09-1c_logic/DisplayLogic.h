@@ -6,11 +6,11 @@
 #include <iostream>
 
 #define NO_START_STRING \
-	"In Progress"
+	"Deadline->"
 #define FLOAT_START_STRING \
-	"To Infinity"
+	"-"
 #define FLOAT_END_STRING \
-	"And Beyond"
+	"-"
 #define TODAY \
 	"Today, "
 #define LAPSED \

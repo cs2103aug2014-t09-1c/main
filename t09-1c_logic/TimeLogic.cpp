@@ -176,7 +176,7 @@ bool TimeLogic::isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2)
 		int numberEqual = 0;
 		int time1Vector[] = { time1.year, time1.month, time1.day, time1.hour, time1.min };
 		int time2Vector[] = { time2.year, time2.month, time2.day, time2.hour, time2.min };
-		while (iterator < 5) {
+		while (iterator < sizeof(time1Vector)) {
 
 			if (!boolStore) {
 				boolStore = (time1Vector[iterator] < time2Vector[iterator]);
@@ -197,18 +197,18 @@ bool TimeLogic::isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2)
 	return boolStore;
 }
 
-bool TimeLogic::isTimeBeforeToday(TimeLogic time1)
+bool TimeLogic::isTimeBeforeNow(TimeLogic time1)
 {
 	bool boolStore = false;
 	if (time1.getTimeFormatCheck()) {
 		int iterator = 0;
 		time_t t = time(0);   // get time now
 		struct tm * now = localtime(&t);
-		int todayVector[] = { (now->tm_year + 1900), (now->tm_mon + 1), now->tm_mday};
-		int time1Vector[] = { time1.year, time1.month, time1.day};
-		while (iterator < 3) {
+		int todayVector[] = { (now->tm_year + 1900), (now->tm_mon + 1), now->tm_mday, now->tm_hour, now->tm_min };
+		int time1Vector[] = { time1.year, time1.month, time1.day, time1.hour, time1.min};
+		while (iterator < sizeof(todayVector)) {
 			boolStore = (time1Vector[iterator] < todayVector[iterator]);
-			if (boolStore) {
+			if (time1Vector[iterator] != todayVector[iterator]) {
 				break;
 			}
 			iterator++;

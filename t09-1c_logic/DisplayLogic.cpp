@@ -55,7 +55,7 @@ vector<string> DisplayLogic::putToVectorEventDatails(string line)
 	eventVector.push_back(pos2);
 	eventVector.push_back(pos3);
 	bool isNotComplete = getAttributeEntry(COMPLETE_ATTRIBUTE, line) == "no";
-	string displayComplete = (isTimeBeforeToday(endDate) && isNotComplete) ? LAPSED : getAttributeEntry(COMPLETE_ATTRIBUTE, line);
+	string displayComplete = (isTimeBeforeNow(endDate) && isNotComplete) ? LAPSED : getAttributeEntry(COMPLETE_ATTRIBUTE, line);
 	eventVector.push_back(displayComplete);
 
 	return eventVector;

@@ -93,13 +93,16 @@ string TimeParser::parseDayOfWeek(string date)
 
 string TimeParser::formatDate(string date)
 {
+	const int critical2DigitYear = 50;
+	int inputYear = stoi(date.substr(4, 2));
 	date.insert(2, "/");
 	date.insert(5, "/");
 
 	time_t t = time(0);   // get time now
 	struct tm * time = localtime(&t);
 	int year = time->tm_year + 1900;
-	string hundredsyear = to_string(year / 100);
+	int addCentury = ((year - ((year / 100) * 100) > critical2DigitYear) && (year - ((year / 100) * 100) - critical2DigitYear) > inputYear) ? 1 : 0;
+	string hundredsyear = to_string(year / 100 + addCentury);
 	date.insert(6, hundredsyear);
 	return date;
 }

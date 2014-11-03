@@ -41,7 +41,7 @@ public:
 
 	//These are functions which controller and logic can access staticlly
 	static bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
-	static bool isTimeBeforeToday(TimeLogic time1);
+	static bool isTimeBeforeNow(TimeLogic time1);
 	static string getTimeNowInString();
 };
 

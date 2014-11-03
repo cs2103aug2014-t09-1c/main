@@ -141,9 +141,9 @@ bool BaseClassLogic::isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2)
 	return TimeLogic::isFirstEarlierThanSecond(time1, time2);
 }
 
-bool BaseClassLogic::isTimeBeforeToday(TimeLogic time1)
+bool BaseClassLogic::isTimeBeforeNow(TimeLogic time1)
 {
-	return TimeLogic::isTimeBeforeToday(time1);
+	return TimeLogic::isTimeBeforeNow(time1);
 }
 
 string BaseClassLogic::getTimeNowInString()

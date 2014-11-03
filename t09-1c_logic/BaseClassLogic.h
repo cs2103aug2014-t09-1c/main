@@ -84,7 +84,7 @@ protected:
 	string getStringTime(TimeLogic obj);
 	string returnPlusOne(TimeLogic obj);
 	bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
-	bool isTimeBeforeToday(TimeLogic time1);
+	bool isTimeBeforeNow(TimeLogic time1);
 	string getTimeNowInString();
 	TimeLogic addHours(TimeLogic obj, int hours, int min);
 
