@@ -9,16 +9,27 @@
 // category is to be made optional. 
 // ie syntax can just be  [eventName][][][]
 
-// Natural Language Syntax: meeting with boss on 191014 from 1700 to 1800 @boss - timed
-// Natural Language Syntax: meeting with boss on 191014 from 1700 to 1800+1 @boss - timed with next day
-// Natural Language Syntax: meeting with boss on 101014 at 1700 @boss - deadline
-// category is made optional in NL
-// **NOT IMPLEMENTED** Natural Language Syntax: meeting with boss @boss - float
-// **NOT IMPLEMENTED** Natural Language Syntax: meeting with boss - float without category 
-
 // Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
-// eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
-// eg. Watch movie 191014 1700 to 1800
+// eg. Watch movie on tomorrow / Watch movie on next tuesday at 1700 / watch movie on next tuesday from 1300 to 1500
+// eg. Watch movie on 1910140 from 1700 to 1800
+
+// Natural Language: Date overload [OK], time (eg. 1800+1) [OK]
+// 
+// NL Category:
+// Parsed first and removed from arguments to cater for float events.
+//
+// NL Event:
+// Parsed in a way depended on keyword " on " from NL Date.
+// Without " on ", automatically parsed as float event. With " on ", checks for valid Date format.
+//
+// NL Date:
+// Must be after keyword " on ". (eg. Watch movie on tomorrow at 1700.)
+// Invalid format after keyword " on " will be treated as a float event. (eg. Sitting on the roof top)
+// 
+// NL Time:
+// Must be after keyword(s) " at " for deadline, (" from ", " to ") for timed.
+// Invalid format after keyword(s) will return error.
+
 
 AddParser::AddParser() : BaseClassParser()
 {
@@ -129,7 +140,9 @@ string AddParser::extractEvent(string arguments)
 			}
 		}
 		else {
-			throw runtime_error(ADD_PARSER_ERROR);
+			event = arguments;
+
+			return event;
 		}
 	}
 	else {

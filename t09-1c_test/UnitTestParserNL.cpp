@@ -47,8 +47,8 @@ namespace t091c_test
 		TEST_METHOD(Event5)
 		{
 			AddParser add;
-			string event = add.extractEvent("meeting with boss on 101014 on ");
-			string expectedEvent = "meeting with boss on 101014 on ";
+			string event = add.extractEvent("meeting with boss on 101014 on booya");
+			string expectedEvent = "meeting with boss on 101014 on booya";
 			Assert::AreEqual(expectedEvent, event);
 		}
 
