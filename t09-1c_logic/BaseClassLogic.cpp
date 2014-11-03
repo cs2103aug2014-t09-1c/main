@@ -294,7 +294,10 @@ void BaseClassLogic::addNonFloatEventToEntry(int iteration)
 				TimeLogic checkLineTimeLogic = getPriorityDateTime(checkLine);
 				TimeLogic deadline = getPriorityDateTime(line);
 
-				if (isFirstEarlierThanSecond(deadline, checkLineTimeLogic)) {
+				bool isEqualDateTime = (checkLineTimeLogic.getStringTime() == deadline.getStringTime()) && (checkLineTimeLogic.getStringDate() == deadline.getStringDate());
+				bool isDeadlinePrioritise = (getAttributeEntry(TYPE_ATTRIBUTE, line) == "deadline") && (getAttributeEntry(TYPE_ATTRIBUTE, checkLine) == "timed") && isEqualDateTime;
+
+				if ((isFirstEarlierThanSecond(deadline, checkLineTimeLogic) && !isEqualDateTime) || isDeadlinePrioritise) {
 					if (maxSize == minSize) {
 						sortedLineEntries.insert(it1 + minSize, line);
 						sortedLineFilePositions.insert(it2 + minSize, iteration);
