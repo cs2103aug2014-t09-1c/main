@@ -52,10 +52,11 @@ string ParserHelperFunctions::removeWhiteSpace(string parameter)
 	return parameter;
 }
 
-bool ParserHelperFunctions::isDayValid(string day)
+bool ParserHelperFunctions::isDateParameterValid(string day)
 {
-	unordered_set<string> set = { "mon", "tues", "wed", "thurs", "fri",
-		"monday", "tuesday", "wednesday", "thursday", "friday" };
+	unordered_set<string> set = { "mon", "tues", "wed", "thurs", "fri", "sat", "sun",
+		"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
+	"today", "tomorrow", "next" };
 
 	unordered_set<string>::const_iterator got = set.find(day);
 

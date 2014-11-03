@@ -48,13 +48,14 @@ public:
 	AddParser();
 	~AddParser();
 	ParsedDataPackage parseAndReturn(string parseInput);
-	ParsedDataPackage parseNLandReturn(string parseInput); // parse Natural Language and Return
+	ParsedDataPackage parseNLAndReturn(string parseInput); // parse Natural Language and Return
 
 	// Natural Language Parsing
 	string extractEvent(string arguments);
 	string extractDateNL(string arguments);
 	void extractTimeNL(string arguments);
 	string extractCategory(string arguments);
+	string removeCategory(string arguments);
 
 };
 

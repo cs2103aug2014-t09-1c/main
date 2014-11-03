@@ -90,13 +90,14 @@ ParsedDataPackage AddParser::parseAndReturn(string parseInput)
 	}
 }
 
-ParsedDataPackage AddParser::parseNLandReturn(string parseInput)
+ParsedDataPackage AddParser::parseNLAndReturn(string parseInput)
 {
 	try {
+		parsedData.category = extractCategory(parseInput);
+		parseInput = removeCategory(parseInput);
 		parsedData.name = extractEvent(parseInput);
 		parsedData.date = extractDateNL(parseInput);
 		extractTimeNL(parseInput);
-		parsedData.category = extractCategory(parseInput);
 		return parsedData;
 	}
 	catch (const exception& ex){
@@ -108,19 +109,17 @@ string AddParser::extractEvent(string arguments)
 {
 	string event = "";
 	string dateCheck = "";
-	string keyword = "on ";
+	string keyword = " on ";
 
 	size_t position1 = arguments.rfind(keyword);
-	size_t position2 = arguments.find(" ", position1 + 3, 1);
+	size_t position2 = arguments.find(" ", position1 + 4, 1);
 
-	if (position1 == string::npos || position2 == string::npos || position1 == 0) {
-		throw runtime_error(ADD_PARSER_ERROR);
-	}
-	else {
-		dateCheck = arguments.substr(position1 + 3, position2 - position1 - 3);
+	if (position1 != string::npos && position2 != string::npos && position1 != 0) {
+		dateCheck = arguments.substr(position1 + 4, position2 - position1 - 4);
 
-		if (ParserHelperFunctions::isParameterStringANumber(dateCheck) && dateCheck.size() == 6) {
-			event = arguments.substr(0, position1 - 1);
+		if ((ParserHelperFunctions::isParameterStringANumber(dateCheck) && dateCheck.size() == 6) ||
+			ParserHelperFunctions::isDateParameterValid(dateCheck)) {
+			event = arguments.substr(0, position1);
 
 			if ((event.find_first_not_of(' ') != string::npos)) {
 				return event;
@@ -133,22 +132,57 @@ string AddParser::extractEvent(string arguments)
 			throw runtime_error(ADD_PARSER_ERROR);
 		}
 	}
+	else {
+		event = arguments;
+
+		return event;
+	}
 }
 
 string AddParser::extractDateNL(string iterArguments)
 {
+	string keyword = " on ";
+
+	size_t position1 = iterArguments.rfind(keyword);
+	size_t position2 = iterArguments.find(" ", position1 + 4, 1);
+	size_t position3 = iterArguments.find(" ", position2 + 1, 1);
+
 	string date = "";
+	string dateCheck = iterArguments.substr(position1 + 4, position2 - position1 - 4);
+	string day = iterArguments.substr(position2 + 1, position3 - position2 - 1);
 
 	if (parsedData.name.empty()) {
+		throw runtime_error(ADD_PARSER_NO_EVENT_ERROR);
+	}
+	else if (parsedData.name == iterArguments) {
 		return "";
 	}
-	else {
-		string keyword = "on ";
-		size_t position1 = iterArguments.rfind(keyword);
+	else if (ParserHelperFunctions::isParameterStringANumber(dateCheck) && dateCheck.size() == 6) {
 
-		date = formatDate(iterArguments.substr(position1 + 3, 6));
+		date = TimeParser::formatDate(iterArguments.substr(position1 + 4, 6));
 
 		return date;
+	}
+	else if (dateCheck == "next") {
+		date = dateCheck + " " + day;
+
+		string newDateFormat = TimeParser::parseDayOfWeek(date);
+		if (newDateFormat != date) { //parseDayOfWeek returns unchanged if error
+			return newDateFormat;
+		}
+		else {
+			throw runtime_error(ADD_PARSER_DAY_OF_WEEK_ERROR);
+		}
+	}
+	else {
+		string newDateFormat = TimeParser::parseDayOfWeek(dateCheck);
+
+		if (newDateFormat != dateCheck) { //parseDayOfWeek returns unchanged if error
+			return newDateFormat;
+		}
+		else {
+			throw runtime_error(ADD_PARSER_DAY_OF_WEEK_ERROR);
+		}
 	}
 }
 
@@ -156,9 +190,9 @@ void AddParser::extractTimeNL(string iterArguments)
 {
 	string startTime = "";
 	string endTime = "";
-	string keyword1 = "at ";
-	string keyword2 = "from ";
-	string keyword3 = "to ";
+	string keyword1 = " at ";
+	string keyword2 = " from ";
+	string keyword3 = " to ";
 	size_t position1 = iterArguments.rfind(keyword1);
 	size_t position2 = iterArguments.rfind(keyword2);
 	size_t position3 = iterArguments.rfind(keyword3);
@@ -167,9 +201,13 @@ void AddParser::extractTimeNL(string iterArguments)
 		parsedData.start = "";
 		parsedData.end = "";
 	}
+	else if (parsedData.name == iterArguments) {
+		parsedData.start = "";
+		parsedData.end = "";
+	}
 	else if (position1 != string::npos) {
-		size_t position4 = iterArguments.find(" ", position1 + 3, 1);
-		endTime = iterArguments.substr(position1 + 3, position4 - position1 - 3);
+		size_t position4 = iterArguments.find(" ", position1 + 4, 1);
+		endTime = iterArguments.substr(position1 + 4, position4 - position1 - 4);
 
 		if (isParameterStringANumber(endTime) && endTime.size() == 4) {
 			endTime.insert(2, ":");
@@ -180,11 +218,11 @@ void AddParser::extractTimeNL(string iterArguments)
 		}
 	}
 	else if (position2 != string::npos && position3 != string::npos) {
-		size_t position5 = iterArguments.find(" ", position2 + 5, 1);
-		startTime = iterArguments.substr(position2 + 5, position5 - position2 - 5);
+		size_t position5 = iterArguments.find(" ", position2 + 6, 1);
+		startTime = iterArguments.substr(position2 + 6, position5 - position2 - 6);
 
-		size_t position6 = iterArguments.find(" ", position3 + 3, 1);
-		endTime = iterArguments.substr(position3 + 3, position6 - position3 - 3);
+		size_t position6 = iterArguments.find(" ", position3 + 4, 1);
+		endTime = iterArguments.substr(position3 + 4, position6 - position3 - 4);
 
 		bool isValidTimeForOneDay = startTime.size() == 4 &&
 			endTime.size() == 4 &&
@@ -217,14 +255,26 @@ string AddParser::extractCategory(string arguments)
 	string keyword = "@";
 	size_t position1 = arguments.rfind(keyword);
 
-	if (parsedData.name == "") {
-		return "";
-	}
-	else if (position1 != string::npos) {
+	if (position1 != string::npos) {
 		category = arguments.substr(position1 + 1);
 		return category;
 	}
 	else {
 		return category;
+	}
+}
+
+string AddParser::removeCategory(string arguments)
+{
+	string keyword = "@";
+	size_t position1 = arguments.rfind(keyword);
+
+	if (position1 != string::npos) {
+		string newArguments = arguments.substr(0, position1 - 1);
+
+		return newArguments;
+	}
+	else {
+		return arguments;
 	}
 }

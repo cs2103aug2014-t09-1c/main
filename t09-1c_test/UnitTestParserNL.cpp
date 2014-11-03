@@ -24,7 +24,7 @@ namespace t091c_test
 		{
 			AddParser add;
 			string event = add.extractEvent("meeting with boss");
-			string expectedEvent = "";
+			string expectedEvent = "meeting with boss";
 			Assert::AreEqual(expectedEvent, event);
 		}
 
@@ -32,7 +32,7 @@ namespace t091c_test
 		{
 			AddParser add;
 			string event = add.extractEvent("meeting with boss on 10101");
-			string expectedEvent = "";
+			string expectedEvent = "meeting with boss on 10101";
 			Assert::AreEqual(expectedEvent, event);
 		}
 
@@ -40,7 +40,7 @@ namespace t091c_test
 		{
 			AddParser add;
 			string event = add.extractEvent("meeting with boss on 1010124");
-			string expectedEvent = "";
+			string expectedEvent = "meeting with boss on 1010124";
 			Assert::AreEqual(expectedEvent, event);
 		}
 
@@ -48,7 +48,7 @@ namespace t091c_test
 		{
 			AddParser add;
 			string event = add.extractEvent("meeting with boss on 101014 on ");
-			string expectedEvent = "";
+			string expectedEvent = "meeting with boss on 101014 on ";
 			Assert::AreEqual(expectedEvent, event);
 		}
 
@@ -56,7 +56,7 @@ namespace t091c_test
 		{
 			AddParser add;
 			string event = add.extractEvent("on 101014 at 1700");
-			string expectedEvent = "";
+			string expectedEvent = "on 101014 at 1700";
 			Assert::AreEqual(expectedEvent, event);
 		}
 
@@ -71,7 +71,7 @@ namespace t091c_test
 		TEST_METHOD(Date1)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 at 1700");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 at 1700");
 			string expectedDate = "10/10/2014";
 			Assert::AreEqual(expectedDate, parsedData.date);
 		}
@@ -79,7 +79,7 @@ namespace t091c_test
 		TEST_METHOD(Date2)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("on 101014 at 1700");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("on 101014 at 1700");
 			string expectedDate = "";
 			Assert::AreEqual(expectedDate, parsedData.date);
 		}
@@ -87,7 +87,7 @@ namespace t091c_test
 		TEST_METHOD(Time1)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101214 at 1700");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101214 at 1700");
 			string expectedEndTime = "17:00";
 			Assert::AreEqual(expectedEndTime, parsedData.end);
 		}
@@ -95,7 +95,7 @@ namespace t091c_test
 		TEST_METHOD(Time2a)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("watch a midnight movie on 031214 from 1700 to 1800");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("watch a midnight movie on 031214 from 1700 to 1800");
 			string expectedStartTime = "17:00";
 			Assert::AreEqual(expectedStartTime, parsedData.start);
 		}
@@ -103,7 +103,7 @@ namespace t091c_test
 		TEST_METHOD(Time2b)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("watch a midnight movie on 031214 from 1700 to 1800");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("watch a midnight movie on 031214 from 1700 to 1800");
 			string expectedEndTime = "18:00";
 			Assert::AreEqual(expectedEndTime, parsedData.end);
 		}
@@ -111,7 +111,7 @@ namespace t091c_test
 		TEST_METHOD(Time3a)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("on 101014 from 1700 to 1800");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("on 101014 from 1700 to 1800");
 			string expectedStartTime = "";
 			Assert::AreEqual(expectedStartTime, parsedData.start);
 		}
@@ -119,7 +119,7 @@ namespace t091c_test
 		TEST_METHOD(Time3b)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("on 101014 from 1700 to 1800");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("on 101014 from 1700 to 1800");
 			string expectedEndTime = "";
 			Assert::AreEqual(expectedEndTime, parsedData.end);
 		}
@@ -127,7 +127,7 @@ namespace t091c_test
 		TEST_METHOD(Time4a)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("from 1700 to 1800");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("from 1700 to 1800");
 			string expectedStartTime = "";
 			Assert::AreEqual(expectedStartTime, parsedData.start);
 		}
@@ -135,7 +135,7 @@ namespace t091c_test
 		TEST_METHOD(Time4b)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("from 1700 to 1800");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("from 1700 to 1800");
 			string expectedEndTime = "";
 			Assert::AreEqual(expectedEndTime, parsedData.end);
 		}
@@ -143,7 +143,7 @@ namespace t091c_test
 		TEST_METHOD(Time5)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 at 17000");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 at 17000");
 			string expectedEndTime = "";
 			Assert::AreEqual(expectedEndTime, parsedData.end);
 		}
@@ -151,7 +151,7 @@ namespace t091c_test
 		TEST_METHOD(Time6a)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 17000 to 1800");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 17000 to 1800");
 			string expectedStartTime = "";
 			Assert::AreEqual(expectedStartTime, parsedData.start);
 		}
@@ -159,7 +159,7 @@ namespace t091c_test
 		TEST_METHOD(Time6b)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 18000");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 1700 to 18000");
 			string expectedEndTime = "";
 			Assert::AreEqual(expectedEndTime, parsedData.end);
 		}
@@ -167,7 +167,7 @@ namespace t091c_test
 		TEST_METHOD(Time7)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800+1");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 1700 to 1800+1");
 			string expectedEndTime = "18:00+1";
 			Assert::AreEqual(expectedEndTime, parsedData.end);
 		}
@@ -175,7 +175,7 @@ namespace t091c_test
 		TEST_METHOD(Category1)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800 @boss");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 1700 to 1800 @boss");
 			string expectedCategory = "boss";
 			Assert::AreEqual(expectedCategory, parsedData.category);
 		}
@@ -183,7 +183,7 @@ namespace t091c_test
 		TEST_METHOD(Category2)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800 @@meeting");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 1700 to 1800 @@meeting");
 			string expectedCategory = "meeting";
 			Assert::AreEqual(expectedCategory, parsedData.category);
 		}
@@ -191,7 +191,7 @@ namespace t091c_test
 		TEST_METHOD(Category3)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on 101014 from 1700 to 1800 -meeting-");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 1700 to 1800 -meeting-");
 			string expectedCategory = "";
 			Assert::AreEqual(expectedCategory, parsedData.category);
 		}
@@ -199,7 +199,7 @@ namespace t091c_test
 		TEST_METHOD(OverallTest1)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on tuesday from 1700 to 1800 @meeting");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on tuesday from 1700 to 1800 @meeting");
 			string expectedEvent = "meeting with boss";
 			string expectedDate = "04/11/2014";
 			string expectedStartTime = "17:00";
@@ -215,9 +215,9 @@ namespace t091c_test
 		TEST_METHOD(OverallTest2)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on next wed from 1700 to 1800 @meeting");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on next wed from 1700 to 1800 @meeting");
 			string expectedEvent = "meeting with boss";
-			string expectedDate = "05/11/2014";
+			string expectedDate = "12/11/2014";
 			string expectedStartTime = "17:00";
 			string expectedEndTime = "18:00";
 			string expectedCategory = "meeting";
@@ -231,7 +231,7 @@ namespace t091c_test
 		TEST_METHOD(OverallTest3)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLandReturn("meeting with boss on wed from 1700 to 1800 @meeting");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on wed from 1700 to 1800 @meeting");
 			string expectedEvent = "meeting with boss";
 			string expectedDate = "05/11/2014";
 			string expectedStartTime = "17:00";
