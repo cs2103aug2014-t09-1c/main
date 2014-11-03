@@ -33,6 +33,12 @@
 	"Please enter a valid HHMM-HHMM start-end time format!"
 #define PARSER_TIME_ERROR \
 	"Please enter a valid time format!"
+#define PARSER_NO_EVENT_ERROR \
+	"Please enter a valid event name."
+#define PARSER_DAY_OF_WEEK_ERROR \
+	"Please enter a valid day of the week!"
+#define PARSER_SYNTAX_ERROR \
+	"Please follow the correct syntax for QuickAdd!"
 
 class BaseClassParser
 {
@@ -55,6 +61,13 @@ protected:
 
 	void insertAttribute(string attribute, string entry);
 	void insertAttribute(string attribute, int entry);
+
+	bool isDateParameterValid(string day);
+	string getEventNL(string arguments);
+	string getDateNL(string arguments);
+	void getAndStoreTimesNL(string arguments);
+	void checkForSyntaxSwap(string arguments); \
+	int eventSize;
 
 public:
 	virtual ParsedDataPackage parseAndReturn(string parseInput);

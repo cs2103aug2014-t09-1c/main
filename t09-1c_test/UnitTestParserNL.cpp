@@ -15,7 +15,7 @@ namespace t091c_test
 		TEST_METHOD(Event1)
 		{
 			AddParser add;
-			string event = add.extractEvent("meeting with boss on 101014 at 1700");
+			string event = add.extractEventNL("meeting with boss on 101014 at 1700");
 			string expectedEvent = "meeting with boss";
 			Assert::AreEqual(expectedEvent, event);
 		}
@@ -23,7 +23,7 @@ namespace t091c_test
 		TEST_METHOD(Event2)
 		{
 			AddParser add;
-			string event = add.extractEvent("meeting with boss");
+			string event = add.extractEventNL("meeting with boss");
 			string expectedEvent = "meeting with boss";
 			Assert::AreEqual(expectedEvent, event);
 		}
@@ -31,7 +31,7 @@ namespace t091c_test
 		TEST_METHOD(Event3)
 		{
 			AddParser add;
-			string event = add.extractEvent("meeting with boss on 10101");
+			string event = add.extractEventNL("meeting with boss on 10101");
 			string expectedEvent = "meeting with boss on 10101";
 			Assert::AreEqual(expectedEvent, event);
 		}
@@ -39,7 +39,7 @@ namespace t091c_test
 		TEST_METHOD(Event4)
 		{
 			AddParser add;
-			string event = add.extractEvent("meeting with boss on 1010124");
+			string event = add.extractEventNL("meeting with boss on 1010124");
 			string expectedEvent = "meeting with boss on 1010124";
 			Assert::AreEqual(expectedEvent, event);
 		}
@@ -47,7 +47,7 @@ namespace t091c_test
 		TEST_METHOD(Event5)
 		{
 			AddParser add;
-			string event = add.extractEvent("meeting with boss on 101014 on booya");
+			string event = add.extractEventNL("meeting with boss on 101014 on booya");
 			string expectedEvent = "meeting with boss on 101014 on booya";
 			Assert::AreEqual(expectedEvent, event);
 		}
@@ -55,7 +55,7 @@ namespace t091c_test
 		TEST_METHOD(Event6)
 		{
 			AddParser add;
-			string event = add.extractEvent("on 101014 at 1700");
+			string event = add.extractEventNL("on 101014 at 1700");
 			string expectedEvent = "on 101014 at 1700";
 			Assert::AreEqual(expectedEvent, event);
 		}
@@ -63,7 +63,7 @@ namespace t091c_test
 		TEST_METHOD(Event7)
 		{
 			AddParser add;
-			string event = add.extractEvent("  on 101014 at 1700");
+			string event = add.extractEventNL("  on 101014 at 1700");
 			string expectedEvent = "";
 			Assert::AreEqual(expectedEvent, event);
 		}
@@ -71,8 +71,8 @@ namespace t091c_test
 		TEST_METHOD(Date1)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 at 1700");
-			string expectedDate = "10/10/2014";
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 200515 at 1700");
+			string expectedDate = "20/05/15";
 			Assert::AreEqual(expectedDate, parsedData.date);
 		}
 
@@ -175,7 +175,7 @@ namespace t091c_test
 		TEST_METHOD(Category1)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 1700 to 1800 @boss");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 200515 from 1700 to 1800 @boss");
 			string expectedCategory = "boss";
 			Assert::AreEqual(expectedCategory, parsedData.category);
 		}
@@ -183,7 +183,7 @@ namespace t091c_test
 		TEST_METHOD(Category2)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 1700 to 1800 @@meeting");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 200515 from 1700 to 1800 @@meeting");
 			string expectedCategory = "meeting";
 			Assert::AreEqual(expectedCategory, parsedData.category);
 		}
@@ -191,7 +191,7 @@ namespace t091c_test
 		TEST_METHOD(Category3)
 		{
 			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 1700 to 1800 -meeting-");
+			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 200515 from 1700 to 1800 -meeting-");
 			string expectedCategory = "";
 			Assert::AreEqual(expectedCategory, parsedData.category);
 		}

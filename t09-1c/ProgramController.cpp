@@ -91,7 +91,11 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 			//This will be handled by updateLineText(). This will ensure exception does not occur.
 		}
 		else {
-			throw runtime_error("No Actionable Commands for Input Found");
+			AddParser addParsing;
+			BaseClassParser * addParse = &addParsing;
+			dataPackage = addParse->parseNLAndReturn(input);
+			deployer.executeAdd(dataPackage);
+			//throw runtime_error("No Actionable Commands for Input Found");
 		}
 	}
 	catch (const exception& ex){

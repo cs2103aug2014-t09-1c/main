@@ -5,19 +5,6 @@
 #include "BaseClassParser.h"
 #include "ParsedDataPackage.h"
 
-#define ADD_PARSER_ERROR \
-	"Unable to Commit. Please enter the correct format."
-#define ADD_PARSER_NO_EVENT_ERROR \
-	"Please enter a valid event name."
-#define ADD_PARSER_6DIGIT_DATE_ERROR \
-	"Please enter a valid DDMMYY date!"
-#define ADD_PARSER_DAY_OF_WEEK_ERROR \
-	"Please enter a valid day of the week!"
-#define ADD_PARSER_START_END_TIME_ERROR \
-	"Please enter a valid HHMM-HHMM start-end time format!"
-#define ADD_PARSER_TIME_ERROR \
-	"Please enter a valid time format!"
-
 // Syntax: [eventName][date][start-end][category] - timed
 // Syntax: [eventName][date][deadline][category] - deadline
 // Syntax: [eventName][][][category] - float
@@ -61,11 +48,12 @@ public:
 	ParsedDataPackage parseNLAndReturn(string parseInput); // parse Natural Language and Return
 
 	// Natural Language Parsing
-	string extractEvent(string arguments);
+	string extractCategoryNL(string arguments);
+	string removeCategoryNL(string arguments);
+	string extractEventNL(string arguments);
 	string extractDateNL(string arguments);
-	void extractTimeNL(string arguments);
-	string extractCategory(string arguments);
-	string removeCategory(string arguments);
+	void extractTimesNL(string arguments);
+	void syntaxSwapChecker(string arguments);
 
 };
 

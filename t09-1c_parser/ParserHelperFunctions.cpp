@@ -51,19 +51,3 @@ string ParserHelperFunctions::removeWhiteSpace(string parameter)
 	parameter.erase(remove(parameter.begin(), parameter.end(), ' '), parameter.end());
 	return parameter;
 }
-
-bool ParserHelperFunctions::isDateParameterValid(string day)
-{
-	unordered_set<string> set = { "mon", "tues", "wed", "thurs", "fri", "sat", "sun",
-		"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
-	"today", "tomorrow", "next" };
-
-	unordered_set<string>::const_iterator got = set.find(day);
-
-	if (got == set.end()) {
-		return false;
-	}
-	else {
-		return true;
-	}
-}
