@@ -179,6 +179,7 @@ string BaseClassParser::getDate(string dateString)
 	}
 }
 
+//@ERIC A0111718M
 bool BaseClassParser::isDateParameterValid(string day)
 {
 	unordered_set<string> set = { "mon", "tues", "wed", "thurs", "fri", "sat", "sun",
@@ -195,6 +196,7 @@ bool BaseClassParser::isDateParameterValid(string day)
 	}
 }
 
+//@ERIC A0111718M
 string BaseClassParser::getEventNL(string arguments)
 {
 	string event = "";
@@ -236,6 +238,7 @@ string BaseClassParser::getEventNL(string arguments)
 	}
 }
 
+//@ERIC A0111718M
 string BaseClassParser::getDateNL(string arguments)
 {
 	string keyword = " on ";
@@ -280,6 +283,7 @@ string BaseClassParser::getDateNL(string arguments)
 	}
 }
 
+//@ERIC A0111718M
 void BaseClassParser::getAndStoreTimesNL(string arguments)
 {
 	string startTime = "";
@@ -339,6 +343,7 @@ void BaseClassParser::getAndStoreTimesNL(string arguments)
 	}
 }
 
+//@ERIC A0111718M
 void BaseClassParser::checkForSyntaxSwap(string arguments)
 {
 	string keyword1 = " on ";

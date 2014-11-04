@@ -2,18 +2,19 @@
 #include "CommandAndArgumentParser.h"
 #include "ParserHelperFunctions.h"
 
-
+//@ERIC A0111718M
 CommandAndArgumentParser::CommandAndArgumentParser(string input)
 {
 	setCommand(input);
 	setArguments(input);
 }
 
-
+//@ERIC A0111718M
 CommandAndArgumentParser::~CommandAndArgumentParser()
 {
 }
 
+//@ERIC A0111718M
 void CommandAndArgumentParser::setCommand(string input)
 {
 	string command;
@@ -22,6 +23,7 @@ void CommandAndArgumentParser::setCommand(string input)
 	this->command = command;
 }
 
+//@ERIC A0111718M
 void CommandAndArgumentParser::setArguments(string input)
 {
 	string arguments;
@@ -37,16 +39,19 @@ void CommandAndArgumentParser::setArguments(string input)
 	this->arguments = arguments;
 }
 
+//@ERIC A0111718M
 string CommandAndArgumentParser::getCommand()
 {
 	return command;
 }
 
+//@ERIC A0111718M
 string CommandAndArgumentParser::getArguments()
 {
 	return arguments;
 }
 
+//@ERIC A0111718M
 string CommandAndArgumentParser::argumentStringParser(string argument)
 {
 	if (ParserHelperFunctions::isParameterStringEmpty(argument)) {
