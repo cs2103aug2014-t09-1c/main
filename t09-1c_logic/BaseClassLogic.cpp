@@ -389,11 +389,6 @@ bool BaseClassLogic::isDateAndTimeCorrect(string lineEntry)
 	}
 }
 
-void BaseClassLogic::execute()
-{
-	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
-}
-
 void BaseClassLogic::execute(map<string, string> lineEntries)
 {
 	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
@@ -412,6 +407,41 @@ void BaseClassLogic::execute(map<string, int> fromToPositions, int executionCase
 void BaseClassLogic::execute(map<string, int> position, map<string, string> lineEntries)
 {
 	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+}
+
+vector<vector<string>> BaseClassLogic::displayEvents()
+{
+	vector<vector<string>> placeHolder;
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+	return placeHolder;
+}
+
+vector<string> BaseClassLogic::createKeywords(string input)
+{
+	vector<string> placeHolder;
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+	return placeHolder;
+}
+
+string BaseClassLogic::formatContentsToLineEdit(int position) 
+{
+	string placeHolder;
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+	return placeHolder;
+}
+
+pair <string, string> BaseClassLogic::getEarliestFreeSlot(map<string, string> fromToTime, map<string, int> duration)
+{
+	pair <string, string> placeHolder;
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+	return placeHolder;
+}
+
+pair <int, int> BaseClassLogic::getTodayCompletionStat(string todayDate)
+{
+	pair <int, int> placeHolder;
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+	return placeHolder;
 }
 
 stack<string> BaseClassLogic::getLinesForUndo()

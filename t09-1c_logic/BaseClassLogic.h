@@ -112,11 +112,17 @@ public:
 	vector<string> getSortedLineEntries();
 	vector<int> getSortedLinePositions();
 
-	virtual void execute();
 	virtual void execute(map<string,string> lineEntries);
 	virtual void execute(map<string, int> fromToPositions);
 	virtual void execute(map<string, int> fromToPositions, int executionCase);
 	virtual void execute(map<string, int> position, map<string, string> lineEntries);
+	virtual vector<vector<string>> displayEvents();
+
+	virtual vector<string> createKeywords(string input);
+	virtual string formatContentsToLineEdit(int position);
+	virtual pair <string, string> getEarliestFreeSlot(map<string, string> fromToTime, map<string, int> duration);
+	virtual pair <int, int> getTodayCompletionStat(string todayDate);
+
 	stack<string> getLinesForUndo();
 	stack<int> getPosForUndo();
 };

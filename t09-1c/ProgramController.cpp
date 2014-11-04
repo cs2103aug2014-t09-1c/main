@@ -3,10 +3,8 @@
 #include "ParsedDataDeployer.h"
 #include "ParsedDataPackage.h"
 #include <vector>
-#include "DisplayLogic.h"
 #include "TimeParser.h"
 #include "CompleteParser.h"
-#include "SearchLogic.h"
 
 //after an input is scanned by UI method, call to method sendToParse is made to send input to Parser
 //after Parser returns the variables in ParsedDataPackage, send the details to logic
@@ -20,13 +18,20 @@ ProgramController::ProgramController(string fileName) : deployer(fileName)
 	displayDate = TimeParser::parseDayOfWeek("today");
 }
 
+ProgramController::ProgramController(vector<string> testVector) : deployer(testVector)
+{
+	isTestMode = true;
+	displayDate = TimeParser::parseDayOfWeek("today");
+}
 
 ProgramController::~ProgramController()
 {
-	file.close();
+	if (!isTestMode) {
+		file.close();
+	}
 }
 
-void ProgramController::executeEntry(string input)//placeholder input for scanned input from UI
+void ProgramController::executeEntry(string input)
 {
 	CommandAndArgumentParser inputParse(input);
 
@@ -95,11 +100,11 @@ void ProgramController::executeEntry(string input)//placeholder input for scanne
 			BaseClassParser * addParse = &addParsing;
 			dataPackage = addParse->parseNLAndReturn(input);
 			deployer.executeAdd(dataPackage);
-			//throw runtime_error("No Actionable Commands for Input Found");
 		}
+		consoleString = deployer.returnConsoleString();
 	}
 	catch (const exception& ex){
-
+		consoleString = ex.what();
 	}
 }
 
@@ -142,14 +147,8 @@ vector<vector<string>> ProgramController::refreshTableDisplay()
 vector<vector<string>> ProgramController::displayTable(string date)
 {
 	vector<vector<string>> forTableDisplay;
-	try {
-		DisplayLogic displayer(fileName, displayDate, searchKeywords, displayCase);
-		forTableDisplay = displayer.displayEvents();
-		return forTableDisplay;
-	}
-	catch (const exception& ex){
-		return forTableDisplay;
-	}
+	forTableDisplay = deployer.getDisplayEvents(displayDate, searchKeywords, displayCase);
+	return forTableDisplay;
 }
 
 string ProgramController::updateLineText(string inputText, bool isEnterPressed)
@@ -171,16 +170,14 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 				int argPosition = editor.convertToPosition(argument);
 				if (argPosition >= 0)
 				{
-					DisplayLogic displayer(fileName, displayDate, searchKeywords, displayCase);
-					string append = displayer.formatContentsToLineEdit(argPosition);
+					string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
 					completer = inputText + append;
 				}
 			}
 			else if (command == "slot" && isEnterPressed) {
 				SearchParser search;
 				dataPackage = search.parsefreeSlotCheck(argument);
-				SearchLogic searcher(fileName);
-				pair <string, string> result = searcher.getEarliestFreeSlot(dataPackage.getLineEntries(), dataPackage.getStartEndPositions());
+				pair <string, string> result = deployer.executeGetEarliestFreeSlot(dataPackage);
 				if (!result.first.empty() && !result.second.empty()) {
 					completer = "add [][" + result.first + "][" + result.second + "][]";
 				}
@@ -189,20 +186,24 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 		return completer;
 	}
 	catch (const exception& ex){
+		consoleString = ex.what();
 		return completer;
 	}
 }
 
 pair<int, int> ProgramController::getCompletedStatToday()
 {
-	pair<int, int> stats;
-	try {
-		SearchLogic searcher(fileName);
-		return searcher.getTodayCompletionStat(displayDate);
-	}
-	catch (const exception& ex){
-		return stats;
-	}
+	return deployer.executeGetTodayCompletionStat(displayDate);
+}
+
+vector<string> ProgramController::returnTestVector()
+{
+	return deployer.returnTestVector();
+}
+
+string ProgramController::getConsoleString()
+{
+	return consoleString;
 }
 
 

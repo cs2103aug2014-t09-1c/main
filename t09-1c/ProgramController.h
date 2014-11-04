@@ -19,11 +19,15 @@ class ProgramController
 {
 private:
 	fstream file;
-	int displayCase = 0;
+	bool isTestMode;
+
+	string fileName;
 	string displayDate;
 	vector<string> searchKeywords;
-	string errorString;
-	string fileName;
+	int displayCase = 0;
+	
+	string consoleString;
+	
 	string command;
 	string arguments;
 	ParsedDataPackage dataPackage;
@@ -32,7 +36,9 @@ private:
 
 public:
 	ProgramController(string filename);
+	ProgramController(vector<string> testVector);
 	~ProgramController();
+
 	void executeEntry(string input);
 	vector<string> populateSuggestionBox(string input);
 	void executeSuggestionSelection(string selection, string lineText);
@@ -41,6 +47,9 @@ public:
 	string updateLineText(string inputText, bool isEnterPressed);
 	void ConnectToCommandFeedback(string input);
 	pair<int, int> getCompletedStatToday();
+
+	vector<string> returnTestVector();
+	string getConsoleString();
 };
 
 #endif
