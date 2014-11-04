@@ -96,7 +96,7 @@ vector<string> ParsedDataDeployer::executeSearch(string searchPackage)
 			keywords = search->createKeywords(searchPackage);
 		}
 		else {
-			SearchLogic newSearch(fileName);
+			SearchLogic newSearch(testVectorStore);
 			BaseClassLogic * search = &newSearch;
 			keywords = search->createKeywords(searchPackage);
 		}
@@ -240,7 +240,7 @@ pair<int, int> ParsedDataDeployer::executeGetTodayCompletionStat(string todayDat
 			completionStat = search->getTodayCompletionStat(todayDate);
 		}
 		else {
-			SearchLogic newSearch(fileName);
+			SearchLogic newSearch(testVectorStore);
 			BaseClassLogic * search = &newSearch;
 			completionStat = search->getTodayCompletionStat(todayDate);
 		}

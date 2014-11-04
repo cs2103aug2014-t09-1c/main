@@ -73,6 +73,8 @@ public:
 	virtual ParsedDataPackage parseAndReturn(string parseInput);
 	virtual ParsedDataPackage parseNLAndReturn(string parseInput);
 	virtual string parseSearchArgs(string parseInput);
+	virtual int convertToPosition(string argument);
+	virtual ParsedDataPackage parsefreeSlotCheck(string input);
 
 };
 #endif

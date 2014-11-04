@@ -16,23 +16,13 @@ CommandAndArgumentParser::~CommandAndArgumentParser()
 
 void CommandAndArgumentParser::setCommand(string input)
 {
-	command = getCommand(input);
-}
-
-void CommandAndArgumentParser::setArguments(string input)
-{
-	arguments = getArguments(input);
-}
-
-string CommandAndArgumentParser::getCommand(string input)
-{
 	string command;
 	stringstream takeCommand(input);
 	takeCommand >> command;
-	return command;
+	this->command = command;
 }
 
-string CommandAndArgumentParser::getArguments(string input)
+void CommandAndArgumentParser::setArguments(string input)
 {
 	string arguments;
 	std::string first;
@@ -44,6 +34,16 @@ string CommandAndArgumentParser::getArguments(string input)
 
 	arguments = argumentStringParser(oss.str());
 
+	this->arguments = arguments;
+}
+
+string CommandAndArgumentParser::getCommand()
+{
+	return command;
+}
+
+string CommandAndArgumentParser::getArguments()
+{
 	return arguments;
 }
 
@@ -57,9 +57,4 @@ string CommandAndArgumentParser::argumentStringParser(string argument)
 	}
 
 	return argument;
-}
-
-string CommandAndArgumentParser::commandArgumentError()
-{
-	return COMMANDANDARGUMENT_PARSER_ERROR;
 }

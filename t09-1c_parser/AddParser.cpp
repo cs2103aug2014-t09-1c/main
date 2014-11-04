@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "AddParser.h"
-#include "TimeParser.h"
-#include "ParserHelperFunctions.h"
 
 // Syntax: [eventName][date][start-end][category] - timed
 // Syntax: [eventName][date][deadline][category] - deadline

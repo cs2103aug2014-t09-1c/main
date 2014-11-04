@@ -3,7 +3,6 @@
 #define ADD_PARSER
 
 #include "BaseClassParser.h"
-#include "ParsedDataPackage.h"
 
 // Syntax: [eventName][date][start-end][category] - timed
 // Syntax: [eventName][date][deadline][category] - deadline

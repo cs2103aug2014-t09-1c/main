@@ -13,22 +13,21 @@ using namespace std;
 
 class CommandAndArgumentParser
 {
-
-public:
+private:
 	string command;
 	string arguments;
 
+	void setCommand(string input);
+	void setArguments(string input);
+	string argumentStringParser(string argument);
+
+public:
 	CommandAndArgumentParser(string input);
 	~CommandAndArgumentParser();
 
-	void setCommand(string input);
-	void setArguments(string input);
 
-	string getCommand(string input);
-	string getArguments(string input);
-	string argumentStringParser(string argument);
-
-	string commandArgumentError();
+	string getCommand();
+	string getArguments();
 };
 
 #endif

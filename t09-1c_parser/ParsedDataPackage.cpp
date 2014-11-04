@@ -27,6 +27,7 @@ void ParsedDataPackage::insertAttribute(string attribute, string entry)
 		assert(false && "PARSED DATA PACKAGE SHOULD NOT HAVE DUPLICATE ATTRIBUTES");
 	}
 	lineEntries.insert(pair<string, string>(attribute, entry));
+	insertedAttributes.push_back(attribute);
 }
 
 void ParsedDataPackage::insertAttribute(string attribute, int entry)
@@ -35,6 +36,7 @@ void ParsedDataPackage::insertAttribute(string attribute, int entry)
 		assert(false && "PARSED DATA PACKAGE SHOULD NOT HAVE DUPLICATE ATTRIBUTES");
 	}
 	startEndPositions.insert(pair<string, int>(attribute, entry));
+	insertedAttributes.push_back(attribute);
 }
 
 bool ParsedDataPackage::isDuplicate(string attribute)

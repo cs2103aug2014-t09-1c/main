@@ -14,10 +14,8 @@ QCompleter(parent), m_list(words), m_model()
 
 void CCompleter::update(QStringList suggestions)
 {
-    //QStringList filtered = m_list.filter(word, caseSensitivity());
 	QStringList filtered = suggestions;
     m_model.setStringList(filtered);
-    //m_word = word;
     complete();
 }
 

@@ -35,8 +35,8 @@ void ProgramController::executeEntry(string input)
 {
 	CommandAndArgumentParser inputParse(input);
 
-	command = inputParse.command;
-	arguments = inputParse.arguments;
+	command = inputParse.getCommand();
+	arguments = inputParse.getArguments();
 
 	try {
 		if (command == "home") {
@@ -112,8 +112,8 @@ vector<string> ProgramController::populateSuggestionBox(string input)
 {
 	CommandAndArgumentParser inputParse(input);
 
-	command = inputParse.command;
-	arguments = inputParse.arguments;
+	command = inputParse.getCommand();
+	arguments = inputParse.getArguments();
 
 	vector<string> suggestions;
 
@@ -129,7 +129,7 @@ vector<string> ProgramController::populateSuggestionBox(string input)
 void ProgramController::executeSuggestionSelection(string selection, string lineText)
 {
 	CommandAndArgumentParser inputParse(lineText);
-	string command = inputParse.command;
+	string command = inputParse.getCommand();
 
 	if (command == "search") {
 		searchKeywords.clear();
@@ -163,11 +163,12 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 		}
 		else {
 			CommandAndArgumentParser inputParse(inputText);
-			string command = inputParse.command;
-			string argument = inputParse.arguments;
+			string command = inputParse.getCommand();
+			string arguments = inputParse.getArguments();
 			if (command == "edit" && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
-				EditParser editor;
-				int argPosition = editor.convertToPosition(argument);
+				EditParser newEdit;
+				BaseClassParser * edit = &newEdit;
+				int argPosition = edit->convertToPosition(arguments);
 				if (argPosition >= 0)
 				{
 					string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
@@ -175,8 +176,9 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 				}
 			}
 			else if (command == "slot" && isEnterPressed) {
-				SearchParser search;
-				dataPackage = search.parsefreeSlotCheck(argument);
+				SearchParser newSearch;
+				BaseClassParser * search = &newSearch;
+				dataPackage = search->parsefreeSlotCheck(arguments);
 				pair <string, string> result = deployer.executeGetEarliestFreeSlot(dataPackage);
 				if (!result.first.empty() && !result.second.empty()) {
 					completer = "add [][" + result.first + "][" + result.second + "][]";

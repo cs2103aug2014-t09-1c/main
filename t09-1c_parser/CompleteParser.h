@@ -3,7 +3,6 @@
 #define COMPLETE_PARSER
 
 #include "BaseClassParser.h"
-#include "ParsedDataPackage.h"
 
 #define COMPLETE_PARSER_ERROR \
 	"Please enter valid <from> and <to> line numbers"

@@ -19,8 +19,6 @@
 
 
 #include "BaseClassParser.h"
-#include "ParsedDataPackage.h"
-#include <string>
 
 using namespace std;
 

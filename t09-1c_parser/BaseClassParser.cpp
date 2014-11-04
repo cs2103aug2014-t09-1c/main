@@ -34,6 +34,18 @@ string BaseClassParser::parseSearchArgs(string parseInput)
 	return "";
 }
 
+int BaseClassParser::convertToPosition(string argument)
+{
+	assert(false && "GO AWAY! YOU ShOULN'T BE SEEING THIS");
+	return 0;
+}
+
+ParsedDataPackage BaseClassParser::parsefreeSlotCheck(string input)
+{
+	assert(false && "GO AWAY! YOU ShOULN'T BE SEEING THIS");
+	return parsedData;
+}
+
 void BaseClassParser::insertAttribute(string attribute, string entry)
 {
 	parsedData.insertAttribute(attribute, entry);
