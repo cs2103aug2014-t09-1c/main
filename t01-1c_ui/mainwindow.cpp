@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this, SIGNAL(sendToLineEditAutoComplete(string)), ui->lineEdit, SLOT(updateLineText(string)));
 	connect(this, SIGNAL(sendMaxToProgressBar(int)), ui->progressBar, SLOT(setMaximum(int)));
 	connect(this, SIGNAL(sendValToProgressBar(int)), ui->progressBar, SLOT(setValue(int)));
+	connect(this, SIGNAL(sendToConsoleOutput(const QString&)), ui->consoleOutput, SLOT(setText(const QString&)));
 	updateTableData();
 }
 
@@ -27,6 +28,7 @@ MainWindow::~MainWindow()
 void MainWindow::sendInputToController(string text)
 {
 	control.executeEntry(text);
+	updateConsoleOutput();
 	updateTableData();
 }
 
@@ -81,4 +83,11 @@ void MainWindow::getProgressBarValueAdd()
 		emit sendMaxToProgressBar(1);
 		emit sendValToProgressBar(1);
 	}
+}
+
+void MainWindow::updateConsoleOutput()
+{
+	string output = control.getConsoleString();
+	const QString consoleOut = QString::fromStdString(output);
+	emit sendToConsoleOutput(consoleOut);
 }

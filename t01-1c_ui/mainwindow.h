@@ -21,6 +21,7 @@ private:
     Ui::MainWindow *ui;
 	ProgramController control;
 	void updateTableData();
+	void updateConsoleOutput();
 
 private slots:
 	void sendInputToController(string text);
@@ -35,6 +36,8 @@ signals:
 	void sendToLineEditAutoComplete(string text);
 	void sendMaxToProgressBar(int maximum);
 	void sendValToProgressBar(int value);
+	void sendToConsoleOutput(const QString&);
+
 };
 
 #endif // MAINWINDOW_H
