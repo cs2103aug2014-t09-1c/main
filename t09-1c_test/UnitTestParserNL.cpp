@@ -68,180 +68,24 @@ namespace t091c_test
 			Assert::AreEqual(expectedEvent, event);
 		}
 
-		TEST_METHOD(Date1)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 200515 at 1700");
-			string expectedDate = "20/05/15";
-			Assert::AreEqual(expectedDate, parsedData.date);
-		}
-
-		TEST_METHOD(Date2)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("on 101014 at 1700");
-			string expectedDate = "";
-			Assert::AreEqual(expectedDate, parsedData.date);
-		}
-
-		TEST_METHOD(Time1)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101214 at 1700");
-			string expectedEndTime = "17:00";
-			Assert::AreEqual(expectedEndTime, parsedData.end);
-		}
-
-		TEST_METHOD(Time2a)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("watch a midnight movie on 031214 from 1700 to 1800");
-			string expectedStartTime = "17:00";
-			Assert::AreEqual(expectedStartTime, parsedData.start);
-		}
-
-		TEST_METHOD(Time2b)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("watch a midnight movie on 031214 from 1700 to 1800");
-			string expectedEndTime = "18:00";
-			Assert::AreEqual(expectedEndTime, parsedData.end);
-		}
-
-		TEST_METHOD(Time3a)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("on 101014 from 1700 to 1800");
-			string expectedStartTime = "";
-			Assert::AreEqual(expectedStartTime, parsedData.start);
-		}
-
-		TEST_METHOD(Time3b)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("on 101014 from 1700 to 1800");
-			string expectedEndTime = "";
-			Assert::AreEqual(expectedEndTime, parsedData.end);
-		}
-
-		TEST_METHOD(Time4a)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("from 1700 to 1800");
-			string expectedStartTime = "";
-			Assert::AreEqual(expectedStartTime, parsedData.start);
-		}
-
-		TEST_METHOD(Time4b)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("from 1700 to 1800");
-			string expectedEndTime = "";
-			Assert::AreEqual(expectedEndTime, parsedData.end);
-		}
-	
-		TEST_METHOD(Time5)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 at 17000");
-			string expectedEndTime = "";
-			Assert::AreEqual(expectedEndTime, parsedData.end);
-		}
-
-		TEST_METHOD(Time6a)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 17000 to 1800");
-			string expectedStartTime = "";
-			Assert::AreEqual(expectedStartTime, parsedData.start);
-		}
-
-		TEST_METHOD(Time6b)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 1700 to 18000");
-			string expectedEndTime = "";
-			Assert::AreEqual(expectedEndTime, parsedData.end);
-		}
-
-		TEST_METHOD(Time7)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 101014 from 1700 to 1800+1");
-			string expectedEndTime = "18:00+1";
-			Assert::AreEqual(expectedEndTime, parsedData.end);
-		}
-
-		TEST_METHOD(Category1)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 200515 from 1700 to 1800 @boss");
-			string expectedCategory = "boss";
-			Assert::AreEqual(expectedCategory, parsedData.category);
-		}
-
-		TEST_METHOD(Category2)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 200515 from 1700 to 1800 @@meeting");
-			string expectedCategory = "meeting";
-			Assert::AreEqual(expectedCategory, parsedData.category);
-		}
-
-		TEST_METHOD(Category3)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on 200515 from 1700 to 1800 -meeting-");
-			string expectedCategory = "";
-			Assert::AreEqual(expectedCategory, parsedData.category);
-		}
-
-		TEST_METHOD(OverallTest1)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on tuesday from 1700 to 1800 @meeting");
-			string expectedEvent = "meeting with boss";
-			string expectedDate = "04/11/2014";
-			string expectedStartTime = "17:00";
-			string expectedEndTime = "18:00";
-			string expectedCategory = "meeting";
-			Assert::AreEqual(expectedEvent, parsedData.name);
-			Assert::AreEqual(expectedDate, parsedData.date);
-			Assert::AreEqual(expectedStartTime, parsedData.start);
-			Assert::AreEqual(expectedEndTime, parsedData.end);
-			Assert::AreEqual(expectedCategory, parsedData.category);
-		}
-
-		TEST_METHOD(OverallTest2)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on next wed from 1700 to 1800 @meeting");
-			string expectedEvent = "meeting with boss";
-			string expectedDate = "12/11/2014";
-			string expectedStartTime = "17:00";
-			string expectedEndTime = "18:00";
-			string expectedCategory = "meeting";
-			Assert::AreEqual(expectedEvent, parsedData.name);
-			Assert::AreEqual(expectedDate, parsedData.date);
-			Assert::AreEqual(expectedStartTime, parsedData.start);
-			Assert::AreEqual(expectedEndTime, parsedData.end);
-			Assert::AreEqual(expectedCategory, parsedData.category);
-		}
-
-		TEST_METHOD(OverallTest3)
-		{
-			AddParser add;
-			ParsedDataPackage parsedData = add.parseNLAndReturn("meeting with boss on wed from 1700 to 1800 @meeting");
-			string expectedEvent = "meeting with boss";
-			string expectedDate = "05/11/2014";
-			string expectedStartTime = "17:00";
-			string expectedEndTime = "18:00";
-			string expectedCategory = "meeting";
-			Assert::AreEqual(expectedEvent, parsedData.name);
-			Assert::AreEqual(expectedDate, parsedData.date);
-			Assert::AreEqual(expectedStartTime, parsedData.start);
-			Assert::AreEqual(expectedEndTime, parsedData.end);
-			Assert::AreEqual(expectedCategory, parsedData.category);
-		}
+	// meeting with boss on 200515 at 1700
+	// on 101014 at 1700
+	// meeting with boss on 101214 at 1700
+	// watch a midnight movie on 031214 from 2300 to 0030+1
+	// on 101014 from 1700 to 1800");
+	// on 101014 from 1700 to 1800
+	// from 1700 to 1800
+	// from 1700 to 1800
+	// meeting with boss on 101014 at 17000
+	// meeting with boss on 101014 from 17000 to 1800
+	// meeting with boss on 101014 from 1700 to 18000
+	// meeting with boss on 101014 from 1700 to 1800+1
+	// meeting with boss on 200515 from 1700 to 1800 @boss
+	// meeting with boss on 200515 from 1700 to 1800 @@meeting
+	// meeting with boss on 200515 from 1700 to 1800 -meeting-
+	// meeting with boss on tuesday from 1700 to 1800 @meeting
+	// meeting with boss on next wed from 1700 to 1800 @meeting
+	// meeting with boss on wed from 1700 to 1800 @meeting
+			
 	};
 }
