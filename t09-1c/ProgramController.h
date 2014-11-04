@@ -15,6 +15,9 @@
 #include "ParsedDataPackage.h"
 
 
+#define WELCOME_MESSAGE \
+	"Welcome. Please pick a command."
+
 class ProgramController
 {
 private:
@@ -50,6 +53,7 @@ public:
 
 	vector<string> returnTestVector();
 	string getConsoleString();
+	void clearConsoleString();
 };
 
 #endif

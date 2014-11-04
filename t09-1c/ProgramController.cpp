@@ -16,6 +16,7 @@ ProgramController::ProgramController(string fileName) : deployer(fileName)
 	file.open(fileName, ios::out | ios::app);
 	file << "";
 	displayDate = TimeParser::parseDayOfWeek("today");
+	consoleString = WELCOME_MESSAGE;
 }
 
 ProgramController::ProgramController(vector<string> testVector) : deployer(testVector)
@@ -208,5 +209,8 @@ string ProgramController::getConsoleString()
 	return consoleString;
 }
 
-
+void ProgramController::clearConsoleString()
+{
+	consoleString.clear();
+}
 

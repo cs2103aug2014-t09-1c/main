@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this, SIGNAL(sendValToProgressBar(int)), ui->progressBar, SLOT(setValue(int)));
 	connect(this, SIGNAL(sendToConsoleOutput(const QString&)), ui->consoleOutput, SLOT(setText(const QString&)));
 	updateTableData();
+	updateConsoleOutput();
 }
 
 MainWindow::~MainWindow()
@@ -42,6 +43,7 @@ void MainWindow::updateTableData()
 void MainWindow::getSuggestionResponse(string selection, string lineText)
 {
 	control.executeSuggestionSelection(selection, lineText);
+	updateConsoleOutput();
 	updateTableData();
 }
 
@@ -90,4 +92,5 @@ void MainWindow::updateConsoleOutput()
 	string output = control.getConsoleString();
 	const QString consoleOut = QString::fromStdString(output);
 	emit sendToConsoleOutput(consoleOut);
+	control.clearConsoleString();
 }
