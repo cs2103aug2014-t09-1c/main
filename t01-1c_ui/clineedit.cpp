@@ -83,7 +83,6 @@ void CLineEdit::keyPressEvent(QKeyEvent *e)
 			return;				// Let the completer do default behavior
         }
     }
-
     bool isShortcut = (e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_E;
     if (!isShortcut)
     QLineEdit::keyPressEvent(e); // Don't send the shortcut (CTRL-E) to the text edit.

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "qscrollbar.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -93,4 +94,24 @@ void MainWindow::updateConsoleOutput()
 	const QString consoleOut = QString::fromStdString(output);
 	emit sendToConsoleOutput(consoleOut);
 	control.clearConsoleString();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+	int currentPos = ui->tableWidget->verticalScrollBar()->value();
+	switch (e->key())
+	{
+	case Qt::Key_Down:
+		if (e->modifiers() & Qt::ShiftModifier) {
+			e->ignore();
+			ui->tableWidget->verticalScrollBar()->setValue(currentPos + 1);
+			return;
+		}
+	case Qt::Key_Up:
+		if (e->modifiers() & Qt::ShiftModifier) {
+			e->ignore();
+			ui->tableWidget->verticalScrollBar()->setValue(currentPos - 1);
+			return;
+		}
+	}
 }

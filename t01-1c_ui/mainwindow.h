@@ -23,6 +23,9 @@ private:
 	void updateTableData();
 	void updateConsoleOutput();
 
+protected:
+	void keyPressEvent(QKeyEvent *e);
+
 private slots:
 	void sendInputToController(string text);
 	void getSuggestionResponse(string selection, string lineText);
@@ -35,7 +38,7 @@ signals:
 	void sendSuggestionContentsToCompleter(QStringList list);
 	void sendToLineEditAutoComplete(string text);
 	void sendMaxToProgressBar(int maximum);
-	void sendValToProgressBar(int value);
+	void sendValToProgressBar(int value);	
 	void sendToConsoleOutput(const QString&);
 
 };
