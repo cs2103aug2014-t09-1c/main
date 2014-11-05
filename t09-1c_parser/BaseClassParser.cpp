@@ -230,6 +230,26 @@ string BaseClassParser::getEventNL(string arguments)
 	else if (arguments.find_first_not_of(' ') == string::npos) {
 		throw runtime_error(PARSER_NO_EVENT_ERROR);
 	}
+	else if (position1 != string::npos && position2 == string::npos) {
+		dateCheck = arguments.substr(position1 + 4);
+
+		if (isDateParameterValid(dateCheck)) {
+			event = arguments.substr(0, position1);
+
+			if ((event.find_first_not_of(' ') != string::npos)) {
+				return event;
+			}
+			else {
+				throw runtime_error(PARSER_NO_EVENT_ERROR);
+			}
+		}
+		else {
+			event = arguments;
+			eventSize = arguments.size();
+
+			return event;
+		}
+	}
 	else {
 		event = arguments;
 		eventSize = arguments.size();
@@ -308,7 +328,7 @@ void BaseClassParser::getAndStoreTimesNL(string arguments)
 			insertAttribute(END_ATTRIBUTE, endTime);
 		}
 		else {
-			throw runtime_error(PARSER_TIME_ERROR);
+			//throw runtime_error(PARSER_TIME_ERROR);
 		}
 	}
 	else if (position2 != string::npos && position3 != string::npos) {
@@ -339,7 +359,7 @@ void BaseClassParser::getAndStoreTimesNL(string arguments)
 		}
 	}
 	else {
-		throw runtime_error(PARSER_TIME_ERROR);
+		//throw runtime_error(PARSER_TIME_ERROR);
 	}
 }
 
@@ -355,8 +375,57 @@ void BaseClassParser::checkForSyntaxSwap(string arguments)
 	size_t position2 = arguments.rfind(keyword2);
 	size_t position3 = arguments.rfind(keyword3);
 	size_t position4 = arguments.rfind(keyword4);
+	size_t position5 = arguments.find(" ", position1 + 4, 1);
+	size_t position6 = arguments.find(" ", position2 + 4, 1);
+	size_t position7 = arguments.find(" ", position3 + 6, 1);
 
-	if ((position1 > position2) || (position1 > position3) || position4 == 0) {
+	bool isKeyword1Valid = false;
+	bool isKeyword2Valid = false;
+	bool isKeyword3Valid = false;
+
+	string checkKeyword1 = "";
+	string checkKeyword2 = "";
+	string checkKeyword3 = "";
+
+	if (position5 != string::npos) {
+		checkKeyword1 = arguments.substr(position1 + 4, position5 - position1 - 4);
+
+		if ((isParameterStringANumber(checkKeyword1) && checkKeyword1.size() == 6) ||
+			isDateParameterValid(checkKeyword1)) {
+			isKeyword1Valid = true;
+		}
+	}
+
+	if (position6 != string::npos) {
+		checkKeyword2 = arguments.substr(position2 + 4, position6 - position2 - 4);
+
+		if (isParameterStringANumber(checkKeyword2) && checkKeyword2.size() == 4) {
+			isKeyword2Valid = true;
+		}
+	}
+
+	if (position7 != string::npos) {
+		checkKeyword3 = arguments.substr(position3 + 6, position7 - position3 - 6);
+
+		if (isParameterStringANumber(checkKeyword3) && checkKeyword3.size() == 4) {
+			isKeyword3Valid = true;
+		}
+	}
+
+	if ((isKeyword1Valid && isKeyword2Valid) || (isKeyword1Valid && isKeyword3Valid)) {
+		if ((position1 > position2) || (position1 > position3)) {
+			throw runtime_error(PARSER_SYNTAX_ERROR);
+		}
+	}
+	else if (isKeyword2Valid && isKeyword3Valid) {
 		throw runtime_error(PARSER_SYNTAX_ERROR);
+	}
+	else if (isKeyword1Valid && isKeyword2Valid && isKeyword3Valid) {
+		throw runtime_error(PARSER_SYNTAX_ERROR);
+	}
+	else if (position4 == 0) {
+		throw runtime_error(PARSER_SYNTAX_ERROR);
+	}
+	else {
 	}
 }
