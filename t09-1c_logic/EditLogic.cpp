@@ -31,26 +31,26 @@ void EditLogic::redetermineType()
 				if (isNameEmpty) {
 				}
 				else {
-					editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "float", lineEntry);
+					lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "float", lineEntry);
 				}
 			}
 			else {
 				lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, "23:59", lineEntry);
-				editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "deadline", lineEntry);
+				lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "deadline", lineEntry);
 			}
 		}
 		else {
-			editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "deadline", lineEntry);
+			lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "deadline", lineEntry);
 		}
 	}
 	else {
-		editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "timed", lineEntry);
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "timed", lineEntry);
 	}
 }
 
 void EditLogic::resetCompletion()
 {
-	editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, "no", lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, "no", lineEntry);
 }
 
 void EditLogic::editValidChecks()

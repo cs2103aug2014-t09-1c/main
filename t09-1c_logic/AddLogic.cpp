@@ -80,7 +80,9 @@ void AddLogic::validChecks()
 
 void AddLogic::execute(map<string,string> lineEntries)
 {
-	appendToLineEntry(CREATION_ATTRIBUTE, getTimeNowInString());
+	if (!isTestMode) {
+		appendToLineEntry(CREATION_ATTRIBUTE, getTimeNowInString());
+	}
 	appendToLineEntry(NAME_ATTRIBUTE, lineEntries[NAME_ATTRIBUTE]);
 	appendToLineEntry(DATE_ATTRIBUTE, lineEntries[DATE_ATTRIBUTE]);
 	appendToLineEntry(START_ATTRIBUTE, lineEntries[START_ATTRIBUTE]);
