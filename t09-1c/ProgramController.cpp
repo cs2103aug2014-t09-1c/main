@@ -34,6 +34,7 @@ ProgramController::~ProgramController()
 
 void ProgramController::executeEntry(string input)
 {
+	clearConsoleString();
 	CommandAndArgumentParser inputParse(input);
 
 	command = inputParse.getCommand();

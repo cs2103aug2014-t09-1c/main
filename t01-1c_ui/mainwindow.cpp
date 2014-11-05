@@ -87,7 +87,7 @@ void MainWindow::getProgressBarValueAdd()
 		emit sendValToProgressBar(stats.first);
 	}
 	else {
-		ui->progressBar->setFormat("Nothing to do today!");
+		ui->progressBar->setFormat(EMPTY_TODAY_TODO);
 		emit sendMaxToProgressBar(1);
 		emit sendValToProgressBar(1);
 	}
@@ -107,13 +107,13 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
 	switch (e->key())
 	{
 	case Qt::Key_Down:
-			e->ignore();
-			ui->tableWidget->verticalScrollBar()->setValue(currentPos + 1);
-			return;
+		e->ignore();
+		ui->tableWidget->verticalScrollBar()->setValue(currentPos + 1);
+		return;
 	case Qt::Key_Up:
-			e->ignore();
-			ui->tableWidget->verticalScrollBar()->setValue(currentPos - 1);
-			return;
+		e->ignore();
+		ui->tableWidget->verticalScrollBar()->setValue(currentPos - 1);
+		return;
 	}
 }
 
@@ -134,15 +134,15 @@ void MainWindow::determineCommandLabel(const QString& text)
 	}
 	else if (command == COMPLETE_COMMAND) {
 		const QString label = COMPLETE_LABEL_FORMAT;
-			emit setCommandLabel(label);
+		emit setCommandLabel(label);
 	}
 	else if (command == UNCOMPLETE_COMMAND) {
 		const QString label = UNCOMPLETE_LABEL_FORMAT;
 		emit setCommandLabel(label);
 	}
 	else if (command == SEARCH_COMMAND) {
-			const QString label = SEARCH_LABEL_FORMAT;
-			emit setCommandLabel(label);
+		const QString label = SEARCH_LABEL_FORMAT;
+		emit setCommandLabel(label);
 	}
 	else if (command == CLIP_COMMAND) {
 		const QString label = CLIP_LABEL_FORMAT;

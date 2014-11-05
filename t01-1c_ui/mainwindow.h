@@ -15,13 +15,15 @@
 #define COMPLETE_LABEL_FORMAT \
 	"complete <number> / complete <from> to <to>"
 #define UNCOMPLETE_LABEL_FORMAT \
-	"complete <number> / complete <from> to <to>"
+	"uncomplete <number> / uncomplete <from> to <to>"
 #define SEARCH_LABEL_FORMAT \
 	"search <keywords>"
 #define CLIP_LABEL_FORMAT \
 	"clip <number>"
 #define SLOT_LABEL_FORMAT \
 	"slot [<date (day/DDMMYY)>][<desired time: HHMM-HHMM>][<desired duration: HHMM>]"
+#define EMPTY_TODAY_TODO \
+	"Nothing to complete today."
 
 
 namespace Ui {

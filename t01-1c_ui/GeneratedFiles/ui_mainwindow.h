@@ -143,7 +143,7 @@ public:
         consoleOutput = new QLabel(centralWidget);
         consoleOutput->setObjectName(QStringLiteral("consoleOutput"));
         consoleOutput->setGeometry(QRect(390, 469, 351, 21));
-        consoleOutput->setFont(font5);
+        consoleOutput->setFont(font2);
         MainWindow->setCentralWidget(centralWidget);
         QWidget::setTabOrder(lineEdit, tableWidget);
         QWidget::setTabOrder(tableWidget, minimiseButton);

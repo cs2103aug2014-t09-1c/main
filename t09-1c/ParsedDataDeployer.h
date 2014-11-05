@@ -4,6 +4,25 @@
 
 #include "ParsedDataPackage.h"
 
+#define COMPLETED_ADD \
+	"Add performed successfully."
+#define COMPLETED_EDIT \
+	"Edit performed successfully."
+#define COMPLETED_DELETE \
+	"Delete performed successfully."
+#define COMPLETED_UNDO \
+	"Undo performed successfully."
+#define COMPLETED_REDO \
+	"Redo performed successfully."
+#define COMPLETED_COMPLETE \
+	"Complete performed successfully."
+#define COMPLETED_UNCOMPLETE \
+	"Uncomplete performed successfully."
+#define FAILED_UNDO \
+	"Nothing to Undo."
+#define FAILED_REDO \
+	"Nothing to Redo."
+
 class ParsedDataDeployer
 {
 private:

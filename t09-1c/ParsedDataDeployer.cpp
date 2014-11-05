@@ -38,6 +38,7 @@ void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage)
 			add->execute(addPackage.getLineEntries());
 			testVectorStore = add->getEntriesVector();
 		}
+		consoleString = COMPLETED_ADD;
 	}
 	catch (const exception& ex){
 		consoleString = ex.what();
@@ -59,6 +60,7 @@ void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, string d
 			deleter->execute(deletePackage.getStartEndPositions());
 			testVectorStore = deleter->getEntriesVector();
 		}
+		consoleString = COMPLETED_DELETE;
 	}
 	catch (const exception& ex){
 		consoleString = ex.what();
@@ -80,6 +82,7 @@ void ParsedDataDeployer::executeEdit(ParsedDataPackage editPackage, string date 
 			edit->execute(editPackage.getStartEndPositions(), editPackage.getLineEntries());
 			testVectorStore = edit->getEntriesVector();
 		}
+		consoleString = COMPLETED_EDIT;
 	}
 	catch (const exception& ex){
 		consoleString = ex.what();
@@ -112,6 +115,10 @@ void ParsedDataDeployer::executeUndo()
 {
 	if (!UndoLogic::instance()->isUndoEmpty()) {
 		UndoLogic::instance()->undo(fileName);
+		consoleString = COMPLETED_UNDO;
+	}
+	else {
+		consoleString = FAILED_UNDO;
 	}
 }
 
@@ -119,6 +126,10 @@ void ParsedDataDeployer::executeRedo()
 {
 	if (!UndoLogic::instance()->isRedoEmpty()) {
 		UndoLogic::instance()->redo(fileName);
+		consoleString = COMPLETED_REDO;
+	}
+	else {
+		consoleString = FAILED_REDO;
 	}
 }
 
@@ -137,6 +148,7 @@ void ParsedDataDeployer::executeComplete(ParsedDataPackage completePackage, stri
 			completer->execute(completePackage.getStartEndPositions(), 1);
 			testVectorStore = completer->getEntriesVector();
 		}
+		consoleString = COMPLETED_COMPLETE;
 	}
 	catch (const exception& ex){
 		consoleString = ex.what();
@@ -158,6 +170,7 @@ void ParsedDataDeployer::executeUncomplete(ParsedDataPackage uncompletePackage, 
 			completer->execute(uncompletePackage.getStartEndPositions(), 0);
 			testVectorStore = completer->getEntriesVector();
 		}
+		consoleString = COMPLETED_UNCOMPLETE;
 	}
 	catch (const exception& ex){
 		consoleString = ex.what();
