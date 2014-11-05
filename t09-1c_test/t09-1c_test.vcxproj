@@ -91,7 +91,7 @@
     <ClCompile Include="UnitTestEditP.cpp" />
     <ClCompile Include="UnitTestDeleteP.cpp" />
     <ClCompile Include="UnitTestParserNL.cpp" />
-    <ClCompile Include="UnitTestSearch.cpp" />
+    <ClCompile Include="UnitTestController.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
