@@ -89,10 +89,12 @@ public:
 " } "));
         commandLabel = new QLabel(terminalBox);
         commandLabel->setObjectName(QStringLiteral("commandLabel"));
-        commandLabel->setGeometry(QRect(150, 10, 551, 21));
+        commandLabel->setGeometry(QRect(100, 10, 601, 21));
         QFont font2;
-        font2.setFamily(QStringLiteral("Segoe UI"));
-        font2.setPointSize(14);
+        font2.setFamily(QStringLiteral("Segoe UI Semibold"));
+        font2.setPointSize(8);
+        font2.setBold(true);
+        font2.setWeight(75);
         commandLabel->setFont(font2);
         lineEdit = new CLineEdit(terminalBox);
         lineEdit->setObjectName(QStringLiteral("lineEdit"));
@@ -141,7 +143,7 @@ public:
         consoleOutput = new QLabel(centralWidget);
         consoleOutput->setObjectName(QStringLiteral("consoleOutput"));
         consoleOutput->setGeometry(QRect(390, 469, 351, 21));
-        consoleOutput->setFont(font);
+        consoleOutput->setFont(font5);
         MainWindow->setCentralWidget(centralWidget);
         QWidget::setTabOrder(lineEdit, tableWidget);
         QWidget::setTabOrder(tableWidget, minimiseButton);
@@ -157,10 +159,10 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
-        title->setText(QApplication::translate("MainWindow", "T09-1c", 0));
+        title->setText(QApplication::translate("MainWindow", "GOODLE", 0));
         closeButton->setText(QString());
         minimiseButton->setText(QString());
-        terminalBox->setTitle(QApplication::translate("MainWindow", "Terminal", 0));
+        terminalBox->setTitle(QApplication::translate("MainWindow", "Input", 0));
         commandLabel->setText(QString());
         toDoLabel->setText(QApplication::translate("MainWindow", "My To-Do List : ", 0));
         completedToday->setText(QApplication::translate("MainWindow", "Completed Today :", 0));

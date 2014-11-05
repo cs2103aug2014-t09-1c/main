@@ -17,6 +17,42 @@
 
 #define WELCOME_MESSAGE \
 	"Welcome. Please pick a command."
+#define DISPLAY_ALL_CASE \
+	-1
+#define DISPLAY_HOME_CASE \
+	0
+#define DISPLAY_KEYWORD_CASE \
+	1
+#define HOME_COMMAND \
+	"home"
+#define ALL_COMMAND \
+	"all"
+#define ADD_COMMAND \
+	"add"
+#define ADD_APPEND \
+	"add "
+#define EDIT_COMMAND \
+	"edit"
+#define DELETE_COMMAND \
+	"delete"
+#define SEARCH_COMMAND \
+	"search"
+#define UNDO_COMMAND \
+	"undo"
+#define REDO_COMMAND \
+	"redo"
+#define COMPLETE_COMMAND \
+	"complete"
+#define UNCOMPLETE_COMMAND \
+	"uncomplete"
+#define SLOT_COMMAND \
+	"slot"
+#define CLIP_COMMAND \
+	"clip"
+#define SLOT_FORMAT \
+	"slot [][][]"
+#define ADD_FORMAT(name, date, time, category) \
+	"add [" + name + "][" + date + "][" + time + "][" + category + "]"
 
 class ProgramController
 {

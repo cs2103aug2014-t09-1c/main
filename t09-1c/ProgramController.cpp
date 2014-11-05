@@ -40,63 +40,63 @@ void ProgramController::executeEntry(string input)
 	arguments = inputParse.getArguments();
 
 	try {
-		if (command == "home") {
-			displayCase = 0;
+		if (command == HOME_COMMAND) {
+			displayCase = DISPLAY_HOME_CASE;
 			searchKeywords.clear();
 		}
-		else if (command == "all") {
-			displayCase = -1;
+		else if (command == ALL_COMMAND) {
+			displayCase = DISPLAY_ALL_CASE;
 			searchKeywords.clear();
 		}
-		else if (command == "add") {
+		else if (command == ADD_COMMAND) {
 			AddParser addParsing;
 			BaseClassParser * addParse = &addParsing;
 			dataPackage = addParse->parseAndReturn(arguments);
 			deployer.executeAdd(dataPackage);
 		}
-		else if (command == "edit"){
+		else if (command == EDIT_COMMAND){
 			EditParser editParsing;
 			BaseClassParser * editParse = &editParsing;
 			dataPackage = editParse->parseAndReturn(arguments);
 			deployer.executeEdit(dataPackage, displayDate, searchKeywords, displayCase);
 		}
-		else if (command == "delete"){
+		else if (command == DELETE_COMMAND){
 			DeleteParser deleteParsing;
 			BaseClassParser * deleteParse = &deleteParsing;
 			dataPackage = deleteParse->parseAndReturn(arguments);
 			deployer.executeDelete(dataPackage, displayDate, searchKeywords, displayCase);
 		}
-		else if (command == "search"){
+		else if (command == SEARCH_COMMAND){
 			SearchParser searchParsing;
 			BaseClassParser * searchParse = &searchParsing;
 			string argument = searchParse->parseSearchArgs(arguments);
 			searchKeywords = deployer.executeSearch(argument);
 			if (!searchKeywords.empty()) {
-				displayCase = 1;
+				displayCase = DISPLAY_KEYWORD_CASE;
 			}
 		}
-		else if (command == "undo"){
+		else if (command == UNDO_COMMAND){
 			deployer.executeUndo();
 		}
-		else if (command == "redo"){
+		else if (command == REDO_COMMAND){
 			deployer.executeRedo();
 		}
-		else if (command == "complete"){
+		else if (command == COMPLETE_COMMAND){
 			CompleteParser completeParsing;
 			BaseClassParser * completeParse = &completeParsing;
 			dataPackage = completeParse->parseAndReturn(arguments);
 			deployer.executeComplete(dataPackage, displayDate, searchKeywords, displayCase);
 		}
-		else if (command == "uncomplete"){
+		else if (command == UNCOMPLETE_COMMAND){
 			CompleteParser completeParsing;
 			BaseClassParser * completeParse = &completeParsing;
 			dataPackage = completeParse->parseAndReturn(arguments);
 			deployer.executeUncomplete(dataPackage, displayDate, searchKeywords, displayCase);
 		}
-		else if (command == "slot") {
+		else if (command == SLOT_COMMAND) {
 			//This will be handled by updateLineText(). This will ensure exception does not occur.
 		}
-		else if (command == "copy") {
+		else if (command == CLIP_COMMAND) {
 			//This will be handled by updateLineText(). This will ensure exception does not occur.
 		}
 		else {
@@ -121,7 +121,7 @@ vector<string> ProgramController::populateSuggestionBox(string input)
 
 	vector<string> suggestions;
 
-	if (command == "search") {
+	if (command == SEARCH_COMMAND) {
 		SearchParser searchParsing;
 		BaseClassParser * searchParse = &searchParsing;
 		string argument = searchParse->parseSearchArgs(arguments);
@@ -135,10 +135,10 @@ void ProgramController::executeSuggestionSelection(string selection, string line
 	CommandAndArgumentParser inputParse(lineText);
 	string command = inputParse.getCommand();
 
-	if (command == "search") {
+	if (command == SEARCH_COMMAND) {
 		searchKeywords.clear();
 		searchKeywords.push_back(selection);
-		displayCase = 1;
+		displayCase = DISPLAY_KEYWORD_CASE;
 	}
 	refreshTableDisplay();
 }
@@ -159,17 +159,18 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 { 
 	string completer;
 	try{
-		if (inputText == "add") {
-			completer = "add [][][][]";
+		if (inputText == ADD_COMMAND) {
+			string empty;
+			completer = ADD_FORMAT(empty, empty, empty, empty);
 		}
-		if (inputText == "slot") {
-			completer = "slot [][][]";
+		if (inputText == SLOT_COMMAND) {
+			completer = SLOT_FORMAT;
 		}
 		else {
 			CommandAndArgumentParser inputParse(inputText);
 			string command = inputParse.getCommand();
 			string arguments = inputParse.getArguments();
-			if (command == "edit" && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
+			if (command == EDIT_COMMAND && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
 				EditParser newEdit;
 				BaseClassParser * edit = &newEdit;
 				int argPosition = edit->convertToPosition(arguments);
@@ -179,23 +180,24 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 					completer = inputText + append;
 				}
 			}
-			else if (command == "copy" && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
+			else if (command == CLIP_COMMAND && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
 				EditParser newEdit;
 				BaseClassParser * edit = &newEdit;
 				int argPosition = edit->convertToPosition(arguments);
 				if (argPosition >= 0)
 				{
 					string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
-					completer = "add " + append;
+					completer = ADD_APPEND + append;
 				}
 			}
-			else if (command == "slot" && isEnterPressed) {
+			else if (command == SLOT_COMMAND && isEnterPressed) {
 				SearchParser newSearch;
 				BaseClassParser * search = &newSearch;
 				dataPackage = search->parsefreeSlotCheck(arguments);
 				pair <string, string> result = deployer.executeGetEarliestFreeSlot(dataPackage);
 				if (!result.first.empty() && !result.second.empty()) {
-					completer = "add [][" + result.first + "][" + result.second + "][]";
+					string empty;
+					completer = ADD_FORMAT(empty, result.first, result.second, empty);	
 				}
 			}
 		}
