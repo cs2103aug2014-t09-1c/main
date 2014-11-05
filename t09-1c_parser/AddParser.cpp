@@ -11,6 +11,7 @@
 // eg. Watch movie on tomorrow / Watch movie on next tuesday at 1700 / watch movie on next tuesday from 1300 to 1500
 // eg. Watch movie on 1910140 from 1700 to 1800
 
+//@ERIC A0111718M
 // Natural Language: Date overload [OK], time (eg. 1800+1) [OK]
 // 
 // NL Category:
@@ -99,6 +100,7 @@ ParsedDataPackage AddParser::parseAndReturn(string parseInput)
 	}
 }
 
+//@ERIC A0111718M
 ParsedDataPackage AddParser::parseNLAndReturn(string parseInput)
 {
 	try {
@@ -115,6 +117,7 @@ ParsedDataPackage AddParser::parseNLAndReturn(string parseInput)
 	}
 }
 
+//@ERIC A0111718M
 string AddParser::extractCategoryNL(string arguments)
 {
 	string category = "";
@@ -130,6 +133,7 @@ string AddParser::extractCategoryNL(string arguments)
 	}
 }
 
+//@ERIC A0111718M
 string AddParser::removeCategoryNL(string arguments)
 {
 	string keyword = "@";
@@ -145,6 +149,7 @@ string AddParser::removeCategoryNL(string arguments)
 	}
 }
 
+//@ERIC A0111718M
 string AddParser::extractEventNL(string arguments)
 {
 	try {
@@ -156,6 +161,7 @@ string AddParser::extractEventNL(string arguments)
 	}
 }
 
+//@ERIC A0111718M
 string AddParser::extractDateNL(string arguments)
 {
 	try {
@@ -167,6 +173,7 @@ string AddParser::extractDateNL(string arguments)
 	}
 }
 
+//@ERIC A0111718M
 void AddParser::extractTimesNL(string arguments)
 {
 	try {
@@ -177,6 +184,7 @@ void AddParser::extractTimesNL(string arguments)
 	}
 }
 
+//@ERIC A0111718M
 void AddParser::syntaxSwapChecker(string arguments)
 {
 	try {
