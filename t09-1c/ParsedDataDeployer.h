@@ -50,6 +50,7 @@ public:
 	pair <string, string> executeGetEarliestFreeSlot(ParsedDataPackage freeSlotPackage);
 	pair<int, int> executeGetTodayCompletionStat(string todayDate);
 	string returnConsoleString();
+	void clearConsoleString();
 
 	vector<string> returnTestVector();
 };

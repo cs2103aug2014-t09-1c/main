@@ -228,5 +228,6 @@ string ProgramController::getConsoleString()
 void ProgramController::clearConsoleString()
 {
 	consoleString.clear();
+	deployer.clearConsoleString();
 }
 

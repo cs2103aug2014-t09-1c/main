@@ -270,6 +270,11 @@ string ParsedDataDeployer::returnConsoleString()
 	return consoleString;
 }
 
+void ParsedDataDeployer::clearConsoleString()
+{
+	consoleString.clear();
+}
+
 vector<string> ParsedDataDeployer::returnTestVector()
 {
 	return testVectorStore;
