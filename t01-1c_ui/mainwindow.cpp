@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "qscrollbar.h"
 
+const QString initialise;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -18,8 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this, SIGNAL(sendMaxToProgressBar(int)), ui->progressBar, SLOT(setMaximum(int)));
 	connect(this, SIGNAL(sendValToProgressBar(int)), ui->progressBar, SLOT(setValue(int)));
 	connect(this, SIGNAL(sendToConsoleOutput(const QString&)), ui->consoleOutput, SLOT(setText(const QString&)));
+	connect(ui->lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(determineCommandLabel(const QString&)));
+	connect(this, SIGNAL(setCommandLabel(const QString&)), ui->commandLabel, SLOT(setText(const QString&)));
 	updateTableData();
 	updateConsoleOutput();
+	determineCommandLabel(initialise);
 }
 
 MainWindow::~MainWindow()
@@ -82,7 +87,7 @@ void MainWindow::getProgressBarValueAdd()
 		emit sendValToProgressBar(stats.first);
 	}
 	else {
-		ui->progressBar->setFormat("Nothing to do today!");
+		ui->progressBar->setFormat(EMPTY_TODAY_TODO);
 		emit sendMaxToProgressBar(1);
 		emit sendValToProgressBar(1);
 	}
@@ -102,12 +107,53 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
 	switch (e->key())
 	{
 	case Qt::Key_Down:
-			e->ignore();
-			ui->tableWidget->verticalScrollBar()->setValue(currentPos + 1);
-			return;
+		e->ignore();
+		ui->tableWidget->verticalScrollBar()->setValue(currentPos + 1);
+		return;
 	case Qt::Key_Up:
-			e->ignore();
-			ui->tableWidget->verticalScrollBar()->setValue(currentPos - 1);
-			return;
+		e->ignore();
+		ui->tableWidget->verticalScrollBar()->setValue(currentPos - 1);
+		return;
+	}
+}
+
+void MainWindow::determineCommandLabel(const QString& text)
+{
+	QString command = text.split(" ").at(0);
+	if (command == ADD_COMMAND) {
+		const QString label = ADD_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == EDIT_COMMAND) {
+		const QString label = EDIT_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == DELETE_COMMAND) {
+		const QString label = DELETE_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == COMPLETE_COMMAND) {
+		const QString label = COMPLETE_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == UNCOMPLETE_COMMAND) {
+		const QString label = UNCOMPLETE_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == SEARCH_COMMAND) {
+		const QString label = SEARCH_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == CLIP_COMMAND) {
+		const QString label = CLIP_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == SLOT_COMMAND) {
+		const QString label = SLOT_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else {
+		const QString label = COMMAND_LIST;
+		emit setCommandLabel(label);
 	}
 }
