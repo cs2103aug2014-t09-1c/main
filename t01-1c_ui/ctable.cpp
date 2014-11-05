@@ -3,6 +3,7 @@
 #include <QTableView>
 #include <QKeyEvent>
 #include <vector>
+#include <QPainter>
 
 const QString& numHeader = NUMBER_HEADER;
 const QString& toDoHeader = TODO_HEADER;
@@ -52,6 +53,7 @@ void CTable::createTableData(vector<vector<string>> listData)
         setItem(i,NUMBER_FIELD,num);
         for (int j = 0; j < 5; ++j) {
             QString stringGet = QString::fromStdString(list[i][j]);
+			stringGet = wrapLongString(stringGet);
             QTableWidgetItem *item = new QTableWidgetItem(stringGet);
 			item->setFlags(item->flags() ^ Qt::ItemIsEditable);
 			if (j != 0) {
@@ -88,4 +90,31 @@ void CTable::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Tab:
         event->ignore();
     }
+}
+
+QString CTable::wrapLongString(QString string)
+{
+	const int CriticalPos = 30;
+	const QString wrapper = "-\n";
+	QString iterString = string;
+	QString tempString = string;
+	int count = 0;
+	int endlineAddCorrection = 0;
+
+	while (count < string.length()) {
+		QString firstWord = iterString.split(" ").at(0);
+		QString firstNewLine = iterString.split("\n").at(0);
+		if (firstWord.length() > CriticalPos && firstNewLine.length() >= firstWord.length()) {
+			count += CriticalPos;
+			tempString.insert(count + endlineAddCorrection, wrapper);
+			endlineAddCorrection += wrapper.length();
+			iterString = iterString.remove(0, CriticalPos);
+		}
+		else {
+			int nextWordPos = min(firstWord.length(), firstNewLine.length()) + 1;
+			iterString = iterString.remove(0, nextWordPos);
+			count += nextWordPos;
+		}
+	}
+	return tempString;
 }

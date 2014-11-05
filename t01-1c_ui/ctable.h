@@ -57,6 +57,7 @@ public:
 private:
     void initialiseHighlight();
     void keyPressEvent(QKeyEvent *event);
+	QString wrapLongString(QString string);
 
 public slots:
 	void createTableData(vector<vector<string>> listData);
