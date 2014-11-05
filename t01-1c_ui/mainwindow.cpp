@@ -102,16 +102,12 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
 	switch (e->key())
 	{
 	case Qt::Key_Down:
-		if (e->modifiers() & Qt::ShiftModifier) {
 			e->ignore();
 			ui->tableWidget->verticalScrollBar()->setValue(currentPos + 1);
 			return;
-		}
 	case Qt::Key_Up:
-		if (e->modifiers() & Qt::ShiftModifier) {
 			e->ignore();
 			ui->tableWidget->verticalScrollBar()->setValue(currentPos - 1);
 			return;
-		}
 	}
 }

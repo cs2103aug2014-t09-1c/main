@@ -96,6 +96,9 @@ void ProgramController::executeEntry(string input)
 		else if (command == "slot") {
 			//This will be handled by updateLineText(). This will ensure exception does not occur.
 		}
+		else if (command == "copy") {
+			//This will be handled by updateLineText(). This will ensure exception does not occur.
+		}
 		else {
 			AddParser addParsing;
 			BaseClassParser * addParse = &addParsing;
@@ -174,6 +177,16 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 				{
 					string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
 					completer = inputText + append;
+				}
+			}
+			else if (command == "copy" && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
+				EditParser newEdit;
+				BaseClassParser * edit = &newEdit;
+				int argPosition = edit->convertToPosition(arguments);
+				if (argPosition >= 0)
+				{
+					string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
+					completer = "add " + append;
 				}
 			}
 			else if (command == "slot" && isEnterPressed) {

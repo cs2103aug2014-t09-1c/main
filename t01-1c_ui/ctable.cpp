@@ -94,7 +94,7 @@ void CTable::keyPressEvent(QKeyEvent *event)
 
 QString CTable::wrapLongString(QString string)
 {
-	const int CriticalPos = 30;
+	const int CriticalPos = 25;
 	const QString wrapper = "-\n";
 	QString iterString = string;
 	QString tempString = string;
