@@ -77,7 +77,7 @@ string DisplayLogic::formatContentsToLineEdit(int position)
 	string lineAppend;
 	vector<string> eventList = getSortedLineEntries();
 	int size = eventList.size();
-	if (position <= size) {
+	if (position <= size && position > 0) {
 		string line = eventList[position - 1];
 		string name = getAttributeEntry(NAME_ATTRIBUTE, line);
 		string date = getAttributeEntry(DATE_ATTRIBUTE, line);
