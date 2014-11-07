@@ -13,22 +13,12 @@ CMenuBar::CMenuBar(QWidget *par)
     setParent(par);
     moving = false;
     setMouseTracking(false);
-    //setMovable(false);
-    //setFloatable(false);
-    //setFixedHeight(20);
-    //setContextMenuPolicy(Qt::CustomContextMenu);
-    //setStyleSheet("background-color: blue;");
-
-    //QLabel* title = new QLabel("TEST");
-    //title->setStyleSheet("background-color: green;");
-    //title->setAlignment(Qt::AlignHCenter);
-    //addWidget(title);
 }
 
 void CMenuBar::mousePressEvent(QMouseEvent *event)
 {
     QLabel::mousePressEvent(event);
-    if((event->button() == Qt::LeftButton) /*&& !actionAt(event->pos())*/) {
+    if((event->button() == Qt::LeftButton)) {
         moving = true;
         offset = event->pos();
     }

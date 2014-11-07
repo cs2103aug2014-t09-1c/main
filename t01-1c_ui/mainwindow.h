@@ -5,7 +5,7 @@
 #include "ProgramController.h"
 
 #define COMMAND_LIST \
-	"Commands (case sensitive): add, edit, delete, complete, uncomplete, undo, redo, search, clip, slot"
+	"Commands: home, all, add, edit, delete, complete, uncomplete, undo, redo, search, clip, slot"
 #define ADD_LABEL_FORMAT \
 	"add [<name>][<date (day/DDMMYY)>][<time (deadline: HHMM /timed: HHMM-HHMM>][<category>]"
 #define EDIT_LABEL_FORMAT \

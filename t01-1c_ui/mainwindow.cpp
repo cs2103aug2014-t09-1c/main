@@ -119,7 +119,7 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
 
 void MainWindow::determineCommandLabel(const QString& text)
 {
-	QString command = text.split(" ").at(0);
+	QString command = text.split(" ").at(0).toLower();
 	if (command == ADD_COMMAND) {
 		const QString label = ADD_LABEL_FORMAT;
 		emit setCommandLabel(label);

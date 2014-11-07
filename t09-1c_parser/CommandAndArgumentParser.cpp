@@ -21,6 +21,7 @@ void CommandAndArgumentParser::setCommand(string input)
 	stringstream takeCommand(input);
 	takeCommand >> command;
 	this->command = command;
+	std::transform(this->command.begin(), this->command.end(), this->command.begin(), ::tolower);
 }
 
 //@ERIC A0111718M

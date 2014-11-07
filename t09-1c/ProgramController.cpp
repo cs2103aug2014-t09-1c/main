@@ -98,7 +98,7 @@ void ProgramController::executeEntry(string input)
 			//This will be handled by updateLineText(). This will ensure exception does not occur.
 		}
 		else if (command == CLIP_COMMAND) {
-			//This will be handled by updateLineText(). This will ensure exception does not occur.
+			updateLineText(input, true);
 		}
 		else {
 			AddParser addParsing;
@@ -159,18 +159,18 @@ vector<vector<string>> ProgramController::displayTable(string date)
 string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 { 
 	string completer;
+	CommandAndArgumentParser inputParse(inputText);
+	string command = inputParse.getCommand();
+	string arguments = inputParse.getArguments();
 	try{
-		if (inputText == ADD_COMMAND) {
+		if (command == ADD_COMMAND && arguments.empty()) {
 			string empty;
 			completer = ADD_FORMAT(empty, empty, empty, empty);
 		}
-		if (inputText == SLOT_COMMAND) {
+		if (command == SLOT_COMMAND && arguments.empty()) {
 			completer = SLOT_FORMAT;
 		}
 		else {
-			CommandAndArgumentParser inputParse(inputText);
-			string command = inputParse.getCommand();
-			string arguments = inputParse.getArguments();
 			if (command == EDIT_COMMAND && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
 				EditParser newEdit;
 				BaseClassParser * edit = &newEdit;
@@ -181,7 +181,7 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 					completer = inputText + append;
 				}
 			}
-			else if (command == CLIP_COMMAND && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
+			else if (command == CLIP_COMMAND && ((inputText.substr(inputText.length() - 1, 1) == " "  && !isEnterPressed) || isEnterPressed)) {
 				EditParser newEdit;
 				BaseClassParser * edit = &newEdit;
 				int argPosition = edit->convertToPosition(arguments);
