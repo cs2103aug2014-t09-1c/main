@@ -3,7 +3,7 @@
 #define SEARCH_PARSER
 
 #define SEARCH_PARSER_ERROR \
-	"Unable to Commit. Please refer to \"help\" for guide to input."
+	"Please enter the correct syntax for Search."
 #define SEARCH_PARSER_NO_DATE_ERROR \
 	"Please enter a date!"
 #define SEARCH_PARSER_6DIGIT_DATE_ERROR \

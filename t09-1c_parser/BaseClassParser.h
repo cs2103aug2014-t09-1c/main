@@ -25,6 +25,28 @@
 	"fromPos"
 #define TO_POSITION \
 	"toPos"
+#define EMPTY_SPACE_CHAR \
+	" "
+#define EMPTY_STRING \
+	""
+#define KEYWORD_TIME \
+	"-"
+#define KEYWORD_SECOND_DAY \
+	"+1"
+#define TIME_INSERT_COLON \
+	":"
+#define TIME_KEYWORD_AT \
+	" at "
+#define TIME_KEYWORD_FROM \
+	" from "
+#define TIME_KEYWORD_TO \
+	" to "
+#define DATE_KEYWORD_NEXT \
+	"next"
+#define DATE_KEYWORD_ON \
+	" on "
+#define CATEGORY_KEYWORD \
+	"@"
 #define PARSER_6DIGIT_DATE_ERROR \
 	"Please enter a valid DDMMYY date!"
 #define PARSER_DAY_OF_WEEK_ERROR \

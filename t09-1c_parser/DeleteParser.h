@@ -5,9 +5,9 @@
 #include "BaseClassParser.h"
 
 #define DELETE_PARSER_ERROR \
-	"Unable to Commit. Please refer to \"help\" for guide to input."
+	"Please enter the correct syntax for Delete."
 #define DELETE_PARSER_LINE_NUM_ERROR \
-	"Please enter valid <from> and <to> line numbers"
+	"Please enter valid <from> and <to> line numbers."
 #define DELIMETER \
 	"to"
 

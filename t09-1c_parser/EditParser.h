@@ -5,7 +5,7 @@
 #include "BaseClassParser.h"
 
 #define EDIT_PARSER_ERROR \
-	"Unable to Commit. Please refer to \"help\" for guide to input."
+	"Please enter the correct syntax for Edit."
 
 using namespace std;
 

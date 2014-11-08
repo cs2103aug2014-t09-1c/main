@@ -6,9 +6,6 @@
 #include <string>
 #include <sstream>
 
-#define COMMANDANDARGUMENT_PARSER_ERROR \
-	"Unable to Commit. Please refer to \"help\" for guide to input."
-
 using namespace std;
 
 class CommandAndArgumentParser

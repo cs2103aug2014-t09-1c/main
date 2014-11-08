@@ -31,6 +31,13 @@
 // Must be after keyword(s) " at " for deadline, (" from ", " to ") for timed.
 // Invalid format after keyword(s) will return error.
 
+#define DELIMETER_START \
+	"["
+#define DELIMETER_END \
+	"]"
+#define KEYWORD_CATEGORY \
+	"@"
+
 class AddParser :
 	public BaseClassParser
 {
@@ -44,7 +51,7 @@ public:
 	AddParser();
 	~AddParser();
 	ParsedDataPackage parseAndReturn(string parseInput);
-	ParsedDataPackage parseNLAndReturn(string parseInput); // parse Natural Language and Return
+	ParsedDataPackage parseNLAndReturn(string parseInput);
 
 	// Natural Language Parsing
 	string extractCategoryNL(string arguments);

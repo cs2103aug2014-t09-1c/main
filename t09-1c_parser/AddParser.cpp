@@ -41,8 +41,8 @@ AddParser::~AddParser()
 string AddParser::extractLeadingBracketContent(string arguments)
 {
 	string contents = "";
-	size_t position1 = arguments.find("[");
-	size_t position2 = arguments.find("]");
+	size_t position1 = arguments.find(DELIMETER_START);
+	size_t position2 = arguments.find(DELIMETER_END);
 
 	if (position1 == string::npos || position2 == string::npos) {
 		return contents;
@@ -55,7 +55,7 @@ string AddParser::extractLeadingBracketContent(string arguments)
 
 string AddParser::nextArguments(string argument)
 {
-	string delimiter = "]";
+	string delimiter = DELIMETER_END;
 	argument.erase(0, argument.find(delimiter) + 1);
 	return argument;
 }
@@ -121,7 +121,7 @@ ParsedDataPackage AddParser::parseNLAndReturn(string parseInput)
 string AddParser::extractCategoryNL(string arguments)
 {
 	string category = "";
-	string keyword = "@";
+	string keyword = KEYWORD_CATEGORY;
 	size_t position1 = arguments.rfind(keyword);
 
 	if (position1 != string::npos) {
@@ -136,7 +136,7 @@ string AddParser::extractCategoryNL(string arguments)
 //@ERIC A0111718M
 string AddParser::removeCategoryNL(string arguments)
 {
-	string keyword = "@";
+	string keyword = KEYWORD_CATEGORY;
 	size_t position1 = arguments.rfind(keyword);
 
 	if (position1 != string::npos) {

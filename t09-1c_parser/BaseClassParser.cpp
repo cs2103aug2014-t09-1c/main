@@ -111,10 +111,10 @@ void BaseClassParser::getAndStoreTimes(string timeString)
 	string time = timeString;
 	time = removeWhiteSpace(time);
 
-	size_t position1 = time.find("-");
+	size_t position1 = time.find(KEYWORD_TIME);
 	if (time.size() == 0) {
-		insertAttribute(START_ATTRIBUTE, "");
-		insertAttribute(END_ATTRIBUTE, "");
+		insertAttribute(START_ATTRIBUTE, EMPTY_STRING);
+		insertAttribute(END_ATTRIBUTE, EMPTY_STRING);
 	}
 	else if (position1 != string::npos) {
 		string start = time.substr(0, 4);
@@ -125,11 +125,11 @@ void BaseClassParser::getAndStoreTimes(string timeString)
 		bool isValidTimeSpanningTwoDays = time.size() == 11 &&
 			isParameterStringANumber(start) &&
 			isParameterStringANumber(end.substr(0, 4)) &&
-			end.substr(4, 2) == "+1";
+			end.substr(4, 2) == KEYWORD_SECOND_DAY;
 
 		if (isValidTimeForOneDay || isValidTimeSpanningTwoDays) {
-			start.insert(2, ":");
-			end.insert(2, ":");
+			start.insert(2, TIME_INSERT_COLON);
+			end.insert(2, TIME_INSERT_COLON);
 			insertAttribute(START_ATTRIBUTE, start);
 			insertAttribute(END_ATTRIBUTE, end);
 		}
@@ -139,8 +139,8 @@ void BaseClassParser::getAndStoreTimes(string timeString)
 	}
 	else if (position1 == string::npos  && time.size() == 4) {
 		if (isParameterStringANumber(time)) {
-			time.insert(2, ":");
-			insertAttribute(START_ATTRIBUTE, "");
+			time.insert(2, TIME_INSERT_COLON);
+			insertAttribute(START_ATTRIBUTE, EMPTY_STRING);
 			insertAttribute(END_ATTRIBUTE, time);
 		}
 		else {
@@ -157,7 +157,7 @@ string BaseClassParser::getDate(string dateString)
 	string date = dateString;
 	string noSpaceDate = removeWhiteSpace(date);
 	if (date.size() == 0) {
-		return "";
+		return EMPTY_STRING;
 	}
 	else if (isParameterStringANumber(noSpaceDate)) {
 
@@ -203,7 +203,7 @@ bool BaseClassParser::isStringNext(string keyword)
 {
 	string lowerCaseKeyword = toLowerCaseString(keyword);
 
-	if (lowerCaseKeyword == "next") {
+	if (lowerCaseKeyword == DATE_KEYWORD_NEXT) {
 		return true;
 	}
 	else {
@@ -214,12 +214,12 @@ bool BaseClassParser::isStringNext(string keyword)
 //@ERIC A0111718M
 string BaseClassParser::getEventNL(string arguments)
 {
-	string event = "";
-	string dateCheck = "";
-	string keyword = " on ";
+	string event = EMPTY_STRING;
+	string dateCheck = EMPTY_STRING;
+	string keyword = DATE_KEYWORD_ON;
 
 	size_t position1 = arguments.rfind(keyword);
-	size_t position2 = arguments.find(" ", position1 + 4, 1);
+	size_t position2 = arguments.find(EMPTY_SPACE_CHAR, position1 + 4, 1);
 
 	if (position1 != string::npos && position2 != string::npos && position1 != 0) {
 		dateCheck = arguments.substr(position1 + 4, position2 - position1 - 4);
@@ -277,18 +277,18 @@ string BaseClassParser::getEventNL(string arguments)
 //@ERIC A0111718M
 string BaseClassParser::getDateNL(string arguments)
 {
-	string keyword = " on ";
+	string keyword = DATE_KEYWORD_ON;
 
 	size_t position1 = arguments.rfind(keyword);
-	size_t position2 = arguments.find(" ", position1 + 4, 1);
-	size_t position3 = arguments.find(" ", position2 + 1, 1);
+	size_t position2 = arguments.find(EMPTY_SPACE_CHAR, position1 + 4, 1);
+	size_t position3 = arguments.find(EMPTY_SPACE_CHAR, position2 + 1, 1);
 
-	string date = "";
+	string date = EMPTY_STRING;
 	string dateCheck = arguments.substr(position1 + 4, position2 - position1 - 4);
 	string day = arguments.substr(position2 + 1, position3 - position2 - 1);
 
 	if (arguments.size() == eventSize) {
-		return "";
+		return EMPTY_STRING;
 	}
 	else if (isParameterStringANumber(dateCheck) && dateCheck.size() == 6) {
 
@@ -297,7 +297,7 @@ string BaseClassParser::getDateNL(string arguments)
 		return date;
 	}
 	else if (isStringNext(dateCheck)) {
-		date = dateCheck + " " + day;
+		date = dateCheck + EMPTY_SPACE_CHAR + day;
 
 		string newDateFormat = parseDayOfWeek(date);
 		if (newDateFormat != date) { //parseDayOfWeek returns unchanged if error
@@ -322,36 +322,36 @@ string BaseClassParser::getDateNL(string arguments)
 //@ERIC A0111718M
 void BaseClassParser::getAndStoreTimesNL(string arguments)
 {
-	string startTime = "";
-	string endTime = "";
-	string keyword1 = " at ";
-	string keyword2 = " from ";
-	string keyword3 = " to ";
+	string startTime = EMPTY_STRING;
+	string endTime = EMPTY_STRING;
+	string keyword1 = TIME_KEYWORD_AT;
+	string keyword2 = TIME_KEYWORD_FROM;
+	string keyword3 = TIME_KEYWORD_TO;
 	size_t position1 = arguments.rfind(keyword1);
 	size_t position2 = arguments.rfind(keyword2);
 	size_t position3 = arguments.rfind(keyword3);
 
 	if (arguments.size() == eventSize) {
-		insertAttribute(START_ATTRIBUTE, "");
-		insertAttribute(END_ATTRIBUTE, "");
+		insertAttribute(START_ATTRIBUTE, EMPTY_STRING);
+		insertAttribute(END_ATTRIBUTE, EMPTY_STRING);
 	}
 	else if (position1 != string::npos) {
-		size_t position4 = arguments.find(" ", position1 + 4, 1);
+		size_t position4 = arguments.find(EMPTY_SPACE_CHAR, position1 + 4, 1);
 		endTime = arguments.substr(position1 + 4, position4 - position1 - 4);
 
 		if (isParameterStringANumber(endTime) && endTime.size() == 4) {
-			endTime.insert(2, ":");
+			endTime.insert(2, TIME_INSERT_COLON);
 			insertAttribute(END_ATTRIBUTE, endTime);
 		}
 		else {
-			//throw runtime_error(PARSER_TIME_ERROR);
+			insertAttribute(END_ATTRIBUTE, EMPTY_STRING);
 		}
 	}
 	else if (position2 != string::npos && position3 != string::npos) {
-		size_t position5 = arguments.find(" ", position2 + 6, 1);
+		size_t position5 = arguments.find(EMPTY_SPACE_CHAR, position2 + 6, 1);
 		startTime = arguments.substr(position2 + 6, position5 - position2 - 6);
 
-		size_t position6 = arguments.find(" ", position3 + 4, 1);
+		size_t position6 = arguments.find(EMPTY_SPACE_CHAR, position3 + 4, 1);
 		endTime = arguments.substr(position3 + 4, position6 - position3 - 4);
 
 		bool isValidTimeForOneDay = startTime.size() == 4 &&
@@ -362,11 +362,11 @@ void BaseClassParser::getAndStoreTimesNL(string arguments)
 			endTime.size() == 6 &&
 			isParameterStringANumber(startTime) &&
 			isParameterStringANumber(endTime.substr(0, 4)) &&
-			endTime.substr(4, 2) == "+1";
+			endTime.substr(4, 2) == KEYWORD_SECOND_DAY;
 
 		if (isValidTimeForOneDay || isValidTimeSpanningTwoDays) {
-			startTime.insert(2, ":");
-			endTime.insert(2, ":");
+			startTime.insert(2, TIME_INSERT_COLON);
+			endTime.insert(2, TIME_INSERT_COLON);
 			insertAttribute(START_ATTRIBUTE, startTime);
 			insertAttribute(END_ATTRIBUTE, endTime);
 		}
@@ -375,33 +375,34 @@ void BaseClassParser::getAndStoreTimesNL(string arguments)
 		}
 	}
 	else {
-		//throw runtime_error(PARSER_TIME_ERROR);
+		insertAttribute(START_ATTRIBUTE, EMPTY_STRING);
+		insertAttribute(END_ATTRIBUTE, EMPTY_STRING);
 	}
 }
 
 //@ERIC A0111718M
 void BaseClassParser::checkForSyntaxSwap(string arguments)
 {
-	string keyword1 = " on ";
-	string keyword2 = " at ";
-	string keyword3 = " from ";
-	string keyword4 = "@";
+	string keyword1 = DATE_KEYWORD_ON;
+	string keyword2 = TIME_KEYWORD_AT;
+	string keyword3 = TIME_KEYWORD_FROM;
+	string keyword4 = CATEGORY_KEYWORD;
 
 	size_t position1 = arguments.rfind(keyword1);
 	size_t position2 = arguments.rfind(keyword2);
 	size_t position3 = arguments.rfind(keyword3);
 	size_t position4 = arguments.rfind(keyword4);
-	size_t position5 = arguments.find(" ", position1 + 4, 1);
-	size_t position6 = arguments.find(" ", position2 + 4, 1);
-	size_t position7 = arguments.find(" ", position3 + 6, 1);
+	size_t position5 = arguments.find(EMPTY_SPACE_CHAR, position1 + 4, 1);
+	size_t position6 = arguments.find(EMPTY_SPACE_CHAR, position2 + 4, 1);
+	size_t position7 = arguments.find(EMPTY_SPACE_CHAR, position3 + 6, 1);
 
 	bool isKeyword1Valid = false;
 	bool isKeyword2Valid = false;
 	bool isKeyword3Valid = false;
 
-	string checkKeyword1 = "";
-	string checkKeyword2 = "";
-	string checkKeyword3 = "";
+	string checkKeyword1 = EMPTY_STRING;
+	string checkKeyword2 = EMPTY_STRING;
+	string checkKeyword3 = EMPTY_STRING;
 
 	if (position5 != string::npos) {
 		checkKeyword1 = arguments.substr(position1 + 4, position5 - position1 - 4);
