@@ -63,6 +63,7 @@ protected:
 	void insertAttribute(string attribute, int entry);
 
 	bool isDateParameterValid(string day);
+	bool isStringNext(string keyword);
 	string getEventNL(string arguments);
 	string getDateNL(string arguments);
 	void getAndStoreTimesNL(string arguments);

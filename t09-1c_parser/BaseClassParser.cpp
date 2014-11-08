@@ -186,13 +186,28 @@ bool BaseClassParser::isDateParameterValid(string day)
 		"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
 		"today", "tomorrow", "next" };
 
-	unordered_set<string>::const_iterator got = set.find(day);
+	string lowerCaseDay = toLowerCaseString(day);
+
+	unordered_set<string>::const_iterator got = set.find(lowerCaseDay);
 
 	if (got == set.end()) {
 		return false;
 	}
 	else {
 		return true;
+	}
+}
+
+//@ERIC A0111718M
+bool BaseClassParser::isStringNext(string keyword)
+{
+	string lowerCaseKeyword = toLowerCaseString(keyword);
+
+	if (lowerCaseKeyword == "next") {
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 
@@ -233,7 +248,8 @@ string BaseClassParser::getEventNL(string arguments)
 	else if (position1 != string::npos && position2 == string::npos) {
 		dateCheck = arguments.substr(position1 + 4);
 
-		if (isDateParameterValid(dateCheck)) {
+		if ((isParameterStringANumber(dateCheck) && dateCheck.size() == 6) ||
+			isDateParameterValid(dateCheck)) {
 			event = arguments.substr(0, position1);
 
 			if ((event.find_first_not_of(' ') != string::npos)) {
@@ -280,7 +296,7 @@ string BaseClassParser::getDateNL(string arguments)
 
 		return date;
 	}
-	else if (dateCheck == "next") {
+	else if (isStringNext(dateCheck)) {
 		date = dateCheck + " " + day;
 
 		string newDateFormat = parseDayOfWeek(date);
