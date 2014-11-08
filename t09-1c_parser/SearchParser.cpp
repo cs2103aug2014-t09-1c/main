@@ -15,14 +15,14 @@ SearchParser::~SearchParser()
 string SearchParser::extractLeadingBracketContent(string arguments)
 {
 	string contents = "";
-	size_t position1 = arguments.find("[");
-	size_t position2 = arguments.find("]");
+	size_t StartingPosition = arguments.find("[");
+	size_t EndingPosition = arguments.find("]");
 
-	if (position1 == string::npos || position2 == string::npos) {
+	if (StartingPosition == string::npos || EndingPosition == string::npos) {
 		return contents;
 	}
 	else {
-		contents = arguments.substr(position1 + 1, position2 - position1 - 1);
+		contents = arguments.substr(StartingPosition + 1, EndingPosition - StartingPosition - 1);
 		return contents;
 	}
 }

@@ -12,30 +12,30 @@ DeleteParser::~DeleteParser()
 
 ParsedDataPackage DeleteParser::parseAndReturn(string parseInput)
 {
-	string removedWhiteSpace = removeWhiteSpace(parseInput);
-	string toLowerCase = toLowerCaseString(removedWhiteSpace);
+	string InputWhiteSpaceRemoved = removeWhiteSpace(parseInput);
+	string InputtoLowerCase = toLowerCaseString(InputWhiteSpaceRemoved);
 	string delimeter = DELIMETER;
-	if (toLowerCase.find(delimeter) != string::npos) {
-		string firstNum = toLowerCase.substr(0, toLowerCase.find(delimeter));
-		if (isParameterStringANumber(firstNum)) {
-			insertAttribute(FROM_POSITION, stoi(firstNum));
+	if (InputtoLowerCase.find(delimeter) != string::npos) {
+		string FirstLineNumber = InputtoLowerCase.substr(0, InputtoLowerCase.find(delimeter));
+		if (isParameterStringANumber(FirstLineNumber)) {
+			insertAttribute(FROM_POSITION, stoi(FirstLineNumber));
 		}
 		else{
 			throw runtime_error(DELETE_PARSER_ERROR);
 		}
-		string secondNum = toLowerCase;
-		secondNum.erase(0, toLowerCase.find(delimeter) + delimeter.length());
-		if (isParameterStringANumber(secondNum)) {
-			insertAttribute(TO_POSITION, stoi(secondNum));
+		string SecondLineNumber = InputtoLowerCase;
+		SecondLineNumber.erase(0, InputtoLowerCase.find(delimeter) + delimeter.length());
+		if (isParameterStringANumber(SecondLineNumber)) {
+			insertAttribute(TO_POSITION, stoi(SecondLineNumber));
 		}
 		else{
 			throw runtime_error(DELETE_PARSER_ERROR);
 		}
 		return parsedData;
 	}
-	else if (isParameterStringANumber(removedWhiteSpace)) {
-		insertAttribute(FROM_POSITION, stoi(removedWhiteSpace));
-		insertAttribute(TO_POSITION, stoi(removedWhiteSpace));
+	else if (isParameterStringANumber(InputWhiteSpaceRemoved)) {
+		insertAttribute(FROM_POSITION, stoi(InputWhiteSpaceRemoved));
+		insertAttribute(TO_POSITION, stoi(InputWhiteSpaceRemoved));
 		return parsedData;
 	}
 	else {

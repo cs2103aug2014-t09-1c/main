@@ -27,15 +27,15 @@ void EditParser::getPositionNumber(string input)
 string EditParser::extractLeadingBracketContent(string arguments)
 {
 	string contents = "";
-	size_t position1 = arguments.find("[");
-	size_t position2 = arguments.find("]");
+	size_t startingPosition = arguments.find("[");
+	size_t endingPosition = arguments.find("]");
 
-	if (position1 == string::npos || position2 == string::npos) {
+	if (startingPosition == string::npos || endingPosition == string::npos) {
 		throw runtime_error(EDIT_PARSER_ERROR);
 		return contents;
 	}
 	else {
-		contents = arguments.substr(position1 + 1, position2 - position1 - 1);
+		contents = arguments.substr(startingPosition + 1, endingPosition - startingPosition - 1);
 		return contents;
 	}
 }
