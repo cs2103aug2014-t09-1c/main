@@ -10,47 +10,10 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace t091c_test
 {		
-	TEST_CLASS(UnitTest1)
+	TEST_CLASS(FORMATTER_CHECK)
 	{
 	public:
 		
-		//TEST_METHOD(ADD_DATE_VALIDATION_TEST)
-		//{
-		//	AddLogic test("hello.txt");
-		//	test.setLineEntry("");
-		//	test.appendToLineEntry("date", "01/01/2014");
-		//	Assert::IsTrue(test.isDateAndTimeCorrect());
-		//	test.setLineEntry("");
-		//	test.appendToLineEntry("date", "31/01/2014");
-		//	Assert::IsTrue(test.isDateAndTimeCorrect());
-		//	test.setLineEntry("");
-		//	//Date Fail Cases
-		//	test.appendToLineEntry("date", "00/01/2014");
-		//	Assert::IsFalse(test.isDateAndTimeCorrect());
-		//	test.setLineEntry("");
-		//	test.appendToLineEntry("date", "32/01/2014");
-		//	Assert::IsFalse(test.isDateAndTimeCorrect());
-		//	test.setLineEntry("");
-		//	test.appendToLineEntry("date", "01/00/2014");
-		//	Assert::IsFalse(test.isDateAndTimeCorrect());
-		//	test.setLineEntry("");
-		//	test.appendToLineEntry("date", "01/13/2014");
-		//	Assert::IsFalse(test.isDateAndTimeCorrect());
-		//	//TIME PASS CASES
-		//	test.setLineEntry("");
-		//	test.appendToLineEntry("date", "01/01/2014");
-		//	test.appendToLineEntry("start", "00:00");
-		//	test.appendToLineEntry("end", "23:59");
-		//	Assert::IsTrue(test.isDateAndTimeCorrect());
-		//	test.setLineEntry("");
-		//	test.appendToLineEntry("date", "01/01/2014");
-		//	test.appendToLineEntry("start", "25:00");
-		//	Assert::IsFalse(test.isDateAndTimeCorrect());
-		//	test.setLineEntry("");
-		//	test.appendToLineEntry("date", "01/01/2014");
-		//	test.appendToLineEntry("start", "00:60");
-		//	Assert::IsFalse(test.isDateAndTimeCorrect());
-		//}
 		TEST_METHOD(FORMATTER_DELETE_DETERMINE_CHECK)
 		{
 			string entry = "<name>check</name><date>10/10/2014</date>";

@@ -63,9 +63,13 @@ namespace t091c_test
 		TEST_METHOD(Event7)
 		{
 			AddParser add;
-			string event = add.extractEventNL("  on 101014 at 1700");
-			string expectedEvent = "";
-			Assert::AreEqual(expectedEvent, event);
+			try {
+				string event = add.extractEventNL("  on 101014 at 1700");
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
 		}
 
 	// meeting with boss on 200515 at 1700

@@ -72,7 +72,7 @@ string TimeLogic::addOneDay(string date)
 
 void TimeLogic::addHours(int hours, int mins)
 {
-	if (hours <= 23 && mins <= 59) {
+	if (hours <= 23 && hours >= 0 && mins <= 59 && mins >= 0) {
 		string oldDate = stringDate;
 		if (getTimeFormatCheck()) {
 			time_t t = time(0);

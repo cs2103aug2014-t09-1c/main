@@ -54,6 +54,10 @@
 	"slot [][][]"
 #define ADD_FORMAT(name, date, time, category) \
 	"add [" + name + "][" + date + "][" + time + "][" + category + "]"
+#define NO_SLOTS_AVAILABLE \
+	"No free slots in this time-frame."
+#define SLOTS_AVAILABLE(date, time) \
+	"Earliest free slot found: " +date + " " + time 
 
 class ProgramController
 {

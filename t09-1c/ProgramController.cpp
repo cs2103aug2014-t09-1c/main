@@ -151,7 +151,7 @@ vector<vector<string>> ProgramController::refreshTableDisplay()
 vector<vector<string>> ProgramController::displayTable(string date)
 {
 	vector<vector<string>> forTableDisplay;
-	forTableDisplay = deployer.getDisplayEvents(displayDate, searchKeywords, displayCase);
+	forTableDisplay = deployer.getDisplayEvents(date, searchKeywords, displayCase);
 	return forTableDisplay;
 }
 
@@ -187,7 +187,9 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 				if (argPosition >= 0)
 				{
 					string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
-					completer = ADD_APPEND + append;
+					if (!append.empty()) {
+						completer = ADD_APPEND + append;
+					}
 				}
 			}
 			else if (command == SLOT_COMMAND && isEnterPressed) {
@@ -197,7 +199,11 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 				pair <string, string> result = deployer.executeGetEarliestFreeSlot(dataPackage);
 				if (!result.first.empty() && !result.second.empty()) {
 					string empty;
-					completer = ADD_FORMAT(empty, result.first, result.second, empty);	
+					completer = ADD_FORMAT(empty, result.first, result.second, empty);
+					consoleString = SLOTS_AVAILABLE(result.first, result.second);
+				}
+				else {
+					consoleString = NO_SLOTS_AVAILABLE;
 				}
 			}
 		}

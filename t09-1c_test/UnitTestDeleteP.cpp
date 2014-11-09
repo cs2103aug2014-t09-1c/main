@@ -11,26 +11,28 @@ namespace t091c_test
 	{
 	public:
 		
-		//TEST_METHOD(TestMethod1a)//correct
-		//{
-		//	DeleteParser test;
-		//	string input = "10";
-		//	ParsedDataPackage output = test.parseAndReturn(input);
-		//	ParsedDataPackage testOutput;
-		//	testOutput.lineNum = 10;
-		//	Assert::AreEqual(output.lineNum, testOutput.lineNum);
-		//}
-		/*TEST_METHOD(TestMethod1b)//no change
+		TEST_METHOD(DELETE_PARSER_ONE_ENTRY)//correct
+		{
+			DeleteParser test;
+			string input = "10";
+			ParsedDataPackage output = test.parseAndReturn(input);
+			int testOutput = 10;
+			Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput);
+			Assert::AreEqual(output.getStartEndPositions()[TO_POSITION], testOutput);
+		}
+
+		TEST_METHOD(DELETE_PARSER_PARSE_FAIL)
 		{
 			DeleteParser test;
 			string input = "abc";
-			ParsedDataPackage output;
-			output.lineNum = 0;
-			output = test.parseAndReturn(input);
-			ParsedDataPackage testOutput;
-			testOutput.lineNum = 0;
-			Assert::AreEqual(output.lineNum, testOutput.lineNum);
-		}*/
+			try {
+				ParsedDataPackage output = test.parseAndReturn(input);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+		}
 		
 
 	};

@@ -13,53 +13,238 @@ namespace t091c_test
 	{
 	public:
 		
-		
-		TEST_METHOD(Event1)
+
+		TEST_METHOD(INTEGRATED_TESTING_ADD)
 		{
 			vector<string> testVector;
-			string testString, testString2;
-			testVector.push_back("<CreationDate>07/10/2014 22:26</CreationDate><name>meet prof</name><date>10/10/2014</date><start>10:00</start><end>12:00</end><category></category><type>timed</type><complete>yes</complete>");
 			ProgramController test(testVector);
-			//testVector = test.returnTestVector();
-			test.executeEntry("add [test1][051114][1300][testing]");
-			testString = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>testing</category><complete>no</complete><type>deadline</type>";
-			testString2 = test.returnTestVector()[1];
-			Assert::AreEqual(testString, testString2);
+			test.executeEntry("add [test1][051114][1300][test1]");
+			string testString1 = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString1, test.returnTestVector()[0]);
+
+			test.executeEntry("add [test2][051114][1300-1500][test2]");
+			string testString2 = "<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>";
+			Assert::AreEqual(testString2, test.returnTestVector()[1]);
+
+			test.executeEntry("add [test3][051114][][test3]");
+			string testString3 = "<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString3, test.returnTestVector()[2]);
+
+			test.executeEntry("add [test4][][][test4]");
+			string testString4 = "<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>";
+			Assert::AreEqual(testString4, test.returnTestVector()[3]);
+
+			test.executeEntry("add [test4][xxx][xxx][test4]");
+			size_t vectorSizeTest5 = 4;
+			Assert::AreEqual(vectorSizeTest5, test.returnTestVector().size());
 		}
-		TEST_METHOD(Event2)
+		TEST_METHOD(INTEGRATED_TESTING_EDIT)
 		{
 			vector<string> testVector;
-			string testString, testString2;
-			testVector.push_back("<name>meet prof</name><date>10/12/2014</date><start>10:00</start><end>12:00</end><category></category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+			
 			ProgramController test(testVector);
-			//testVector = test.returnTestVector();
-			test.executeEntry("edit 1 [test1][051114][1300][testing]");
-			testString = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>testing</category><complete>no</complete><type>deadline</type>";
-			testString2 = test.returnTestVector()[0];
-			Assert::AreEqual(testString, testString2);
+			test.executeEntry("edit 1 [test1][051114][1100][test1]");
+			string testString1 = "<name>test1</name><date>05/11/2014</date><start></start><end>11:00</end><category>test1</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString1, test.returnTestVector()[0]);
+
+			test.executeEntry("edit 2 [test2][051114][1500][test2]");
+			string testString2 = "<name>test2</name><date>05/11/2014</date><start></start><end>15:00</end><category>test2</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString2, test.returnTestVector()[1]);
+
+			test.executeEntry("edit 3 [test2][051114][1500-1700][test2]");
+			string testString3 = "<name>test2</name><date>05/11/2014</date><start>15:00</start><end>17:00</end><category>test2</category><complete>no</complete><type>timed</type>";
+			Assert::AreEqual(testString3, test.returnTestVector()[2]);
 		}
-		TEST_METHOD(Event3)
+		TEST_METHOD(INTEGRATED_TESTING_DELETE)
 		{
 			vector<string> testVector;
-			string testString, testString2;
-			testVector.push_back("<CreationDate>07/11/2014 22:26</CreationDate><name>meet prof</name><date>10/12/2014</date><start>10:00</start><end>12:00</end><category></category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+
 			ProgramController test(testVector);
-			//testVector = test.returnTestVector();
-			test.executeEntry("add [test1][051114][1300][testing]");
-			test.executeEntry("edit 2 [test1][051114][1300][testing]");
-			testString = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>testing</category><complete>no</complete><type>deadline</type>";
-			testString2 = test.returnTestVector()[1];
-			Assert::AreEqual(testString, testString2);
+			test.executeEntry("all");
+			test.executeEntry("delete 1");
+			size_t vectorSizeTest5 = 3;
+			Assert::AreEqual(vectorSizeTest5, test.returnTestVector().size());
+			test.executeEntry("delete 1 to 4");
+			size_t vectorSizeTest6 = 3;
+			Assert::AreEqual(vectorSizeTest6, test.returnTestVector().size());
+			test.executeEntry("delete 0 to 3");
+			size_t vectorSizeTest7 = 3;
+			Assert::AreEqual(vectorSizeTest7, test.returnTestVector().size());
+			test.executeEntry("delete 1 to 3");
+			size_t vectorSizeTest8 = 0;
+			Assert::AreEqual(vectorSizeTest8, test.returnTestVector().size());
 		}
-		/*<CreationDate>07 / 10 / 2014 22:26< / CreationDate><name>meet prof< / name><date>10 / 10 / 2014< / date><start>10 : 00< / start><end>12 : 00< / end><category>< / category><type>timed< / type><complete>yes< / complete>
-			<CreationDate>09 / 10 / 2014 07 : 50< / CreationDate><name>midterm< / name><date>13 / 10 / 2014< / date><start>09 : 00< / start><end>11 : 00< / end><category>ee2021< / category><type>timed< / type><complete>yes< / complete>
-			<CreationDate>09 / 10 / 2014 09 : 12< / CreationDate><name>hbfhfdbf< / name><date>12 / 10 / 2014< / date><start>< / start><end>12 : 00< / end><category>< / category><type>deadline< / type><complete>no< / complete>
-			<CreationDate>13 / 10 / 2014 18 : 41< / CreationDate><name>meet prof< / name><date>20 / 10 / 2014< / date><start>< / start><end>23 : 59< / end><category>< / category><type>deadline< / type><complete>no< / complete>
-			<CreationDate>13 / 10 / 2014 18 : 42< / CreationDate><name>do d2a lab< / name><date>20 / 10 / 2014< / date><start>02 : 00< / start><end>05 : 00< / end><category>< / category><type>timed< / type><complete>no< / complete>
-			<CreationDate>22 / 10 / 2014 21 : 35< / CreationDate><name>eat blueberry< / name><date>27 / 10 / 2014< / date><start>06 : 00< / start><end>08 : 00< / end><category>< / category><type>timed< / type><complete>yes< / complete>
-			<CreationDate>27 / 10 / 2014 21 : 40< / CreationDate><name>hello< / name><date>01 / 11 / 2014< / date><start>21 : 00< / start><end>04 : 00 + 1< / end><category>< / category><type>timed< / type><complete>no< / complete>
-			<CreationDate>28 / 10 / 2014 10 : 27< / CreationDate><name>meet somebody< / name><date>03 / 11 / 2014< / date><start>08 : 00< / start><end>10 : 00< / end><category>< / category><type>timed< / type><complete>no< / complete>
-			<CreationDate>29 / 10 / 2014 18 : 37< / CreationDate><name>VHDL test< / name><date>03 / 11 / 2014< / date><start>14 : 00< / start><end>17 : 00< / end><category>exam< / category><type>timed< / type><complete>no< / complete>
-			*/
+		TEST_METHOD(INTEGRATED_TESTING_COMPLETE)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+
+			ProgramController test(testVector);
+			test.executeEntry("all");
+			test.executeEntry("complete 1");
+			string expected1 = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>";
+			Assert::AreEqual(expected1, test.returnTestVector()[0]);
+			test.executeEntry("complete 1 to 5");
+			Assert::AreEqual(testVector[1], test.returnTestVector()[1]);
+			Assert::AreEqual(testVector[2], test.returnTestVector()[2]);
+			Assert::AreEqual(testVector[3], test.returnTestVector()[3]);
+			test.executeEntry("complete 0 to 3");
+			Assert::AreEqual(testVector[1], test.returnTestVector()[1]);
+			Assert::AreEqual(testVector[2], test.returnTestVector()[2]);
+			Assert::AreEqual(testVector[3], test.returnTestVector()[3]);
+			test.executeEntry("complete 1 to 4");
+			string expected2 = "<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>";
+			string expected3 = "<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>";
+			string expected4 = "<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>";
+			Assert::AreEqual(expected2, test.returnTestVector()[1]);
+			Assert::AreEqual(expected3, test.returnTestVector()[2]);
+			Assert::AreEqual(expected4, test.returnTestVector()[3]);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_UNCOMPLETE)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
+
+			ProgramController test(testVector);
+			test.executeEntry("all");
+			test.executeEntry("uncomplete 1");
+			string expected1 = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(expected1, test.returnTestVector()[0]);
+			test.executeEntry("uncomplete 1 to 5");
+			Assert::AreEqual(testVector[1], test.returnTestVector()[1]);
+			Assert::AreEqual(testVector[2], test.returnTestVector()[2]);
+			Assert::AreEqual(testVector[3], test.returnTestVector()[3]);
+			test.executeEntry("uncomplete 0 to 3");
+			Assert::AreEqual(testVector[1], test.returnTestVector()[1]);
+			Assert::AreEqual(testVector[2], test.returnTestVector()[2]);
+			Assert::AreEqual(testVector[3], test.returnTestVector()[3]);
+			test.executeEntry("uncomplete 1 to 4");
+			string expected2 = "<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>";
+			string expected3 = "<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>";
+			string expected4 = "<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>";
+			Assert::AreEqual(expected2, test.returnTestVector()[1]);
+			Assert::AreEqual(expected3, test.returnTestVector()[2]);
+			Assert::AreEqual(expected4, test.returnTestVector()[3]);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_CLIP)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
+			ProgramController test(testVector);
+			test.executeEntry("all");
+			string lineText1 = test.updateLineText("clip 1", true);
+			string expected1 = "add [test1][051114][1300][test1]";
+			Assert::AreEqual(expected1, lineText1);
+			string lineText2 = test.updateLineText("clip 4", true);
+			string expected2 = "add [test4][][][test4]";
+			Assert::AreEqual(expected2, lineText2);
+			string lineText3 = test.updateLineText("clip 0", true);
+			string expected3 = "";
+			Assert::AreEqual(expected3, lineText3);
+			string lineText4 = test.updateLineText("clip 5", true);
+			string expected4 = "";
+			Assert::AreEqual(expected4, lineText4);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_SEARCH)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
+			ProgramController test(testVector);
+			vector<string> vector1 = test.populateSuggestionBox("search test");
+			Assert::IsTrue(vector1.size() == 4);
+			vector<string> vector2 = test.populateSuggestionBox("search xxxxxxx");
+			Assert::IsTrue(vector2.size() == 0);
+			vector<string> vector3 = test.populateSuggestionBox("search 051114");
+			Assert::IsTrue(vector3.size() == 1);
+			Assert::IsTrue(vector3[0] == "05/11/2014");
+			vector<string> vector4 = test.populateSuggestionBox("search 061114");
+			Assert::IsTrue(vector4.size() == 0);
+			vector<string> vector5 = test.populateSuggestionBox("search 1300");
+			Assert::IsTrue(vector5.size() == 1);
+			Assert::IsTrue(vector5[0] == "13:00");
+			vector<string> vector6 = test.populateSuggestionBox("search 1301");
+			Assert::IsTrue(vector6.size() == 1);
+			Assert::IsTrue(vector6[0] == "13:01");
+			vector<string> vector7 = test.populateSuggestionBox("search 1259");
+			Assert::IsTrue(vector7.size() == 0);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_SLOT)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
+			ProgramController test(testVector);
+			string lineText1 = test.updateLineText("slot [051114][1500-1700][0200]", true);
+			string expected1 = "add [][051114][1500-1700][]";
+			Assert::AreEqual(expected1, lineText1);
+			string lineText2 = test.updateLineText("slot [051114][1459-1700][0200]", true);
+			string expected2 = "add [][051114][1500-1700][]";
+			Assert::AreEqual(expected2, lineText2);
+			string lineText3 = test.updateLineText("slot [051114][1300-1500][0200]", true);
+			string expected3 = "";
+			Assert::AreEqual(expected3, lineText3);
+			string lineText4 = test.updateLineText("slot [051114][1100-1300][0200]", true);
+			string expected4 = "add [][051114][1100-1300][]";
+			Assert::AreEqual(expected4, lineText4);
+			string lineText5 = test.updateLineText("slot [051114][1200-1600][0200]", true);
+			string expected5 = "";
+			Assert::AreEqual(expected5, lineText5);
+			string lineText6 = test.updateLineText("slot [051114][1200-1700][0200]", true);
+			string expected6 = "add [][051114][1500-1700][]";
+			Assert::AreEqual(expected6, lineText6);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_DISPLAY_ALL_COMPLETED)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
+			ProgramController test(testVector);
+			vector<vector<string>> display1 = test.displayTable("05/11/2014");
+			size_t expected1 = 4;
+			Assert::AreEqual(display1.size(), expected1);
+			vector<vector<string>> display2 = test.displayTable("06/11/2014");
+			size_t expected2 = 1;
+			Assert::AreEqual(display2.size(), expected2);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_DISPLAY_NONE_COMPLETED)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+			ProgramController test(testVector);
+			vector<vector<string>> display1 = test.displayTable("05/11/2014");
+			size_t expected1 = 4;
+			Assert::AreEqual(display1.size(), expected1);
+			vector<vector<string>> display2 = test.displayTable("06/11/2014");
+			size_t expected2 = 4;
+			Assert::AreEqual(display2.size(), expected2);
+		}
 	};
+
 }
