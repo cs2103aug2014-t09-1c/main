@@ -37,7 +37,7 @@ private:
 	string nextArguments(string arguments);
 	string extractDate(string arguments);
 	void extractTime(string arguments);
-	void checkTimeisRange(string input);
+	void checkTimeisRangeFormat(string input);
 	void checkDurationisValid(string input);
 	void getDuration(string input);
 

@@ -50,7 +50,7 @@ void SearchParser::extractTime(string iterArguments)
 {
 	try {
 		string time = extractLeadingBracketContent(iterArguments);
-		checkTimeisRange(time);
+		checkTimeisRangeFormat(time);
 		getAndStoreTimes(time);
 	}
 	catch (const exception& ex){
@@ -67,7 +67,7 @@ string SearchParser::parseSearchArgs(string parseInput)
 	return checkInput;
 }
 
-void SearchParser::checkTimeisRange(string input)
+void SearchParser::checkTimeisRangeFormat(string input)
 {
 	if (input.size() < 9) {
 		throw runtime_error(FREE_SLOT_RANGE_ERROR);
@@ -76,8 +76,8 @@ void SearchParser::checkTimeisRange(string input)
 
 void SearchParser::checkDurationisValid(string input)
 {
-	string checkInput = removeWhiteSpace(input);
-	if (!isParameterStringANumber(checkInput) && checkInput.size() != 4) {
+	string checkInputDuration = removeWhiteSpace(input);
+	if (!isParameterStringANumber(checkInputDuration) && checkInputDuration.size() != 4) {
 		throw runtime_error(FREE_SLOT_DURATION_ERROR);
 	}
 }
@@ -95,14 +95,14 @@ void SearchParser::getDuration(string input)
 	}
 }
 
-ParsedDataPackage SearchParser::parsefreeSlotCheck(string input)
+ParsedDataPackage SearchParser::parsefreeSlotCheck(string InputArgument)
 {
 	try{
-		insertAttribute(DATE_ATTRIBUTE,extractDate(input));
-		input = nextArguments(input);
-		extractTime(input);
-		input = nextArguments(input);
-		getDuration(input);
+		insertAttribute(DATE_ATTRIBUTE,extractDate(InputArgument));
+		InputArgument = nextArguments(InputArgument);
+		extractTime(InputArgument);
+		InputArgument = nextArguments(InputArgument);
+		getDuration(InputArgument);
 		return parsedData;
 	}
 	catch (const exception& ex){
