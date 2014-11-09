@@ -80,7 +80,7 @@ void CLineEdit::keyPressEvent(QKeyEvent *e)
             case Qt::Key_Tab:
             case Qt::Key_Backtab:
 			e->ignore();
-			return;				// Let the completer do default behavior
+			return;				// Let the completer do default behaviour
         }
     }
     bool isShortcut = (e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_E;

@@ -3,7 +3,6 @@
 #include "ParsedDataDeployer.h"
 #include "ParsedDataPackage.h"
 #include <vector>
-#include "TimeParser.h"
 #include "CompleteParser.h"
 
 //after an input is scanned by UI method, call to method sendToParse is made to send input to Parser
@@ -15,14 +14,14 @@ ProgramController::ProgramController(string fileName) : deployer(fileName)
 	this->fileName = fileName;
 	file.open(fileName, ios::out | ios::app);
 	file << "";
-	displayDate = TimeParser::parseDayOfWeek("today");
+	displayDate = getTodayDateInString();
 	consoleString = WELCOME_MESSAGE;
 }
 
 ProgramController::ProgramController(vector<string> testVector) : deployer(testVector)
 {
 	isTestMode = true;
-	displayDate = TimeParser::parseDayOfWeek("today");
+	displayDate = getTodayDateInString();
 }
 
 ProgramController::~ProgramController()
@@ -231,3 +230,14 @@ void ProgramController::clearConsoleString()
 	deployer.clearConsoleString();
 }
 
+string ProgramController::getTodayDateInString()
+{
+	time_t t = time(0);   // get time now
+	struct tm * now = localtime(&t);
+
+	char buffer[80];
+	strftime(buffer, 80, "%d/%m/%Y", now);
+	string out = buffer;
+
+	return out;
+}

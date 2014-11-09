@@ -20,6 +20,7 @@ private:
 	void setCommand(string input);
 	void setArguments(string input);
 	string argumentStringParser(string argument);
+	bool isParameterStringEmpty(string parameter);
 
 public:
 	CommandAndArgumentParser(string input);

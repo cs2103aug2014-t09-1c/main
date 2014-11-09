@@ -43,6 +43,12 @@ private:
 	ProgramController control;
 	void updateTableData();
 	void updateConsoleOutput();
+	void initiateLineEditConnections();
+	void initiateTableWidgetConnections();
+	void initiateProgressBarConnections();
+	void initiateConsoleOutConnections();
+	void initiateCommandLabelConnections();
+
 
 protected:
 	void keyPressEvent(QKeyEvent *e);

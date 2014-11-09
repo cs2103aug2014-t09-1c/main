@@ -11,20 +11,45 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint );
     ui->setupUi(this);
+	initiateLineEditConnections();
+	initiateTableWidgetConnections();
+	initiateCommandLabelConnections();
+	initiateConsoleOutConnections();
+	initiateProgressBarConnections();
+	updateTableData();
+	updateConsoleOutput();
+	determineCommandLabel(initialise);
+}
+
+void MainWindow::initiateLineEditConnections()
+{
 	connect(ui->lineEdit, SIGNAL(sendText(string)), this, SLOT(sendInputToController(string)));
-	connect(this, SIGNAL(sendTableData(vector<vector<string>>)), ui->tableWidget, SLOT(createTableData(vector<vector<string>>)));
 	connect(ui->lineEdit, SIGNAL(emitFeedback(QString, bool)), this, SLOT(sendFeedbackToController(QString, bool)));
 	connect(ui->lineEdit, SIGNAL(emitSuggestionSelected(string, string)), this, SLOT(getSuggestionResponse(string, string)));
 	connect(this, SIGNAL(sendSuggestionContentsToCompleter(QStringList)), ui->lineEdit, SLOT(updateCompleter(QStringList)));
 	connect(this, SIGNAL(sendToLineEditAutoComplete(string)), ui->lineEdit, SLOT(updateLineText(string)));
+	connect(ui->lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(determineCommandLabel(const QString&)));
+}
+
+void MainWindow::initiateTableWidgetConnections()
+{
+	connect(this, SIGNAL(sendTableData(vector<vector<string>>)), ui->tableWidget, SLOT(createTableData(vector<vector<string>>)));
+}
+
+void MainWindow::initiateProgressBarConnections()
+{
 	connect(this, SIGNAL(sendMaxToProgressBar(int)), ui->progressBar, SLOT(setMaximum(int)));
 	connect(this, SIGNAL(sendValToProgressBar(int)), ui->progressBar, SLOT(setValue(int)));
+}
+
+void MainWindow::initiateConsoleOutConnections()
+{
 	connect(this, SIGNAL(sendToConsoleOutput(const QString&)), ui->consoleOutput, SLOT(setText(const QString&)));
-	connect(ui->lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(determineCommandLabel(const QString&)));
+}
+
+void MainWindow::initiateCommandLabelConnections()
+{
 	connect(this, SIGNAL(setCommandLabel(const QString&)), ui->commandLabel, SLOT(setText(const QString&)));
-	updateTableData();
-	updateConsoleOutput();
-	determineCommandLabel(initialise);
 }
 
 MainWindow::~MainWindow()
@@ -76,6 +101,9 @@ void MainWindow::sendFeedbackToController(QString text, bool isEnterPressed)
 			emit sendToLineEditAutoComplete(lineEdit);
 		}
 	}
+	if (isEnterPressed) {
+		updateConsoleOutput();
+	}
 }
 
 void MainWindow::getProgressBarValueAdd()
@@ -96,9 +124,11 @@ void MainWindow::getProgressBarValueAdd()
 void MainWindow::updateConsoleOutput()
 {
 	string output = control.getConsoleString();
-	const QString consoleOut = QString::fromStdString(output);
-	emit sendToConsoleOutput(consoleOut);
-	control.clearConsoleString();
+	if (!output.empty()) {
+		const QString consoleOut = QString::fromStdString(output);
+		emit sendToConsoleOutput(consoleOut);
+		control.clearConsoleString();
+	}
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)

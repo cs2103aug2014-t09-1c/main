@@ -21,8 +21,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "t01-1c_ui", "t01-1c_ui\t01-
 		{7A58E25A-AA11-4516-AD00-504F7786A783} = {7A58E25A-AA11-4516-AD00-504F7786A783}
 	EndProjectSection
 EndProject
-Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ModelingProject1", "ModelingProject1\ModelingProject1.modelproj", "{02530E73-0351-49BB-A190-40BCECFBD061}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,16 +101,6 @@ Global
 		{EDBF3C29-BFC3-3D6C-B0D3-2DAB290D1DFB}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{EDBF3C29-BFC3-3D6C-B0D3-2DAB290D1DFB}.Release|Win32.ActiveCfg = Release|Win32
 		{EDBF3C29-BFC3-3D6C-B0D3-2DAB290D1DFB}.Release|Win32.Build.0 = Release|Win32
-		{02530E73-0351-49BB-A190-40BCECFBD061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02530E73-0351-49BB-A190-40BCECFBD061}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02530E73-0351-49BB-A190-40BCECFBD061}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{02530E73-0351-49BB-A190-40BCECFBD061}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{02530E73-0351-49BB-A190-40BCECFBD061}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{02530E73-0351-49BB-A190-40BCECFBD061}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02530E73-0351-49BB-A190-40BCECFBD061}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02530E73-0351-49BB-A190-40BCECFBD061}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{02530E73-0351-49BB-A190-40BCECFBD061}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{02530E73-0351-49BB-A190-40BCECFBD061}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

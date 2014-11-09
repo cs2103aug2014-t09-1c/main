@@ -20,23 +20,33 @@ CTable::CTable(QWidget *par)
     setParent(par);
     setSelectionMode(QAbstractItemView::SingleSelection);
     setSelectionBehavior(QAbstractItemView::SelectRows);
-    initialiseHighlight();
-    verticalHeader()->setVisible(false);
-    verticalHeader()->setDefaultSectionSize(20);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    setColumnCount(6);
-    horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    horizontalHeader()->setFont(QFont("Segoe UI", 8));
-    setColumnWidth(NUMBER_FIELD,  NUMBER_COLUMN_WIDTH);
-    setColumnWidth(TODO_FIELD,  TODO_COLUMN_WIDTH);
-    setColumnWidth(CATEGORY_FIELD,  CATEGORY_COLUMN_WIDTH);
-    setColumnWidth(START_TIME_FIELD,  START_TIME_COLUMN_WIDTH);
-    setColumnWidth(END_TIME_FIELD,  END_TIME_COLUMN_WIDTH);
-    setColumnWidth(COMPLETE_FIELD,  COMPLETE_COLUMN_WIDTH);
-    QStringList header;
-    header << numHeader<< toDoHeader << categoryHeader << startHeader << endHeader << completeHeader;
-    setHorizontalHeaderLabels(header);
+	setTableFormat();
+	setTableHeaders();
 	setWordWrap(true);
+}
+
+void CTable::setTableFormat()
+{
+	initialiseHighlight();
+	verticalHeader()->setVisible(false);
+	verticalHeader()->setDefaultSectionSize(20);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	setColumnCount(6);
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+	horizontalHeader()->setFont(QFont("Segoe UI", 8));
+	setColumnWidth(NUMBER_FIELD, NUMBER_COLUMN_WIDTH);
+	setColumnWidth(TODO_FIELD, TODO_COLUMN_WIDTH);
+	setColumnWidth(CATEGORY_FIELD, CATEGORY_COLUMN_WIDTH);
+	setColumnWidth(START_TIME_FIELD, START_TIME_COLUMN_WIDTH);
+	setColumnWidth(END_TIME_FIELD, END_TIME_COLUMN_WIDTH);
+	setColumnWidth(COMPLETE_FIELD, COMPLETE_COLUMN_WIDTH);
+}
+
+void CTable::setTableHeaders()
+{
+	QStringList header;
+	header << numHeader << toDoHeader << categoryHeader << startHeader << endHeader << completeHeader;
+	setHorizontalHeaderLabels(header);
 }
 
 void CTable::createTableData(vector<vector<string>> listData)

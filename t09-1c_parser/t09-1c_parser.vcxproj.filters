@@ -42,9 +42,6 @@
     <ClInclude Include="CommandAndArgumentParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ParserHelperFunctions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TimeParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -75,9 +72,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CommandAndArgumentParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ParserHelperFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TimeParser.cpp">

@@ -2,6 +2,8 @@
 #ifndef PROGRAM_CONTROLLER
 #define PROGRAM_CONTROLLER
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <string>
 #include <sstream>
 #include <vector>
@@ -13,7 +15,6 @@
 #include "EditParser.h"
 #include "SearchParser.h"
 #include "ParsedDataPackage.h"
-
 
 #define WELCOME_MESSAGE \
 	"Welcome. Please pick a command."
@@ -72,6 +73,8 @@ private:
 	ParsedDataPackage dataPackage;
 
 	ParsedDataDeployer deployer;
+
+	string getTodayDateInString();
 
 public:
 	ProgramController(string filename);

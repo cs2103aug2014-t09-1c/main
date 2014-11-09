@@ -55,6 +55,8 @@ public:
 	
 
 private:
+	void setTableFormat();
+	void setTableHeaders();
     void initialiseHighlight();
     void keyPressEvent(QKeyEvent *event);
 	QString wrapLongString(QString string);

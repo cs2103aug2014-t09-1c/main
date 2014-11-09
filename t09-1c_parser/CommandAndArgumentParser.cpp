@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CommandAndArgumentParser.h"
-#include "ParserHelperFunctions.h"
+#include <algorithm>
 
 //@ERIC A0111718M
 CommandAndArgumentParser::CommandAndArgumentParser(string input)
@@ -55,7 +55,7 @@ string CommandAndArgumentParser::getArguments()
 //@ERIC A0111718M
 string CommandAndArgumentParser::argumentStringParser(string argument)
 {
-	if (ParserHelperFunctions::isParameterStringEmpty(argument)) {
+	if (isParameterStringEmpty(argument)) {
 		argument = EMPTY_STRING;
 	}
 	else {
@@ -63,4 +63,9 @@ string CommandAndArgumentParser::argumentStringParser(string argument)
 	}
 
 	return argument;
+}
+
+bool CommandAndArgumentParser::isParameterStringEmpty(string parameter)
+{
+	return parameter.find_first_not_of(' ') == std::string::npos;
 }
