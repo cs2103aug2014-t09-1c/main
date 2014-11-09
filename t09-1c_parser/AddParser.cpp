@@ -40,7 +40,7 @@ AddParser::~AddParser()
 
 string AddParser::extractLeadingBracketContent(string arguments)
 {
-	string contents = "";
+	string contents = EMPTY_STRING;
 	size_t position1 = arguments.find(DELIMETER_START);
 	size_t position2 = arguments.find(DELIMETER_END);
 
@@ -57,6 +57,7 @@ string AddParser::nextArguments(string argument)
 {
 	string delimiter = DELIMETER_END;
 	argument.erase(0, argument.find(delimiter) + 1);
+
 	return argument;
 }
 
@@ -65,9 +66,10 @@ string AddParser::extractDate(string iterArguments)
 	try{
 		string date = extractLeadingBracketContent(iterArguments);
 		string resultDate = getDate(date);
+
 		return resultDate;
 	}
-	catch (const exception& ex){
+	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
 }
@@ -78,7 +80,7 @@ void AddParser::extractTime(string iterArguments)
 		string time = extractLeadingBracketContent(iterArguments);
 		getAndStoreTimes(time);
 	}
-	catch (const exception& ex){
+	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
 }
@@ -93,9 +95,10 @@ ParsedDataPackage AddParser::parseAndReturn(string parseInput)
 		extractTime(parseInput);
 		parseInput = nextArguments(parseInput);
 		insertAttribute(CATEGORY_ATTRIBUTE, extractLeadingBracketContent(parseInput));
+
 		return parsedData;
 	}
-	catch (const exception& ex){
+	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
 }
@@ -110,9 +113,10 @@ ParsedDataPackage AddParser::parseNLAndReturn(string parseInput)
 		insertAttribute(DATE_ATTRIBUTE, extractDateNL(parseInput));
 		extractTimesNL(parseInput);
 		syntaxSwapChecker(parseInput);
+
 		return parsedData;
 	}
-	catch (const exception& ex){
+	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
 }
@@ -120,12 +124,13 @@ ParsedDataPackage AddParser::parseNLAndReturn(string parseInput)
 //@ERIC A0111718M
 string AddParser::extractCategoryNL(string arguments)
 {
-	string category = "";
-	string keyword = KEYWORD_CATEGORY;
+	string category = EMPTY_STRING;
+	string keyword = CATEGORY_KEYWORD;
 	size_t position1 = arguments.rfind(keyword);
 
 	if (position1 != string::npos) {
 		category = arguments.substr(position1 + 1);
+
 		return category;
 	}
 	else {
@@ -136,7 +141,7 @@ string AddParser::extractCategoryNL(string arguments)
 //@ERIC A0111718M
 string AddParser::removeCategoryNL(string arguments)
 {
-	string keyword = KEYWORD_CATEGORY;
+	string keyword = CATEGORY_KEYWORD;
 	size_t position1 = arguments.rfind(keyword);
 
 	if (position1 != string::npos) {
@@ -154,9 +159,10 @@ string AddParser::extractEventNL(string arguments)
 {
 	try {
 		string event = getEventNL(arguments);
+
 		return event;
 	}
-	catch (const exception& ex){
+	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
 }
@@ -166,9 +172,10 @@ string AddParser::extractDateNL(string arguments)
 {
 	try {
 		string date = getDateNL(arguments);
+
 		return date;
 	}
-	catch (const exception& ex){
+	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
 }
@@ -179,7 +186,7 @@ void AddParser::extractTimesNL(string arguments)
 	try {
 		getAndStoreTimesNL(arguments);
 	}
-	catch (const exception& ex){
+	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
 }
@@ -190,7 +197,7 @@ void AddParser::syntaxSwapChecker(string arguments)
 	try {
 		checkForSyntaxSwap(arguments);
 	}
-	catch (const exception& ex){
+	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
 }

@@ -56,7 +56,7 @@ string CommandAndArgumentParser::getArguments()
 string CommandAndArgumentParser::argumentStringParser(string argument)
 {
 	if (ParserHelperFunctions::isParameterStringEmpty(argument)) {
-		argument = ""; // empty string
+		argument = EMPTY_STRING;
 	}
 	else {
 		argument.erase(0, 1); // remove leading whitespace

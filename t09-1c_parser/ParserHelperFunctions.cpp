@@ -2,11 +2,9 @@
 #include "ParserHelperFunctions.h"
 #include <unordered_set>
 
-
 ParserHelperFunctions::ParserHelperFunctions()
 {
 }
-
 
 ParserHelperFunctions::~ParserHelperFunctions()
 {
@@ -15,6 +13,7 @@ ParserHelperFunctions::~ParserHelperFunctions()
 string ParserHelperFunctions::toLowerCaseString(string input)
 {
 	transform(input.begin(), input.end(), input.begin(), ::tolower);
+
 	return input;
 }
 
@@ -22,12 +21,14 @@ int ParserHelperFunctions::findMatchingStringIndex(string str, vector<string> ls
 {
 	int index = -1;
 	int lstSize = lst.size();
+
 	for (int i = 0; i < lstSize; ++i) {
 		if (lst[i] == str) {
 			index = i;
 			break;
 		}
 	}
+
 	return index;
 }
 
@@ -49,5 +50,6 @@ bool ParserHelperFunctions::isParameterStringANumber(string parameter)
 string ParserHelperFunctions::removeWhiteSpace(string parameter)
 {
 	parameter.erase(remove(parameter.begin(), parameter.end(), ' '), parameter.end());
+
 	return parameter;
 }

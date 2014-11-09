@@ -5,37 +5,42 @@ CompleteParser::CompleteParser() : BaseClassParser()
 {
 }
 
-
 CompleteParser::~CompleteParser()
 {
 }
 
 ParsedDataPackage CompleteParser::parseAndReturn(string parseInput)
 {
-	string InputWithWhiteSpaceRemoved = removeWhiteSpace(parseInput);
-	string InputToLowerCase = toLowerCaseString(InputWithWhiteSpaceRemoved);
-	string delimeter = DELIMETER;
-	if (InputToLowerCase.find(delimeter) != string::npos) {
-		string FirstLineNumber = InputToLowerCase.substr(0, InputToLowerCase.find(delimeter));
-		if (isParameterStringANumber(FirstLineNumber)) {
-			insertAttribute(FROM_POSITION,stoi(FirstLineNumber));
+	string inputWithWhiteSpaceRemoved = removeWhiteSpace(parseInput);
+	string inputToLowerCase = toLowerCaseString(inputWithWhiteSpaceRemoved);
+	string delimeter = COMPLETE_PARSE_KEYWORD_TO;
+
+	if (inputToLowerCase.find(delimeter) != string::npos) {
+		string firstLineNumber = inputToLowerCase.substr(0, inputToLowerCase.find(delimeter));
+
+		if (isParameterStringANumber(firstLineNumber)) {
+			insertAttribute(FROM_POSITION, stoi(firstLineNumber));
 		}
-		else{
+		else {
 			throw runtime_error(COMPLETE_PARSER_ERROR);
 		}
-		string SecondLineNumber = InputToLowerCase;
-		SecondLineNumber.erase(0, InputToLowerCase.find(delimeter) + delimeter.length());
-		if (isParameterStringANumber(SecondLineNumber)) {
-			insertAttribute(TO_POSITION, stoi(SecondLineNumber));
+
+		string secondLineNumber = inputToLowerCase;
+		secondLineNumber.erase(0, inputToLowerCase.find(delimeter) + delimeter.length());
+
+		if (isParameterStringANumber(secondLineNumber)) {
+			insertAttribute(TO_POSITION, stoi(secondLineNumber));
 		}
-		else{
+		else {
 			throw runtime_error(COMPLETE_PARSER_ERROR);
 		}
+
 		return parsedData;
 	}
-	else if (isParameterStringANumber(InputWithWhiteSpaceRemoved)) {
-		insertAttribute(FROM_POSITION, stoi(InputWithWhiteSpaceRemoved));
-		insertAttribute(TO_POSITION, stoi(InputWithWhiteSpaceRemoved));
+	else if (isParameterStringANumber(inputWithWhiteSpaceRemoved)) {
+		insertAttribute(FROM_POSITION, stoi(inputWithWhiteSpaceRemoved));
+		insertAttribute(TO_POSITION, stoi(inputWithWhiteSpaceRemoved));
+
 		return parsedData;
 	}
 	else {

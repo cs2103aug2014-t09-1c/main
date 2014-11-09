@@ -6,11 +6,9 @@
 #include <unordered_set>
 #include <string>
 
-
 BaseClassParser::BaseClassParser() : parsedData()
 {
 }
-
 
 BaseClassParser::~BaseClassParser()
 {
@@ -66,12 +64,15 @@ int BaseClassParser::findMatchingStringIndex(string str, vector<string> lst)
 {
 	int index = -1;
 	int lstSize = lst.size();
+
 	for (int i = 0; i < lstSize; ++i) {
+
 		if (lst[i] == str) {
 			index = i;
 			break;
 		}
 	}
+
 	return index;
 }
 
@@ -93,6 +94,7 @@ bool BaseClassParser::isParameterStringANumber(string parameter)
 string BaseClassParser::removeWhiteSpace(string parameter)
 {
 	parameter.erase(remove(parameter.begin(), parameter.end(), ' '), parameter.end());
+
 	return parameter;
 }
 
@@ -111,7 +113,8 @@ void BaseClassParser::getAndStoreTimes(string timeString)
 	string time = timeString;
 	time = removeWhiteSpace(time);
 
-	size_t position1 = time.find(KEYWORD_TIME);
+	size_t position1 = time.find(TIME_KEYWORD_DASH);
+
 	if (time.size() == 0) {
 		insertAttribute(START_ATTRIBUTE, EMPTY_STRING);
 		insertAttribute(END_ATTRIBUTE, EMPTY_STRING);
@@ -125,7 +128,7 @@ void BaseClassParser::getAndStoreTimes(string timeString)
 		bool isValidTimeSpanningTwoDays = time.size() == 11 &&
 			isParameterStringANumber(start) &&
 			isParameterStringANumber(end.substr(0, 4)) &&
-			end.substr(4, 2) == KEYWORD_SECOND_DAY;
+			end.substr(4, 2) == TIME_KEYWORD_SECOND_DAY;
 
 		if (isValidTimeForOneDay || isValidTimeSpanningTwoDays) {
 			start.insert(2, TIME_INSERT_COLON);
@@ -138,6 +141,7 @@ void BaseClassParser::getAndStoreTimes(string timeString)
 		}
 	}
 	else if (position1 == string::npos  && time.size() == 4) {
+
 		if (isParameterStringANumber(time)) {
 			time.insert(2, TIME_INSERT_COLON);
 			insertAttribute(START_ATTRIBUTE, EMPTY_STRING);
@@ -156,6 +160,7 @@ string BaseClassParser::getDate(string dateString)
 {
 	string date = dateString;
 	string noSpaceDate = removeWhiteSpace(date);
+
 	if (date.size() == 0) {
 		return EMPTY_STRING;
 	}
@@ -170,6 +175,7 @@ string BaseClassParser::getDate(string dateString)
 	}
 	else {
 		string newDateFormat = TimeParser::parseDayOfWeek(date);
+
 		if (newDateFormat != date) { //parseDayOfWeek returns unchanged if error
 			return newDateFormat;
 		}
@@ -291,15 +297,14 @@ string BaseClassParser::getDateNL(string arguments)
 		return EMPTY_STRING;
 	}
 	else if (isParameterStringANumber(dateCheck) && dateCheck.size() == 6) {
-
 		date = formatDate(arguments.substr(position1 + 4, 6));
 
 		return date;
 	}
 	else if (isStringNext(dateCheck)) {
 		date = dateCheck + EMPTY_SPACE_CHAR + day;
-
 		string newDateFormat = parseDayOfWeek(date);
+
 		if (newDateFormat != date) { //parseDayOfWeek returns unchanged if error
 			return newDateFormat;
 		}
@@ -362,7 +367,7 @@ void BaseClassParser::getAndStoreTimesNL(string arguments)
 			endTime.size() == 6 &&
 			isParameterStringANumber(startTime) &&
 			isParameterStringANumber(endTime.substr(0, 4)) &&
-			endTime.substr(4, 2) == KEYWORD_SECOND_DAY;
+			endTime.substr(4, 2) == TIME_KEYWORD_SECOND_DAY;
 
 		if (isValidTimeForOneDay || isValidTimeSpanningTwoDays) {
 			startTime.insert(2, TIME_INSERT_COLON);

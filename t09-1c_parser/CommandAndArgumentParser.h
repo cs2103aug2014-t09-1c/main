@@ -6,6 +6,9 @@
 #include <string>
 #include <sstream>
 
+#define EMPTY_STRING \
+	""
+
 using namespace std;
 
 class CommandAndArgumentParser
@@ -22,9 +25,9 @@ public:
 	CommandAndArgumentParser(string input);
 	~CommandAndArgumentParser();
 
-
 	string getCommand();
 	string getArguments();
+
 };
 
 #endif

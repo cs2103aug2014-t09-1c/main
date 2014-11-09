@@ -2,6 +2,15 @@
 #ifndef SEARCH_PARSER
 #define SEARCH_PARSER
 
+#include "BaseClassParser.h"
+
+// Syntax: [eventName]<start><end><rating><@category> - timed
+// Syntax: [eventName]<deadline><rating><@category> - deadline
+// Syntax: [eventName]<rating><@category> - float
+// Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
+// eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
+// eg. Watch movie 191014 1700 to 1800
+
 #define SEARCH_PARSER_ERROR \
 	"Please enter the correct syntax for Search."
 #define SEARCH_PARSER_NO_DATE_ERROR \
@@ -17,17 +26,7 @@
 #define FREE_SLOT_DURATION_ERROR \
 	"Duration must be in HHMM format (max 2359)"
 
-
-#include "BaseClassParser.h"
-
 using namespace std;
-
-// Syntax: [eventName]<start><end><rating><@category> - timed
-// Syntax: [eventName]<deadline><rating><@category> - deadline
-// Syntax: [eventName]<rating><@category> - float
-// Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
-// eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
-// eg. Watch movie 191014 1700 to 1800
 
 class SearchParser :
 	public BaseClassParser
@@ -43,8 +42,8 @@ private:
 
 public:
 	SearchParser();
-	
 	~SearchParser();
+
 	string parseSearchArgs(string parseInput);
 	ParsedDataPackage parsefreeSlotCheck(string parseInput);
 
