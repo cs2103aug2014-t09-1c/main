@@ -10,7 +10,6 @@ TimeParser::TimeParser()
 {
 }
 
-
 TimeParser::~TimeParser()
 {
 }
@@ -39,12 +38,15 @@ int TimeParser::determineDaysToAdd(string day, bool isNextPresent)
 	else {
 		int dayIndex = determineDayIndex(day);
 		int toAdd = ((dayIndex - todayDayIndex) + longDays.size()) % longDays.size();
+
 		if (dayIndex == -1) {
 			return -1;
 		}
+
 		if (toAdd == 0 ||((todayDayIndex <= dayIndex) && isNextPresent)) {
 			toAdd += 7;
 		}
+
 		return toAdd;
 	}
 }
@@ -53,9 +55,11 @@ int TimeParser::determineDayIndex(string day)
 {
 	int index = -1;
 	index = findMatchingStringIndex(day, longDays);
+
 	if (index == -1) {
 		index = findMatchingStringIndex(day, shortDays);
 	}
+
 	return index;
 }
 
@@ -73,10 +77,12 @@ string TimeParser::parseDayOfWeek(string date)
 	string dateToModify = date;
 	bool isNext = false;
 	dateToModify = toLowerCaseString(dateToModify);
+
 	if (dateToModify.substr(0, 5) == "next ") {
 		isNext = true;
 		dateToModify.erase(0, 5);
 	}
+
 	int toAdd = determineDaysToAdd(dateToModify, isNext);
 
 	if (toAdd > -1) {
@@ -104,12 +110,14 @@ string TimeParser::formatDate(string date)
 	int addCentury = ((year - ((year / 100) * 100) > critical2DigitYear) && (year - ((year / 100) * 100) - critical2DigitYear) > inputYear) ? 1 : 0;
 	string hundredsyear = to_string(year / 100 + addCentury);
 	date.insert(6, hundredsyear);
+
 	return date;
 }
 
 string TimeParser::toLowerCaseString(string input)
 {
 	transform(input.begin(), input.end(), input.begin(), ::tolower);
+
 	return input;
 }
 
@@ -117,11 +125,13 @@ int TimeParser::findMatchingStringIndex(string str, vector<string> lst)
 {
 	int index = -1;
 	int lstSize = lst.size();
+
 	for (int i = 0; i < lstSize; ++i) {
 		if (lst[i] == str) {
 			index = i;
 			break;
 		}
 	}
+
 	return index;
 }

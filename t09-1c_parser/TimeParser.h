@@ -4,7 +4,6 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-
 #include <iostream>
 #include <vector>
 #include "time.h"
@@ -22,7 +21,6 @@ private:
 	static int findMatchingStringIndex(string str, vector<string> lst);
 
 protected:
-
 	TimeParser();
 	~TimeParser();
 
@@ -33,5 +31,6 @@ public:
 	//If format error (including that of using dd/mm/yyyy), whole string entered is returned.
 	static string formatDate(string date);
 	//ddmmyy to dd/mm/yyyy
+
 };
 #endif

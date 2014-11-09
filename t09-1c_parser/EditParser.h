@@ -22,11 +22,11 @@ private:
 public:
 	EditParser();
 	~EditParser();
+
 	ParsedDataPackage parseAndReturn(string parseInput);
 
-
 	int convertToPosition(string argument);
+
 };
 
 #endif
-

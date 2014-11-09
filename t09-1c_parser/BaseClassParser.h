@@ -25,14 +25,14 @@
 	"fromPos"
 #define TO_POSITION \
 	"toPos"
+#define DELIMETER_START \
+	"["
+#define DELIMETER_END \
+	"]"
 #define EMPTY_SPACE_CHAR \
 	" "
 #define EMPTY_STRING \
 	""
-#define KEYWORD_TIME \
-	"-"
-#define KEYWORD_SECOND_DAY \
-	"+1"
 #define TIME_INSERT_COLON \
 	":"
 #define TIME_KEYWORD_AT \
@@ -41,12 +41,20 @@
 	" from "
 #define TIME_KEYWORD_TO \
 	" to "
+#define TIME_KEYWORD_DASH \
+	"-"
+#define TIME_KEYWORD_SECOND_DAY \
+	"+1"
 #define DATE_KEYWORD_NEXT \
 	"next"
 #define DATE_KEYWORD_ON \
 	" on "
 #define CATEGORY_KEYWORD \
 	"@"
+#define COMPLETE_PARSE_KEYWORD_TO \
+	"to"
+#define DELETE_PARSE_KEYWORD_TO \
+	"to"
 #define PARSER_6DIGIT_DATE_ERROR \
 	"Please enter a valid DDMMYY date!"
 #define PARSER_DAY_OF_WEEK_ERROR \
@@ -61,6 +69,7 @@
 	"Please enter a valid day of the week!"
 #define PARSER_SYNTAX_ERROR \
 	"Please follow the correct syntax for QuickAdd!"
+
 
 class BaseClassParser
 {
@@ -101,4 +110,3 @@ public:
 
 };
 #endif
-

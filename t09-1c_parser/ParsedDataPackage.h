@@ -8,12 +8,18 @@
 #include <vector>
 #include "assert.h"
 
+// All data related to event info to be stored are represented here.
+// Event name
+// Date should be in dd/mm/yyyy or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
+// FORMAT SHOULD BE "HH:MM" or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
+// FORMAT SHOULD BE "HH:MM" or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
+// Empty string for uncategorised
+// Line to delete or edit
 
 using namespace std;
 
 class ParsedDataPackage
 {
-
 private:
 	map<string, string> lineEntries;
 	map<string, int> startEndPositions;
@@ -30,15 +36,5 @@ public:
 	void insertAttribute(string attribute, string entry);
 	void insertAttribute(string attribute, int entry);
 
-	
-
-	//all data related to event info to be stored are represented here.
-    //event name
-	//date should be in dd/mm/yyyy or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
-	//FORMAT SHOULD BE "HH:MM" or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
-	//FORMAT SHOULD BE "HH:MM" or empty string. NO EXCEPTIONS. MAKE SURE PARSER DOES THIS.
-	// Empty string for uncategorised
-	//line to delete or edit
 };
 #endif
-

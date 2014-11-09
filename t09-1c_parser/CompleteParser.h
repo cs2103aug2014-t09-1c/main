@@ -4,21 +4,16 @@
 
 #include "BaseClassParser.h"
 
+// Complete Syntax: complete 2
+
 #define COMPLETE_PARSER_ERROR \
 	"Please enter valid <from> and <to> line numbers"
 
-#define DELIMETER \
-	"to"
-
 using namespace std;
-
-// Complete Syntax: complete 2
 
 class CompleteParser :
 	public BaseClassParser
 {
-private:
-
 public:
 	CompleteParser();
 	~CompleteParser();
