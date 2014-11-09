@@ -64,8 +64,8 @@ string AddParser::nextArguments(string argument)
 string AddParser::extractDate(string iterArguments)
 {
 	try{
-		string date = extractLeadingBracketContent(iterArguments);
-		string resultDate = getDate(date);
+		string dateExtracted = extractLeadingBracketContent(iterArguments);
+		string resultDate = getDate(dateExtracted);
 
 		return resultDate;
 	}
@@ -77,24 +77,24 @@ string AddParser::extractDate(string iterArguments)
 void AddParser::extractTime(string iterArguments)
 {
 	try {
-		string time = extractLeadingBracketContent(iterArguments);
-		getAndStoreTimes(time);
+		string timeExtracted = extractLeadingBracketContent(iterArguments);
+		getAndStoreTimes(timeExtracted);
 	}
 	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
 }
 
-ParsedDataPackage AddParser::parseAndReturn(string parseInput)
+ParsedDataPackage AddParser::parseAndReturn(string parseEntry)
 {
 	try {
-		insertAttribute(NAME_ATTRIBUTE, extractLeadingBracketContent(parseInput));
-		parseInput = nextArguments(parseInput);
-		insertAttribute(DATE_ATTRIBUTE, extractDate(parseInput));
-		parseInput = nextArguments(parseInput);
-		extractTime(parseInput);
-		parseInput = nextArguments(parseInput);
-		insertAttribute(CATEGORY_ATTRIBUTE, extractLeadingBracketContent(parseInput));
+		insertAttribute(NAME_ATTRIBUTE, extractLeadingBracketContent(parseEntry));
+		parseEntry = nextArguments(parseEntry);
+		insertAttribute(DATE_ATTRIBUTE, extractDate(parseEntry));
+		parseEntry = nextArguments(parseEntry);
+		extractTime(parseEntry);
+		parseEntry = nextArguments(parseEntry);
+		insertAttribute(CATEGORY_ATTRIBUTE, extractLeadingBracketContent(parseEntry));
 
 		return parsedData;
 	}
@@ -104,15 +104,15 @@ ParsedDataPackage AddParser::parseAndReturn(string parseInput)
 }
 
 //@ERIC A0111718M
-ParsedDataPackage AddParser::parseNLAndReturn(string parseInput)
+ParsedDataPackage AddParser::parseNLAndReturn(string parseEntry)
 {
 	try {
-		insertAttribute(CATEGORY_ATTRIBUTE, extractCategoryNL(parseInput));
-		parseInput = removeCategoryNL(parseInput);
-		insertAttribute(NAME_ATTRIBUTE, extractEventNL(parseInput));
-		insertAttribute(DATE_ATTRIBUTE, extractDateNL(parseInput));
-		extractTimesNL(parseInput);
-		syntaxSwapChecker(parseInput);
+		insertAttribute(CATEGORY_ATTRIBUTE, extractCategoryNL(parseEntry));
+		parseEntry = removeCategoryNL(parseEntry);
+		insertAttribute(NAME_ATTRIBUTE, extractEventNL(parseEntry));
+		insertAttribute(DATE_ATTRIBUTE, extractDateNL(parseEntry));
+		extractTimesNL(parseEntry);
+		syntaxSwapChecker(parseEntry);
 
 		return parsedData;
 	}
@@ -125,8 +125,8 @@ ParsedDataPackage AddParser::parseNLAndReturn(string parseInput)
 string AddParser::extractCategoryNL(string arguments)
 {
 	string category = EMPTY_STRING;
-	string keyword = CATEGORY_KEYWORD;
-	size_t position1 = arguments.rfind(keyword);
+	string categoryKeyword = CATEGORY_KEYWORD;
+	size_t position1 = arguments.rfind(categoryKeyword);
 
 	if (position1 != string::npos) {
 		category = arguments.substr(position1 + 1);
@@ -141,8 +141,8 @@ string AddParser::extractCategoryNL(string arguments)
 //@ERIC A0111718M
 string AddParser::removeCategoryNL(string arguments)
 {
-	string keyword = CATEGORY_KEYWORD;
-	size_t position1 = arguments.rfind(keyword);
+	string CategoryKeyword = CATEGORY_KEYWORD;
+	size_t position1 = arguments.rfind(CategoryKeyword);
 
 	if (position1 != string::npos) {
 		string newArguments = arguments.substr(0, position1 - 1);
