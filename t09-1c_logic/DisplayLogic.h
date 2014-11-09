@@ -6,7 +6,7 @@
 #include <iostream>
 
 #define NO_START_STRING \
-	"Deadline->"
+	"Do by ->"
 #define FLOAT_START_STRING \
 	"-"
 #define FLOAT_END_STRING \
@@ -15,6 +15,12 @@
 	"Today, "
 #define LAPSED \
 	"Lapsed"
+#define UNKNOWN \
+	"???"
+#define STRUCT_PARAM_FORMAT(name, date, time, category) \
+	"[" + name + "][" + date + "][" + time + "][" + category + "]"
+#define TIME_DELIMETER \
+	"-"
 
 using namespace std;
 

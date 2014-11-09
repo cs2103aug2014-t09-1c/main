@@ -3,6 +3,7 @@
 #define SEARCH_LOGIC
 
 #include "BaseClassLogic.h"
+#include "DL_Algorithm.h"
 
 #define SUGGESTIONS_LIMIT \
 	20
@@ -25,6 +26,13 @@ private:
 	bool checkTimedTaskEligibility(string input, string line);
 	void determinePriority(string keyword, int diffCost);
 
+	void checkCategoryMatch(string input, string line);
+	void checkNameMatch(string input, string line);
+	void checkDateMatch(string input, string line);
+	void checkEndTimeMatch(string input, string line);
+	void checkTimedTaskMatch(string input, string line);
+	void insertToKeywordVector(string input, string keyword, int diffCost);
+	
 public:
 	
 	SearchLogic(string fileName);

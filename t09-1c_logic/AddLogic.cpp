@@ -35,42 +35,37 @@ void AddLogic::determineType()
 	bool isDateEmpty = getAttributeEntry(DATE_ATTRIBUTE, lineEntry) == "";
 	bool isStartTimeEmpty = getAttributeEntry(START_ATTRIBUTE, lineEntry) == "";
 	bool isEndTimeEmpty = getAttributeEntry(END_ATTRIBUTE, lineEntry) == "";
-	
-	if (isStartTimeEmpty) {
-		if (isEndTimeEmpty) {
-			if (isDateEmpty) {
-				if (isNameEmpty) {
-				}
-				else {
-					appendToLineEntry(TYPE_ATTRIBUTE, "float");
-				}
-			}
-			else {
-				lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, "23:59", lineEntry);
-				appendToLineEntry(TYPE_ATTRIBUTE, "deadline");
-			}
-		}
-		else {
-			appendToLineEntry(TYPE_ATTRIBUTE, "deadline");
-		}
+
+	if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty && isNameEmpty) {
+		//do nothing
+	}
+	else if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty) {
+		appendToLineEntry(TYPE_ATTRIBUTE, FLOAT_TASK_TYPE);
+	}
+	else if (isStartTimeEmpty && isEndTimeEmpty) {
+		lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, END_OF_DAY_TIME, lineEntry);
+		appendToLineEntry(TYPE_ATTRIBUTE, DEADLINE_TASK_TYPE);
+	}
+	else if (isStartTimeEmpty) {
+		appendToLineEntry(TYPE_ATTRIBUTE, DEADLINE_TASK_TYPE);
 	}
 	else {
-		appendToLineEntry(TYPE_ATTRIBUTE, "timed");
+		appendToLineEntry(TYPE_ATTRIBUTE, TIMED_TASK_TYPE);
 	}
 }
 
 void AddLogic::addCompleteEntry()
 {
-	appendToLineEntry(COMPLETE_ATTRIBUTE, "no");
+	appendToLineEntry(COMPLETE_ATTRIBUTE, TASK_NOT_COMPLETE);
 }
 
 void AddLogic::validChecks() 
 {
+	determineType();
 	if (!isDateAndTimeCorrect(lineEntry)) {
 		throw runtime_error(ADD_LOGIC_TIME_DATE_ERROR);
 	}
 	else {
-		determineType();
 		string type = getAttributeEntry(TYPE_ATTRIBUTE, lineEntry);
 		if (type == "") {
 			throw runtime_error(ADD_LOGIC_MISSING_ERROR);

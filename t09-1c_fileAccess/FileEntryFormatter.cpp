@@ -13,7 +13,7 @@ FileEntryFormatter::~FileEntryFormatter()
 
 size_t FileEntryFormatter::getAttributedEntryPosition(string attribute, string lineEntry)
 {
-	string openingAttribute = "<" + attribute + ">";
+	string openingAttribute = OPENING_ATTR(attribute);
 	size_t foundOpeningAttributeAt = lineEntry.find(openingAttribute);
 	size_t attributeEntryStartAt = foundOpeningAttributeAt + openingAttribute.size();
 	
@@ -23,7 +23,7 @@ size_t FileEntryFormatter::getAttributedEntryPosition(string attribute, string l
 size_t FileEntryFormatter::getAttributeEntrySize(string attribute, string lineEntry)
 {
 	size_t attributeEntrySize = 0;
-	string closingAttribute = "</" + attribute + ">";
+	string closingAttribute = CLOSING_ATTR(attribute);
 	size_t foundClosingAttributeAt = lineEntry.find(closingAttribute);
 	
 	if (foundClosingAttributeAt != string::npos) {
@@ -34,8 +34,8 @@ size_t FileEntryFormatter::getAttributeEntrySize(string attribute, string lineEn
 
 string FileEntryFormatter::createAttributedEntry(string attribute, string entry)
 {
-	string openingAttribute = "<" + attribute + ">";
-	string closingAttribute = "</" + attribute + ">";
+	string openingAttribute = OPENING_ATTR(attribute);
+	string closingAttribute = CLOSING_ATTR(attribute);
 	string attributedEntry = openingAttribute + entry + closingAttribute;
 
 	return attributedEntry;
@@ -62,8 +62,8 @@ string FileEntryFormatter::addAttributedEntryToLineEntry(string attributedEntry,
 
 string FileEntryFormatter::deleteAttributedEntryFromLineEntry(string attribute, string lineEntry)
 {
-	string openingAttribute = "<" + attribute + ">";
-	string closingAttribute = "</" + attribute + ">";
+	string openingAttribute = OPENING_ATTR(attribute);
+	string closingAttribute = CLOSING_ATTR(attribute);
 	size_t foundOpeningAttributeAt = lineEntry.find(openingAttribute);
 	
 	if (foundOpeningAttributeAt != string::npos) {

@@ -28,14 +28,13 @@ void CompleteLogic::editCompletion(int fromPosition, int toPosition, bool comple
 		checkFromToValidity(startPosition, endPosition, positionSize);
 		for (int i = startPosition; i <= endPosition; ++i) {
 			int filePosition = positions[i];
-			oldLinePosforUndo.push(filePosition);
+			storeOldEntryForUndo(filePosition);
 			string line = getLineFromPositionNumber(filePosition);
-			OldLineEntriesForUndo.push(line);
 			if (complete) {
-				line = FileEntryFormatter::editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, "yes", line);
+				line = editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, TASK_COMPLETE, line);
 			}
 			else {
-				line = FileEntryFormatter::editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, "no", line);
+				line = editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, TASK_NOT_COMPLETE, line);
 			}
 			editLine(filePosition, line);
 		}
@@ -43,6 +42,13 @@ void CompleteLogic::editCompletion(int fromPosition, int toPosition, bool comple
 	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
+}
+
+void CompleteLogic::storeOldEntryForUndo(int filePosition)
+{
+	oldLinePosforUndo.push(filePosition);
+	string line = getLineFromPositionNumber(filePosition);
+	OldLineEntriesForUndo.push(line);
 }
 
 void CompleteLogic::checkFromToValidity(int fromPosition, int toPosition, int size)

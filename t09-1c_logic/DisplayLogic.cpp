@@ -54,8 +54,10 @@ vector<string> DisplayLogic::putToVectorEventDatails(string line)
 	}
 	eventVector.push_back(pos2);
 	eventVector.push_back(pos3);
-	bool isNotComplete = getAttributeEntry(COMPLETE_ATTRIBUTE, line) == "no";
+
+	bool isNotComplete = getAttributeEntry(COMPLETE_ATTRIBUTE, line) == TASK_NOT_COMPLETE;
 	string displayComplete = (isTimeBeforeNow(endDate) && isNotComplete) ? LAPSED : getAttributeEntry(COMPLETE_ATTRIBUTE, line);
+	displayComplete = (displayComplete == TASK_COMPLETE || displayComplete == TASK_NOT_COMPLETE || displayComplete == LAPSED) ? displayComplete : UNKNOWN;
 	eventVector.push_back(displayComplete);
 
 	return eventVector;
@@ -74,6 +76,14 @@ vector<vector<string>> DisplayLogic::displayEvents()
 
 string DisplayLogic::formatContentsToLineEdit(int position)
 {
+	const int DDMMYYYY_FULL_LENGTH = 10;
+	const int HHMM_FULL_LENGTH = 5;
+	const int HHMMPLUS1_FULL_LENGTH = 7;
+	const int TIME_DATE_COMP_INPUT_SIZE = 2;
+	const int PLUS_ONE_SIZE = 2;
+	const int MM_POS = 3;
+
+
 	string lineAppend;
 	vector<string> eventList = getSortedLineEntries();
 	int size = eventList.size();
@@ -81,23 +91,23 @@ string DisplayLogic::formatContentsToLineEdit(int position)
 		string line = eventList[position - 1];
 		string name = getAttributeEntry(NAME_ATTRIBUTE, line);
 		string date = getAttributeEntry(DATE_ATTRIBUTE, line);
-		if (date.length() == 10) {
-			date = date.substr(0, 2) + date.substr(3, 2) + date.substr(8, 2);
+		if (date.length() == DDMMYYYY_FULL_LENGTH) {
+			date = date.substr(0, TIME_DATE_COMP_INPUT_SIZE) + date.substr(MM_POS, TIME_DATE_COMP_INPUT_SIZE) + date.substr(8, TIME_DATE_COMP_INPUT_SIZE);
 		}
 		string start = getAttributeEntry(START_ATTRIBUTE, line);
-		if (start.length() == 5) {
-			start = start.substr(0, 2) + start.substr(3, 2);
+		if (start.length() == HHMM_FULL_LENGTH) {
+			start = start.substr(0, TIME_DATE_COMP_INPUT_SIZE) + start.substr(MM_POS, TIME_DATE_COMP_INPUT_SIZE);
 		}
 		string end = getAttributeEntry(END_ATTRIBUTE, line);
-		if (end.length() == 5) {
-			end = end.substr(0, 2) + end.substr(3, 2);
+		if (end.length() == HHMM_FULL_LENGTH) {
+			end = end.substr(0, TIME_DATE_COMP_INPUT_SIZE) + end.substr(MM_POS, TIME_DATE_COMP_INPUT_SIZE);
 		}
-		else if (end.length() == 7) {
-			end = end.substr(0, 2) + end.substr(3, 4);
+		else if (end.length() == HHMMPLUS1_FULL_LENGTH) {
+			end = end.substr(0, TIME_DATE_COMP_INPUT_SIZE) + end.substr(MM_POS, TIME_DATE_COMP_INPUT_SIZE + PLUS_ONE_SIZE);
 		}
 		string category = getAttributeEntry(CATEGORY_ATTRIBUTE, line);
 
-		lineAppend = "[" + name + "]" + "[" + date + "]" + "[" + start + ((start != "") ? "-" : "") + end + "]" + "[" + category + "]";
+		lineAppend = STRUCT_PARAM_FORMAT(name, date, start + ((start != "") ? TIME_DELIMETER : "") + end, category);
 	}
 	return lineAppend;
 }

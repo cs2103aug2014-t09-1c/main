@@ -29,6 +29,21 @@
 #define TO_POSITION \
 	"toPos"
 
+#define DEADLINE_TASK_TYPE \
+	"deadline"
+#define TIMED_TASK_TYPE \
+	"timed"
+#define FLOAT_TASK_TYPE \
+	"float"
+#define TASK_NOT_COMPLETE \
+	"no"
+#define TASK_COMPLETE \
+	"yes"
+#define START_OF_DAY_TIME \
+	"00:00"
+#define END_OF_DAY_TIME \
+	"23:59"
+
 
 class BaseClassLogic
 {
@@ -48,6 +63,7 @@ private:
 	TimeLogic getPriorityDateTime(string line);
 	void addNonFloatEventToEntry(int iteration);
 	bool checkKeywordCriteria(string line, vector<string> keywords);
+	bool checkIfTimedTaskWithinTimeKeyword(string line, string timeKeyword);
 
 	/*These are the private sorting helper variables applicable to all Logic specific methods.*/
 	vector<string> sortedLineEntries; //This stores the sorted entries as determined by the sorting algorithm

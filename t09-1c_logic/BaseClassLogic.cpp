@@ -194,13 +194,15 @@ void BaseClassLogic::getListOfEventsHaving(vector<string> keywords)
 
 	for (int i = 0; i < size; ++i) {
 		string line = getLineFromPositionNumber(i);
-		if (checkKeywordCriteria(line, keywords)) {
-			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == "float") {
-				sortedLineEntries.push_back(line);
-				sortedLineFilePositions.push_back(i);
-			}
-			else if (getAttributeEntry(TYPE_ATTRIBUTE, line) != "") {
-				addNonFloatEventToEntry(i);
+		if (isDateAndTimeCorrect(line)) {
+			if (checkKeywordCriteria(line, keywords)) {
+				if (getAttributeEntry(TYPE_ATTRIBUTE, line) == FLOAT_TASK_TYPE) {
+					sortedLineEntries.push_back(line);
+					sortedLineFilePositions.push_back(i);
+				}
+				else if (getAttributeEntry(TYPE_ATTRIBUTE, line) != "") {
+					addNonFloatEventToEntry(i);
+				}
 			}
 		}
 	}
@@ -210,22 +212,24 @@ void BaseClassLogic::getListOfEventsHome(string fromDate)
 {
 	int size = fileHandler.getSize();
 
-	TimeLogic dateQualifier = createTimeLogic(date, "00:00");
+	TimeLogic dateQualifier = createTimeLogic(date, START_OF_DAY_TIME);
 
 	for (int i = 0; i < size; ++i) {
 		string line = getLineFromPositionNumber(i);
-		if (getAttributeEntry(TYPE_ATTRIBUTE, line) == "float") {
-			sortedLineEntries.push_back(line);
-			sortedLineFilePositions.push_back(i);
-		}
-		else {
-			string lineDateString = getAttributeEntry(DATE_ATTRIBUTE, line);
-			TimeLogic lineDate = createTimeLogic(lineDateString, "00:00");
-			bool isNotCompleted = getAttributeEntry(COMPLETE_ATTRIBUTE, line) == "no";
+		if (isDateAndTimeCorrect(line)) {
+			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == FLOAT_TASK_TYPE) {
+				sortedLineEntries.push_back(line);
+				sortedLineFilePositions.push_back(i);
+			}
+			else {
+				string lineDateString = getAttributeEntry(DATE_ATTRIBUTE, line);
+				TimeLogic lineDate = createTimeLogic(lineDateString, START_OF_DAY_TIME);
+				bool isNotCompleted = getAttributeEntry(COMPLETE_ATTRIBUTE, line) == TASK_NOT_COMPLETE;
 
-			if (getTimeFormatCheck(lineDate)) {
-				if (isFirstEarlierThanSecond(dateQualifier, lineDate) || isNotCompleted) {
-					addNonFloatEventToEntry(i);
+				if (getTimeFormatCheck(lineDate)) {
+					if (isFirstEarlierThanSecond(dateQualifier, lineDate) || isNotCompleted) {
+						addNonFloatEventToEntry(i);
+					}
 				}
 			}
 		}
@@ -238,12 +242,14 @@ void BaseClassLogic::getAllEntries()
 
 	for (int i = 0; i < size; ++i) {
 		string line = getLineFromPositionNumber(i);
-		if (getAttributeEntry(TYPE_ATTRIBUTE, line) == "float") {
-			sortedLineEntries.push_back(line);
-			sortedLineFilePositions.push_back(i);
-		}
-		else if (getAttributeEntry(TYPE_ATTRIBUTE, line) != "") {
-			addNonFloatEventToEntry(i);
+		if (isDateAndTimeCorrect(line)) {
+			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == FLOAT_TASK_TYPE) {
+				sortedLineEntries.push_back(line);
+				sortedLineFilePositions.push_back(i);
+			}
+			else if (getAttributeEntry(TYPE_ATTRIBUTE, line) != "") {
+				addNonFloatEventToEntry(i);
+			}
 		}
 	}
 }
@@ -252,10 +258,10 @@ TimeLogic BaseClassLogic::getPriorityDateTime(string line)
 {
 	string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
 	string lineTime;
-	if (getAttributeEntry(TYPE_ATTRIBUTE, line) == "deadline") {
+	if (getAttributeEntry(TYPE_ATTRIBUTE, line) == DEADLINE_TASK_TYPE) {
 		lineTime = getAttributeEntry(END_ATTRIBUTE, line);
 	}
-	else if (getAttributeEntry(TYPE_ATTRIBUTE, line) == "timed") {
+	else if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE) {
 		lineTime = getAttributeEntry(START_ATTRIBUTE, line);
 	}
 	TimeLogic priorityDateTime = createTimeLogic(lineDate, lineTime);
@@ -276,11 +282,12 @@ void BaseClassLogic::addNonFloatEventToEntry(int iteration)
 		int minSize = 0;
 		int maxSize = sortedLineEntries.size() - 1;
 
+		// Addition of Non-Float Entry is done using binary search to minimise complexity.
 		while (maxSize >= minSize) {
 			int mid = (minSize + maxSize) / 2;
 			string checkLine = sortedLineEntries[mid];
 
-			if (getAttributeEntry(TYPE_ATTRIBUTE, checkLine) == "float") {
+			if (getAttributeEntry(TYPE_ATTRIBUTE, checkLine) == FLOAT_TASK_TYPE) {
 				if (maxSize == minSize) {
 					sortedLineEntries.insert(it1 + minSize, line);
 					sortedLineFilePositions.insert(it2 + minSize, iteration);
@@ -295,7 +302,7 @@ void BaseClassLogic::addNonFloatEventToEntry(int iteration)
 				TimeLogic deadline = getPriorityDateTime(line);
 
 				bool isEqualDateTime = (checkLineTimeLogic.getStringTime() == deadline.getStringTime()) && (checkLineTimeLogic.getStringDate() == deadline.getStringDate());
-				bool isDeadlinePrioritise = (getAttributeEntry(TYPE_ATTRIBUTE, line) == "deadline") && (getAttributeEntry(TYPE_ATTRIBUTE, checkLine) == "timed") && isEqualDateTime;
+				bool isDeadlinePrioritise = (getAttributeEntry(TYPE_ATTRIBUTE, line) == DEADLINE_TASK_TYPE) && (getAttributeEntry(TYPE_ATTRIBUTE, checkLine) == TIMED_TASK_TYPE) && isEqualDateTime;
 
 				if ((isFirstEarlierThanSecond(deadline, checkLineTimeLogic) && !isEqualDateTime) || isDeadlinePrioritise) {
 					if (maxSize == minSize) {
@@ -332,7 +339,7 @@ bool BaseClassLogic::checkKeywordCriteria(string line, vector<string> keywords)
 		bool isMatchCategory = getAttributeEntry(CATEGORY_ATTRIBUTE, line) == keyword;
 
 		string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
-		TimeLogic date = createTimeLogic(lineDate, "00:00");
+		TimeLogic date = createTimeLogic(lineDate, START_OF_DAY_TIME);
 
 		string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
 		TimeLogic endTime = createTimeLogic(lineDate, lineEnd);
@@ -345,18 +352,31 @@ bool BaseClassLogic::checkKeywordCriteria(string line, vector<string> keywords)
 		bool isMatchStart = lineStart == keyword && getTimeFormatCheck(startTime);
 		bool isMatchEnd = getStringTime(endTime) == keyword && getTimeFormatCheck(endTime);
 
-		bool isWithinTime = false;
-		if (getAttributeEntry(TYPE_ATTRIBUTE, line) == "timed") {
-			TimeLogic keywordTime = createTimeLogic(lineDate, keyword);
-			isWithinTime = isFirstEarlierThanSecond(startTime, keywordTime) && isFirstEarlierThanSecond(keywordTime, endTime);
-			if (lineEnd.substr(5, 2) == "+1") {
-				TimeLogic keywordTimePlusOne = createTimeLogic(lineDate, keyword + "+1");
-				isWithinTime = isFirstEarlierThanSecond(startTime, keywordTimePlusOne) && isFirstEarlierThanSecond(keywordTimePlusOne, endTime);
-			}
-		}
+		bool isWithinTime = checkIfTimedTaskWithinTimeKeyword(line, keyword);
 		isCriteriaMet = isMatchName || isMatchCategory || isMatchDate || isMatchEndDate || isMatchStart || isMatchEnd || isWithinTime;
 	}
 	return isCriteriaMet;
+}
+
+bool BaseClassLogic::checkIfTimedTaskWithinTimeKeyword(string line, string timeKeyword)
+{
+	bool isWithinTime = false;
+	if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE) {
+		string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+		string lineStart = getAttributeEntry(START_ATTRIBUTE, line);
+		string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
+
+		TimeLogic startTime = createTimeLogic(lineDate, lineStart);
+		TimeLogic endTime = createTimeLogic(lineDate, lineEnd);
+		TimeLogic keywordTime = createTimeLogic(lineDate, timeKeyword);
+
+		isWithinTime = isFirstEarlierThanSecond(startTime, keywordTime) && isFirstEarlierThanSecond(keywordTime, endTime);
+		if (lineEnd.substr(5, 2) == "+1") {
+			TimeLogic keywordTimePlusOne = createTimeLogic(lineDate, timeKeyword + "+1");
+			isWithinTime = isFirstEarlierThanSecond(startTime, keywordTimePlusOne) && isFirstEarlierThanSecond(keywordTimePlusOne, endTime);
+		}
+	}
+	return isWithinTime;
 }
 
 bool BaseClassLogic::isDateAndTimeCorrect(string lineEntry)
@@ -364,21 +384,18 @@ bool BaseClassLogic::isDateAndTimeCorrect(string lineEntry)
 	string date = getAttributeEntry(DATE_ATTRIBUTE, lineEntry);
 	string startTime = getAttributeEntry(START_ATTRIBUTE, lineEntry);
 	string endTime = getAttributeEntry(END_ATTRIBUTE, lineEntry);
+	string type = getAttributeEntry(TYPE_ATTRIBUTE, lineEntry);
 
-	if (startTime.empty()) {
-		if (endTime.empty()) {
-			if (date.empty()) {
-				return true;
-			}
-			else {
-				TimeLogic check = createTimeLogic(date, "00:00");
-				return getTimeFormatCheck(check);
-			}
-		}
-		else {
-			TimeLogic check = createTimeLogic(date, endTime);
-			return getTimeFormatCheck(check);
-		}
+	if (startTime.empty() && endTime.empty() && date.empty() && type == FLOAT_TASK_TYPE) {
+		return true;
+	}
+	else if (startTime.empty() && endTime.empty() && type == FLOAT_TASK_TYPE) {
+		TimeLogic check = createTimeLogic(date, START_OF_DAY_TIME);
+		return getTimeFormatCheck(check);
+	}
+	else if (startTime.empty() && type == DEADLINE_TASK_TYPE) {
+		TimeLogic check = createTimeLogic(date, endTime);
+		return getTimeFormatCheck(check);
 	}
 	else {
 		TimeLogic checkStart = createTimeLogic(date, startTime);

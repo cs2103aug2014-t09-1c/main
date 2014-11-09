@@ -89,7 +89,6 @@
     <ClInclude Include="DL_Algorithm.h" />
     <ClInclude Include="EditLogic.h" />
     <ClInclude Include="FileLogic.h" />
-    <ClInclude Include="LogicHelperFunctions.h" />
     <ClInclude Include="SearchLogic.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -105,7 +104,6 @@
     <ClCompile Include="DL_Algorithm.cpp" />
     <ClCompile Include="EditLogic.cpp" />
     <ClCompile Include="FileLogic.cpp" />
-    <ClCompile Include="LogicHelperFunctions.cpp" />
     <ClCompile Include="SearchLogic.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

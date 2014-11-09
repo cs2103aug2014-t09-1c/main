@@ -62,7 +62,7 @@ void UndoLogic::storeUndo(string fileName)
 {
 	checkFile(fileName);
 	clearRedo();
-	undoCase.push("add");
+	undoCase.push(ADD_CASE);
 	
 	FileLogic fileHandler(fileName);
 	int position = fileHandler.getSize() - 1;
@@ -81,7 +81,7 @@ void UndoLogic::storeUndo(string fileName, string line, int position)
 {
 	checkFile(fileName);
 	clearRedo();
-	undoCase.push("modify");
+	undoCase.push(MODIFY_CASE);
 	
 	stack<string> lineEntry;
 	lineEntry.push(line);
@@ -96,15 +96,15 @@ void UndoLogic::storeUndo(string fileName, string line, int position)
 void UndoLogic::storeUndo(string fileName, string commandType, stack<string> lines, stack<int> filePositions)
 {
 	checkFile(fileName);
-	if (commandType == "delete") {
+	if (commandType == DELETE_CASE) {
 		clearRedo();
-		undoCase.push("delete");
+		undoCase.push(DELETE_CASE);
 		undoLineStack.push(lines);
 		undoFilePositionStack.push(filePositions);
 	}
-	else if (commandType == "modify") {
+	else if (commandType == MODIFY_CASE) {
 		clearRedo();
-		undoCase.push("modify");
+		undoCase.push(MODIFY_CASE);
 		undoLineStack.push(lines);
 		undoFilePositionStack.push(filePositions);
 	}
@@ -118,14 +118,14 @@ void UndoLogic::undo(string fileName)
 		undoCase.pop();
 		redoCase.push(caseType);
 
-		if (caseType == "add") {
-			modify(fileName, "undo", "add");
+		if (caseType == ADD_CASE) {
+			modify(fileName, UNDO, ADD_CASE);
 		}
-		else if (caseType == "modify") {
-			modify(fileName, "undo", "modify");
+		else if (caseType == MODIFY_CASE) {
+			modify(fileName, UNDO, MODIFY_CASE);
 		}
-		else if (caseType == "delete") {
-			modify(fileName, "undo", "delete");
+		else if (caseType == DELETE_CASE) {
+			modify(fileName, UNDO, DELETE_CASE);
 		}
 	}
 }
@@ -138,14 +138,14 @@ void UndoLogic::redo(string fileName)
 		redoCase.pop();
 		undoCase.push(caseType);
 
-		if (caseType == "add") {
-			modify(fileName, "redo", "add");
+		if (caseType == ADD_CASE) {
+			modify(fileName, REDO, ADD_CASE);
 		}
-		else if (caseType == "modify") {
-			modify(fileName, "redo", "modify");
+		else if (caseType == MODIFY_CASE) {
+			modify(fileName, REDO, MODIFY_CASE);
 		}
-		else if (caseType == "delete") {
-			modify(fileName, "redo", "delete");
+		else if (caseType == DELETE_CASE) {
+			modify(fileName, REDO, DELETE_CASE);
 		}
 	}
 }
@@ -157,7 +157,7 @@ void UndoLogic::modify(string fileName, string action, string commandType)
 	stack<stack<string>> * toLineStack;
 	stack<stack<int>> * toFilePositionStack;
 
-	if (action == "undo") {
+	if (action == UNDO) {
 		fromLineStack = &undoLineStack;
 		fromFilePositionStack = &undoFilePositionStack;
 		toLineStack = &redoLineStack;
@@ -185,17 +185,17 @@ void UndoLogic::modify(string fileName, string action, string commandType)
 		int position = positions.top();
 		positions.pop();
 		positionsStore.push(position);
-		if (commandType == "modify" || 
-		(commandType == "delete" && action == "redo") ||
-		(commandType == "add" && action == "undo")) {
+		if (commandType == MODIFY_CASE || 
+		(commandType == DELETE_CASE && action == REDO) ||
+		(commandType == ADD_CASE && action == UNDO)) {
 			string oldLine = fileHandler.getLineFromPositionNumber(position);
 			oldLinesStore.push(oldLine);
 			fileHandler.deleteLine(position);
 		}
-		if (commandType == "modify" || 
-		(commandType == "delete" && action == "undo") ||
-		(commandType == "add" && action == "redo")) {
-			if (commandType == "delete" || commandType == "add") {
+		if (commandType == MODIFY_CASE || 
+		(commandType == DELETE_CASE && action == UNDO) ||
+		(commandType == ADD_CASE && action == REDO)) {
+			if (commandType == DELETE_CASE || commandType == ADD_CASE) {
 				oldLinesStore.push(line);
 			}
 			fileHandler.addToPositionNumber(position, line);

@@ -42,9 +42,6 @@
     <ClInclude Include="UndoLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LogicHelperFunctions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FileLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,9 +75,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UndoLogic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LogicHelperFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileLogic.cpp">

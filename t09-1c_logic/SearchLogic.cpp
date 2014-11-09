@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SearchLogic.h"
-#include "DL_Algorithm.h"
 
 
 SearchLogic::SearchLogic(string fileName) try : BaseClassLogic(fileName)
@@ -22,65 +21,95 @@ SearchLogic::~SearchLogic()
 		
 vector<string> SearchLogic::createKeywords(string input)
 {
-	DL_Algorithm diffCost;
 	transform(input.begin(), input.end(), input.begin(), ::tolower);
 
 	if (input.length() >= MIMUMUM_LENGTH) {
 		int numberOfEvents = getEntriesSize();
 		for (int i = 0; i < numberOfEvents; ++i) {
 			string line = getLineFromPositionNumber(i);
-			string lineCategory = getAttributeEntry(CATEGORY_ATTRIBUTE, line);
-			int categoryDifference = diffCost.findDLCost(input, lineCategory);
-			if (categoryDifference <= NONDATETIMEMAXCOST) {
-				string categoryChars = lineCategory;
-				transform(categoryChars.begin(), categoryChars.end(), categoryChars.begin(), ::tolower);
-				categoryDifference = (categoryChars.find(input) != string::npos) ? -1 : categoryDifference;
-				determinePriority(lineCategory, categoryDifference);
-			}
-
-			string lineName = getAttributeEntry(NAME_ATTRIBUTE, line);
-			int nameDifference = diffCost.findDLCost(input, lineName);
-			if (nameDifference <= NONDATETIMEMAXCOST) {
-				string nameChars = lineName;
-				transform(nameChars.begin(), nameChars.end(), nameChars.begin(), ::tolower);
-				nameDifference = (nameChars.find(input) != string::npos) ? -1 : nameDifference;
-				determinePriority(lineName, nameDifference);
-			}
-
-			string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
-			string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
-			TimeLogic endDateTime = createTimeLogic(lineDate, lineEnd);
-			string endDate = getStringDate(endDateTime);
-			
-			int lineDateDifference = diffCost.findDLCost(input, lineDate);
-			int endDateDifference = diffCost.findDLCost(input, endDate);
-
-			if (lineDateDifference <= DATETIMEMAXCOST || endDateDifference <= DATETIMEMAXCOST) {
-				TimeLogic dateCheck = createTimeLogic(lineDate, "00:00");
-				if (getTimeFormatCheck(dateCheck) && getTimeFormatCheck(dateCheck)) {
-					determinePriority(lineDate, lineDateDifference);
-					determinePriority(endDate, endDateDifference);
-				}
-			}
-			string endTime = getStringTime(endDateTime);
-			int endDifference = diffCost.findDLCost(input, endTime);
-
-			if (endDifference <= DATETIMEMAXCOST)
-			{
-				if (endDateTime.getTimeFormatCheck()) {
-					determinePriority(endTime, endDifference);
-				}
-			}
-
-			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == "timed") {
-				if (checkTimedTaskEligibility(input, line)) {
-					determinePriority(input, 0);
-				}
-			}
+			checkCategoryMatch(input, line);
+			checkNameMatch(input, line);
+			checkDateMatch(input, line);
+			checkEndTimeMatch(input, line);
+			checkTimedTaskMatch(input, line);
 		}
 		
 	}
 	return keywords;
+}
+
+void SearchLogic::checkTimedTaskMatch(string input, string line)
+{
+	if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE) {
+		if (checkTimedTaskEligibility(input, line)) {
+			determinePriority(input, 0);
+		}
+	}
+}
+
+void SearchLogic::checkEndTimeMatch(string input, string line)
+{
+	DL_Algorithm diffCost;
+	string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+	string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
+	TimeLogic endDateTime = createTimeLogic(lineDate, lineEnd);
+	string endTime = getStringTime(endDateTime);
+	int endDifference = diffCost.findDLCost(input, endTime);
+
+	if (endDifference <= DATETIMEMAXCOST)
+	{
+		if (endDateTime.getTimeFormatCheck()) {
+			determinePriority(endTime, endDifference);
+		}
+	}
+
+}
+void SearchLogic::checkDateMatch(string input, string line)
+{
+	DL_Algorithm diffCost;
+	string lineStartDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+	string lineEndTime = getAttributeEntry(END_ATTRIBUTE, line);
+	
+	TimeLogic endDateTime = createTimeLogic(lineStartDate, lineEndTime);
+	string lineEndDate = getStringDate(endDateTime);
+	
+	int lineDateDifference = diffCost.findDLCost(input, lineStartDate);
+	int endDateDifference = diffCost.findDLCost(input, lineEndDate);
+
+	if (lineDateDifference <= DATETIMEMAXCOST || endDateDifference <= DATETIMEMAXCOST) {
+		TimeLogic dateCheck = createTimeLogic(lineStartDate, START_OF_DAY_TIME);
+		if (getTimeFormatCheck(dateCheck) && getTimeFormatCheck(dateCheck)) {
+			determinePriority(lineStartDate, lineDateDifference);
+			determinePriority(lineEndDate, endDateDifference);
+		}
+	}
+}
+void SearchLogic::checkCategoryMatch(string input, string line)
+{
+	DL_Algorithm diffCost;
+	string lineCategory = getAttributeEntry(CATEGORY_ATTRIBUTE, line);
+	int categoryDifference = diffCost.findDLCost(input, lineCategory);
+	if (categoryDifference <= NONDATETIMEMAXCOST) {
+		insertToKeywordVector(input, lineCategory, categoryDifference);
+	}
+}
+
+void SearchLogic::checkNameMatch(string input, string line)
+{
+	DL_Algorithm diffCost;
+	string lineName = getAttributeEntry(NAME_ATTRIBUTE, line);
+	int nameDifference = diffCost.findDLCost(input, lineName);
+	if (nameDifference <= NONDATETIMEMAXCOST) {
+		insertToKeywordVector(input, lineName, nameDifference);
+	}
+}
+
+void SearchLogic::insertToKeywordVector(string input, string keyword, int diffCost)
+{
+	string keywordCopy = keyword;
+	transform(keywordCopy.begin(), keywordCopy.end(), keywordCopy.begin(), ::tolower);
+	diffCost = (keywordCopy.find(input) != string::npos) ? -1 : diffCost;
+	determinePriority(keyword, diffCost);
 }
 
 void SearchLogic::determinePriority(string keyword, int diffCost) 
@@ -164,7 +193,7 @@ pair<string, string> SearchLogic::getEarliestFreeSlot(map<string, string> fromTo
 		int size = eventList.size();
 		for (int i = 0; i < size; ++i) {
 			string line = eventList[i];
-			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == "timed") {
+			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE) {
 				string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
 				string lineStart = getAttributeEntry(START_ATTRIBUTE, line);
 				string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
@@ -208,7 +237,7 @@ pair<int, int> SearchLogic::getTodayCompletionStat(string todayDate)
 	int completed = 0;
 	int eventsToday = eventList.size();
 	for (int i = 0; i < eventsToday; ++i) {
-		if (getAttributeEntry(COMPLETE_ATTRIBUTE, eventList[i]) == "yes") {
+		if (getAttributeEntry(COMPLETE_ATTRIBUTE, eventList[i]) == TASK_COMPLETE) {
 			++completed;
 		}
 	}

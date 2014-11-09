@@ -47,9 +47,8 @@ void DeleteLogic::execute(map<string, int> fromToPositions)
 		checkFromToValidity(startPosition, toPosition, positionSize);
 		for (int i = toPosition; i >= startPosition; --i) {
 			int filePosition = positions[i];
-			oldLinePosforUndo.push(filePosition);
+			storeOldEntryForUndo(filePosition);
 			string line = getLineFromPositionNumber(filePosition);
-			OldLineEntriesForUndo.push(line);
 			deleteLine(filePosition);
 			positions = reAdjustPos(positions, filePosition);
 		}
@@ -60,4 +59,11 @@ void DeleteLogic::execute(map<string, int> fromToPositions)
 	catch (const exception& ex) {
 		throw runtime_error(ex.what());
 	}
+}
+
+void DeleteLogic::storeOldEntryForUndo(int filePosition)
+{
+	oldLinePosforUndo.push(filePosition);
+	string line = getLineFromPositionNumber(filePosition);
+	OldLineEntriesForUndo.push(line);
 }

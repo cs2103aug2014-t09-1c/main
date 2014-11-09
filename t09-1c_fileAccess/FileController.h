@@ -19,8 +19,11 @@ protected:
 	~FileController();
 
 public:
+	//Checks if file is open.
 	static bool checkFile(string fileName);
+	//Copies file contents to memory in a vector.
 	static vector<string> parseFileToMemoryVector(string fileName);
+	//Re-writes file as copy of the vector input.
 	static bool cloneMemoryVectorToFile(string fileName, vector<string> memVector);
 	static string declareFileAccessError();
 };

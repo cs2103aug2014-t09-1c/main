@@ -5,6 +5,17 @@
 #include "stack"
 #include "FileLogic.h"
 
+#define ADD_CASE \
+	"add"
+#define DELETE_CASE \
+	"delete"
+#define MODIFY_CASE \
+	"modify"
+#define UNDO \
+	"undo"
+#define REDO \
+	"redo"
+
 class UndoLogic
 {
 private:

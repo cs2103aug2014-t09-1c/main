@@ -15,8 +15,20 @@ class AddLogic :
 private:
 	string lineEntry;
 	void appendToLineEntry(string attribute, string entry);
+	
+	/*
+	*Determines the type of the event to be added if it is either
+	*a deadline, timed or float task
+	*/
 	void determineType();
+	/*
+	*Writes the complete attribute with a no entry into the event to be added
+	*/
 	void addCompleteEntry();
+	/*
+	*It is to be accessed before entry is appended to file to ensure that all entries are valid.
+	*Throws an exception if it fails.
+	*/
 	void validChecks();
 
 public:

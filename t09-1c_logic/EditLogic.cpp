@@ -25,41 +25,36 @@ void EditLogic::redetermineType()
 	bool isStartTimeEmpty = getAttributeEntry(START_ATTRIBUTE, lineEntry) == "";
 	bool isEndTimeEmpty = getAttributeEntry(END_ATTRIBUTE, lineEntry) == "";
 
-	if (isStartTimeEmpty) {
-		if (isEndTimeEmpty) {
-			if (isDateEmpty) {
-				if (isNameEmpty) {
-				}
-				else {
-					lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "float", lineEntry);
-				}
-			}
-			else {
-				lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, "23:59", lineEntry);
-				lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "deadline", lineEntry);
-			}
-		}
-		else {
-			lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "deadline", lineEntry);
-		}
+	if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty && isNameEmpty) {
+		//do nothing
+	}
+	else if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty) {
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, FLOAT_TASK_TYPE, lineEntry);
+	}
+	else if (isStartTimeEmpty && isEndTimeEmpty) {
+		lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, END_OF_DAY_TIME, lineEntry);
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, DEADLINE_TASK_TYPE, lineEntry);
+	}
+	else if (isStartTimeEmpty) {
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, DEADLINE_TASK_TYPE, lineEntry);
 	}
 	else {
-		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "timed", lineEntry);
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, TIMED_TASK_TYPE, lineEntry);
 	}
 }
 
 void EditLogic::resetCompletion()
 {
-	lineEntry = editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, "no", lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, TASK_NOT_COMPLETE, lineEntry);
 }
 
 void EditLogic::editValidChecks()
 {
+	redetermineType();
 	if (!isDateAndTimeCorrect(lineEntry)) {
 		throw runtime_error(EDIT_LOGIC_TIME_DATE_ERROR);
 	}
 	else {
-		redetermineType();
 		string type = getAttributeEntry(TYPE_ATTRIBUTE, lineEntry);
 		if (type == "") {
 			throw runtime_error(EDIT_LOGIC_MISSING_ERROR);
