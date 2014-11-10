@@ -200,7 +200,7 @@ void BaseClassLogic::getListOfEventsHaving(vector<string> keywords)
 					sortedLineEntries.push_back(line);
 					sortedLineFilePositions.push_back(i);
 				}
-				else if (getAttributeEntry(TYPE_ATTRIBUTE, line) != "") {
+				else if (!isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, line))) {
 					addNonFloatEventToEntry(i);
 				}
 			}
@@ -217,11 +217,11 @@ void BaseClassLogic::getListOfEventsHome(string fromDate)
 	for (int i = 0; i < size; ++i) {
 		string line = getLineFromPositionNumber(i);
 		if (isDateAndTimeCorrect(line)) {
-			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == FLOAT_TASK_TYPE) {
+			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == FLOAT_TASK_TYPE && getAttributeEntry(COMPLETE_ATTRIBUTE, line) != TASK_COMPLETE) {
 				sortedLineEntries.push_back(line);
 				sortedLineFilePositions.push_back(i);
 			}
-			else {
+			else if (!isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, line))) {
 				string lineDateString = getAttributeEntry(DATE_ATTRIBUTE, line);
 				TimeLogic lineDate = createTimeLogic(lineDateString, START_OF_DAY_TIME);
 				if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE){
@@ -251,7 +251,7 @@ void BaseClassLogic::getAllEntries()
 				sortedLineEntries.push_back(line);
 				sortedLineFilePositions.push_back(i);
 			}
-			else if (getAttributeEntry(TYPE_ATTRIBUTE, line) != "") {
+			else if (!isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, line))) {
 				addNonFloatEventToEntry(i);
 			}
 		}
