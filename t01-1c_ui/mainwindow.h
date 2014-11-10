@@ -55,7 +55,13 @@ protected:
 
 private slots:
 	void sendInputToController(string text);
+	/*
+	* Gets keyword from the controller.  
+	*/
 	void getSuggestionResponse(string selection, string lineText);
+	/*
+	* sends feedback for every keystroke.
+	*/
 	void sendFeedbackToController(QString text, bool isEnterPressed);
 	void getProgressBarValueAdd();
 	void determineCommandLabel(const QString& text);

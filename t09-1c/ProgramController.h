@@ -111,11 +111,23 @@ public:
 	ProgramController(vector<string> testVector);
 	~ProgramController();
 
+	/*
+	* Main Entry Point of Program. Executes command entry.
+	*/
 	void executeEntry(string input);
+	/*
+	* Returns search result for suggestion box input.
+	*/
 	vector<string> populateSuggestionBox(string input);
+	/*
+	* Populates keywords vector string and changes display case to search case.
+	*/
 	void executeSuggestionSelection(string selection, string lineText);
 	vector<vector<string>> refreshTableDisplay();
 	vector<vector<string>> displayTable(string date);
+	/*
+	* Updates the input box with new string
+	*/
 	string updateLineText(string inputText, bool isEnterPressed);
 	void ConnectToCommandFeedback(string input);
 	pair<int, int> getCompletedStatToday();
