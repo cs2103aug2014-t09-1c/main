@@ -2,7 +2,7 @@
 #include "CppUnitTest.h"
 #include "ParsedDataPackage.h"
 #include "EditParser.h"
-#include "ProgramController.h"
+#include "TimeParser.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace t091c_test
@@ -162,5 +162,91 @@ namespace t091c_test
 			string expectedMessage = "Please enter a valid DDMMYY date!";
 			Assert::AreEqual(expectedMessage, consoleString);
 		}
+		TEST_METHOD(EDIT_PARSER_CHECK9)
+		{
+			EditParser test;
+			string consoleString;
+			string input = "9 [Exam][mond][][]";
+			try{
+				ParsedDataPackage output = test.parseAndReturn(input);
+				int testOutput1 = 9;
+				string testOutput2 = "Exam";
+				string testOutput3 = "";
+				string testOutput4 = "";
+				string testOutput5 = "";
+				string testOutput6 = "";
+
+				Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+				Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+				Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+				Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+				Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+				Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+			}
+			catch (const exception& ex){
+				consoleString = ex.what();
+			}
+			string expectedMessage = "Please enter a valid day of the week!";
+			Assert::AreEqual(expectedMessage, consoleString);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK10)
+		{
+			EditParser test;
+			string consoleString;
+			
+			string input = "10 [Exam][monday][130][]";
+			string parsedDay = TimeParser::parseDayOfWeek("monday");
+			try{
+				ParsedDataPackage output = test.parseAndReturn(input);
+				int testOutput1 = 10;
+				string testOutput2 = "Exam";
+				string testOutput3 = parsedDay;
+				string testOutput4 = "";
+				string testOutput5 = "";
+				string testOutput6 = "";
+
+				Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+				Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+				Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+				Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+				Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+				Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+			}
+			catch (const exception& ex){
+				consoleString = ex.what();
+			}
+			string expectedMessage = "Please enter a valid time format!";
+			Assert::AreEqual(expectedMessage, consoleString);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK11)
+		{
+			EditParser test;
+			string consoleString;
+
+			string input = "11 [Exam][monday][1300-150][]";
+			string parsedDay = TimeParser::parseDayOfWeek("monday");
+			try{
+				ParsedDataPackage output = test.parseAndReturn(input);
+				int testOutput1 = 11;
+				string testOutput2 = "Exam";
+				string testOutput3 = parsedDay;
+				string testOutput4 = "";
+				string testOutput5 = "";
+				string testOutput6 = "";
+
+				Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+				Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+				Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+				Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+				Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+				Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+			}
+			catch (const exception& ex){
+				consoleString = ex.what();
+			}
+			string expectedMessage = "Please enter a valid HHMM-HHMM start-end time format!";
+			Assert::AreEqual(expectedMessage, consoleString);
+		}
+		
 	};
 }
