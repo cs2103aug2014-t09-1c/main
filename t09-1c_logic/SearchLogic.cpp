@@ -195,23 +195,32 @@ pair<string, string> SearchLogic::getEarliestFreeSlot(map<string, string> fromTo
 		for (int i = 0; i < size; ++i) {
 			string line = eventList[i];
 			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE) {
+				//Gets the necessary details.
 				string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
 				string lineStart = getAttributeEntry(START_ATTRIBUTE, line);
 				string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
+				//Instantiates the necessary TimeLogic objects.
 				TimeLogic lineStartTime = createTimeLogic(lineDate, lineStart);
 				TimeLogic lineEndTime = createTimeLogic(lineDate, lineEnd);
 				TimeLogic addedTime = createTimeLogic(iterDate, iterTime);
 				bool isLineEndingEarlier = isFirstEarlierThanSecond(lineEndTime, addedTime);
 				addedTime = addHours(addedTime, hoursToAdd, minsToAdd);
+
+				//If this if block is accessed, free slot is found
 				if ((isFirstEarlierThanSecond(addedTime, to) && isFirstEarlierThanSecond(addedTime, lineStartTime))) {
 					break;
 				}
+				//No free slot found yet. Search will shift iterTime to the timed task
+				//endtime as new base time.
 				else if (!isLineEndingEarlier) {
 					iterDate = getStringDate(lineEndTime);
 					iterTime = getStringTime(lineEndTime);
+					//toLog("At current iteration" + iterDate + " " + iterTime);
 				}
 			}
 		}
+		//Checks free slot is within duration after being checked against timed tasks 
+		//in event file.
 		TimeLogic addedTime = createTimeLogic(iterDate, iterTime);
 		addedTime = addHours(addedTime, hoursToAdd, minsToAdd);
 		if (isFirstEarlierThanSecond(addedTime, to)) {

@@ -186,7 +186,7 @@ namespace t091c_test
 			catch (const exception& ex){
 				consoleString = ex.what();
 			}
-			string expectedMessage = "Please enter a valid day of the week!";
+			string expectedMessage = "Please enter a valid date or day of the week!";
 			Assert::AreEqual(expectedMessage, consoleString);
 		}
 		TEST_METHOD(EDIT_PARSER_CHECK10)

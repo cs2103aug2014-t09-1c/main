@@ -49,11 +49,13 @@ void CompleteLogic::storeOldEntryForUndo(int filePosition)
 	oldLinePosforUndo.push(filePosition);
 	string line = getLineFromPositionNumber(filePosition);
 	OldLineEntriesForUndo.push(line);
+	//toLog("Undo Storage of Complete passed");
 }
 
 void CompleteLogic::checkFromToValidity(int fromPosition, int toPosition, int size)
 {
 	if (fromPosition >= size || fromPosition < 0 || toPosition >= size || toPosition < 0) {
+		//toLog("COMPLETE SLOT OUT OF BOUNDS");
 		throw runtime_error(SLOT_IN_EXCESS);
 	}
 }

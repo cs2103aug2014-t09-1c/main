@@ -38,6 +38,7 @@ void AddLogic::determineType()
 
 	if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty && isNameEmpty) {
 		//do nothing
+		//toLog("No type failure")
 	}
 	else if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty) {
 		appendToLineEntry(TYPE_ATTRIBUTE, FLOAT_TASK_TYPE);
@@ -65,9 +66,11 @@ void AddLogic::validChecks()
 	if (isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, lineEntry))) {
 		throw runtime_error(ADD_LOGIC_MISSING_ERROR);
 	}
+	//toLog("TYPE CHECK PASSED: " + getAttributeEntry(TYPE_ATTRIBUTE, lineEntry));
 	if (!isDateAndTimeCorrect(lineEntry)) {
 		throw runtime_error(ADD_LOGIC_TIME_DATE_ERROR);
 	}
+	//toLog("DATE AND TIME CHECK PASSED");
 	else {
 		string type = getAttributeEntry(TYPE_ATTRIBUTE, lineEntry);
 		if (type == "") {

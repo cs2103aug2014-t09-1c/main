@@ -33,6 +33,7 @@ vector<int> DeleteLogic::reAdjustPos(vector<int> pos, int deletedPos)
 		if (positions[i] > deletedPos) {
 			--positions[i];
 		}
+		//toLog("New Pos: " + positions[i]);
 	}
 	return positions;
 }

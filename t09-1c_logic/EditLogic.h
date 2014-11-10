@@ -17,7 +17,14 @@ class EditLogic :
 private:
 	string lineEntry;
 
+	/*
+	*Re-Determines the type of the event to be added if it is either
+	*a deadline, timed or float task. This should only be run after all entries are edited.
+	*/
 	void redetermineType();
+	/*
+	*Resets the completion to Not completed
+	*/
 	void resetCompletion();
 	void editValidChecks();
 	void checkPosValidity(int position, int size);

@@ -27,6 +27,7 @@ void EditLogic::redetermineType()
 
 	if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty && isNameEmpty) {
 		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "" , lineEntry);
+		//toLog("EDIT TO EMPTY TYPE");
 	}
 	else if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty) {
 		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, FLOAT_TASK_TYPE, lineEntry);
@@ -69,6 +70,7 @@ void EditLogic::checkPosValidity(int position, int size)
 {
 	if (position >= size || position < 0) {
 		throw runtime_error(EDIT_SLOT_EXCESS_ERROR);
+		//toLog("POS CHECK FAILED");
 	}
 }
 
