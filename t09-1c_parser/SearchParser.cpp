@@ -90,11 +90,20 @@ void SearchParser::checkDurationisValid(string entry)
 
 void SearchParser::getDuration(string entry)
 {
+	const int maxHourDuration = 23;
+	const int maxMinDuration = 59;
+	const int HHMMLength = 2;
+
 	try {
 		string duration = extractLeadingBracketContent(entry);
 		checkDurationisValid(duration);
-		insertAttribute(FROM_POSITION, stoi(duration.substr(0, 2)));
-		insertAttribute(TO_POSITION, stoi(duration.substr(2, 2)));
+		int hourDuration = stoi(duration.substr(0, HHMMLength));
+		int minDuration = stoi(duration.substr(2, HHMMLength));
+		if (hourDuration > maxHourDuration || minDuration > maxMinDuration) {
+			throw runtime_error(FREE_SLOT_LONG_DURATION_ERROR);
+		}
+		insertAttribute(FROM_POSITION, hourDuration);
+		insertAttribute(TO_POSITION, minDuration);
 	}
 	catch (const exception& ex) {
 		throw runtime_error(ex.what());

@@ -25,6 +25,8 @@
 	"Range time must be in HHMM-HHMM format"
 #define FREE_SLOT_DURATION_ERROR \
 	"Duration must be in HHMM format (max 2359)"
+#define FREE_SLOT_LONG_DURATION_ERROR \
+	"Free Slot Search only works for a max duration of 2359."
 
 using namespace std;
 
