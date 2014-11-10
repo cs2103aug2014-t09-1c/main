@@ -5,9 +5,9 @@
 #include "BaseClassLogic.h"
 
 #define EDIT_LOGIC_TIME_DATE_ERROR \
-	"Edit Failed. Please enter a valid DDMMYY date and HHMM time!"
+	"Please enter a valid DDMMYY date and HHMM time!"
 #define EDIT_LOGIC_MISSING_ERROR \
-	"Edit Failed. Please enter at least a name, a date, a start time or an end time!"
+	"Please enter at least a name, a date, a start time or an end time!"
 #define EDIT_SLOT_EXCESS_ERROR \
 	"Edit Failed. Selected number is out of bounds."
 

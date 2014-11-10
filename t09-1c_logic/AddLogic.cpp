@@ -31,10 +31,10 @@ void AddLogic::appendToLineEntry(string attribute, string entry)
 
 void AddLogic::determineType()
 {
-	bool isNameEmpty = getAttributeEntry(NAME_ATTRIBUTE, lineEntry) == "";
-	bool isDateEmpty = getAttributeEntry(DATE_ATTRIBUTE, lineEntry) == "";
-	bool isStartTimeEmpty = getAttributeEntry(START_ATTRIBUTE, lineEntry) == "";
-	bool isEndTimeEmpty = getAttributeEntry(END_ATTRIBUTE, lineEntry) == "";
+	bool isNameEmpty = isParameterStringEmpty(getAttributeEntry(NAME_ATTRIBUTE, lineEntry));
+	bool isDateEmpty = isParameterStringEmpty(getAttributeEntry(DATE_ATTRIBUTE, lineEntry));
+	bool isStartTimeEmpty = isParameterStringEmpty(getAttributeEntry(START_ATTRIBUTE, lineEntry));
+	bool isEndTimeEmpty = isParameterStringEmpty(getAttributeEntry(END_ATTRIBUTE, lineEntry));
 
 	if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty && isNameEmpty) {
 		//do nothing
@@ -62,6 +62,9 @@ void AddLogic::addCompleteEntry()
 void AddLogic::validChecks() 
 {
 	determineType();
+	if (isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, lineEntry))) {
+		throw runtime_error(ADD_LOGIC_MISSING_ERROR);
+	}
 	if (!isDateAndTimeCorrect(lineEntry)) {
 		throw runtime_error(ADD_LOGIC_TIME_DATE_ERROR);
 	}

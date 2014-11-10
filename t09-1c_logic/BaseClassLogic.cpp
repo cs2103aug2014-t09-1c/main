@@ -390,14 +390,18 @@ bool BaseClassLogic::isDateAndTimeCorrect(string lineEntry)
 	string endTime = getAttributeEntry(END_ATTRIBUTE, lineEntry);
 	string type = getAttributeEntry(TYPE_ATTRIBUTE, lineEntry);
 
-	if (startTime.empty() && endTime.empty() && date.empty() && type == FLOAT_TASK_TYPE) {
+	bool isDateEmpty = isParameterStringEmpty(getAttributeEntry(DATE_ATTRIBUTE, lineEntry));
+	bool isStartTimeEmpty = isParameterStringEmpty(getAttributeEntry(START_ATTRIBUTE, lineEntry));
+	bool isEndTimeEmpty = isParameterStringEmpty(getAttributeEntry(END_ATTRIBUTE, lineEntry));
+
+	if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty && type == FLOAT_TASK_TYPE) {
 		return true;
 	}
-	else if (startTime.empty() && endTime.empty() && type == FLOAT_TASK_TYPE) {
+	else if (isStartTimeEmpty && isEndTimeEmpty && type == FLOAT_TASK_TYPE) {
 		TimeLogic check = createTimeLogic(date, START_OF_DAY_TIME);
 		return getTimeFormatCheck(check);
 	}
-	else if (startTime.empty() && type == DEADLINE_TASK_TYPE) {
+	else if (isStartTimeEmpty && type == DEADLINE_TASK_TYPE) {
 		TimeLogic check = createTimeLogic(date, endTime);
 		return getTimeFormatCheck(check);
 	}
@@ -473,4 +477,9 @@ stack<string> BaseClassLogic::getLinesForUndo()
 stack<int> BaseClassLogic::getPosForUndo()
 {
 	return oldLinePosforUndo;
+}
+
+bool BaseClassLogic::isParameterStringEmpty(string parameter)
+{
+	return parameter.find_first_not_of(' ') == std::string::npos;
 }

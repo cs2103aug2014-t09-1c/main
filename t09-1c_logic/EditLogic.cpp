@@ -20,13 +20,13 @@ EditLogic::~EditLogic()
 
 void EditLogic::redetermineType()
 {
-	bool isNameEmpty = getAttributeEntry(NAME_ATTRIBUTE, lineEntry) == "";
-	bool isDateEmpty = getAttributeEntry(DATE_ATTRIBUTE, lineEntry) == "";
-	bool isStartTimeEmpty = getAttributeEntry(START_ATTRIBUTE, lineEntry) == "";
-	bool isEndTimeEmpty = getAttributeEntry(END_ATTRIBUTE, lineEntry) == "";
+	bool isNameEmpty = isParameterStringEmpty(getAttributeEntry(NAME_ATTRIBUTE, lineEntry));
+	bool isDateEmpty = isParameterStringEmpty(getAttributeEntry(DATE_ATTRIBUTE, lineEntry));
+	bool isStartTimeEmpty = isParameterStringEmpty(getAttributeEntry(START_ATTRIBUTE, lineEntry));
+	bool isEndTimeEmpty = isParameterStringEmpty(getAttributeEntry(END_ATTRIBUTE, lineEntry));
 
 	if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty && isNameEmpty) {
-		//do nothing
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "" , lineEntry);
 	}
 	else if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty) {
 		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, FLOAT_TASK_TYPE, lineEntry);
@@ -51,6 +51,9 @@ void EditLogic::resetCompletion()
 void EditLogic::editValidChecks()
 {
 	redetermineType();
+	if (isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, lineEntry))) {
+		throw runtime_error(EDIT_LOGIC_MISSING_ERROR);
+	}
 	if (!isDateAndTimeCorrect(lineEntry)) {
 		throw runtime_error(EDIT_LOGIC_TIME_DATE_ERROR);
 	}

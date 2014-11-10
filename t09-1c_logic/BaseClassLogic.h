@@ -113,6 +113,7 @@ protected:
 	void updateSortedEntries();
 
 	/* These methods are protected helper functions applicable to all Logic specific methods.*/
+	bool isParameterStringEmpty(string parameter);
 	bool isDateAndTimeCorrect(string lineEntry);
 	string getDate();
 

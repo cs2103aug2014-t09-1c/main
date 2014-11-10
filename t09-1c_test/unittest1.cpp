@@ -59,15 +59,5 @@ namespace t091c_test
 			Assert::AreEqual(check.findDLCost("190914", "19/09/2014"), 0);
 			Assert::AreEqual(check.findDLCost("170914", "19/09/2014"), 4);
 		}
-
-		//TEST_METHOD(Search_CHEck)
-		//{
-		//	SearchLogic search("ex.txt");
-		//	pair <string, string> result = search.getEarliestFreeSlot("13/10/2014", "23:00", "03:00+1", 2 , 30);
-		//	string first = "23:00";
-		//	string second = "01:30+1";
-		//	Assert::AreEqual(result.first, first);
-		//	Assert::AreEqual(result.second, second);
-		//}
 	};
 }
