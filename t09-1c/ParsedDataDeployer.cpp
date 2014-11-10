@@ -103,6 +103,8 @@ vector<string> ParsedDataDeployer::executeSearch(string searchPackage)
 			BaseClassLogic * search = &newSearch;
 			keywords = search->createKeywords(searchPackage);
 		}
+		string size = std::to_string(keywords.size());
+		consoleString = SEARCH_RESULTS(size);
 		return keywords;
 	}
 	catch (const exception& ex){

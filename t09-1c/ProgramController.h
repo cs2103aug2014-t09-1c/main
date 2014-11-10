@@ -58,6 +58,14 @@
 	"No free slots in this time-frame."
 #define SLOTS_AVAILABLE(date, time) \
 	"Earliest free slot found: " +date + " " + time 
+#define CLIP_ERROR \
+	"No instance of selection is available for clipping."
+#define SUCCESS_CLIP(position) \
+	"Number " + position + " has been clipped to the input box."
+#define SELECT_KEYWORD \
+	"Matching keywords are shown."
+#define DISPLAY_CHANGE \
+	"Display has been changed according to selection."
 
 class ProgramController
 {
@@ -79,6 +87,24 @@ private:
 	ParsedDataDeployer deployer;
 
 	string getTodayDateInString();
+
+	void executeHomeCommand();
+	void executeAllCommand();
+	void executeAddCommand();
+	void executeEditCommand();
+	void executeDeleteCommand();
+	void executeSearchCommand();
+	void executeUndoCommand();
+	void executeRedoCommand();
+	void executeCompleteCommand();
+	void executeUncompleteCommand();
+	void executeAddNaturalParsing(string input);
+
+	string executeAddFormatLineUpdater();
+	string executeSlotFormatLineUpdater();
+	string executeEditLineUpdater(string inputText);
+	string executeClipLineUpdater(string arguments);
+	string executeSlotLineUpdater(string arguments);
 
 public:
 	ProgramController(string filename);

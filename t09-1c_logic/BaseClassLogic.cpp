@@ -224,6 +224,10 @@ void BaseClassLogic::getListOfEventsHome(string fromDate)
 			else {
 				string lineDateString = getAttributeEntry(DATE_ATTRIBUTE, line);
 				TimeLogic lineDate = createTimeLogic(lineDateString, START_OF_DAY_TIME);
+				if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE){
+					string endTime = getAttributeEntry(END_ATTRIBUTE, line);
+					lineDate = createTimeLogic(lineDateString, endTime);
+				}
 				bool isNotCompleted = getAttributeEntry(COMPLETE_ATTRIBUTE, line) == TASK_NOT_COMPLETE;
 
 				if (getTimeFormatCheck(lineDate)) {

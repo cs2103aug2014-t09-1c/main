@@ -58,7 +58,7 @@
 #define PARSER_6DIGIT_DATE_ERROR \
 	"Please enter a valid DDMMYY date!"
 #define PARSER_DAY_OF_WEEK_ERROR \
-	"Please enter a valid day of the week!"
+	"Please enter a valid date or day of the week!"
 #define PARSER_START_END_TIME_ERROR \
 	"Please enter a valid HHMM-HHMM start-end time format!"
 #define PARSER_TIME_ERROR \
@@ -66,7 +66,7 @@
 #define PARSER_NO_EVENT_ERROR \
 	"Please enter a valid event name."
 #define PARSER_DAY_OF_WEEK_ERROR \
-	"Please enter a valid day of the week!"
+	"Please enter a valid date or day of the week!"
 #define PARSER_SYNTAX_ERROR \
 	"Please follow the correct syntax for QuickAdd!"
 

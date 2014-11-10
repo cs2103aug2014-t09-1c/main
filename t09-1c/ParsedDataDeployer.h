@@ -22,6 +22,8 @@
 	"Nothing to Undo."
 #define FAILED_REDO \
 	"Nothing to Redo."
+#define SEARCH_RESULTS(number) \
+	"Search returns " + number + " result(s)."
 
 
 class ParsedDataDeployer

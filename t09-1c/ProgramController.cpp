@@ -39,72 +39,166 @@ void ProgramController::executeEntry(string input)
 	command = inputParse.getCommand();
 	arguments = inputParse.getArguments();
 
+	if (command == HOME_COMMAND) {
+		executeHomeCommand();
+	}
+	else if (command == ALL_COMMAND) {
+		executeAllCommand();
+	}
+	else if (command == ADD_COMMAND) {
+		executeAddCommand();
+	}
+	else if (command == EDIT_COMMAND){
+		executeEditCommand();
+	}
+	else if (command == DELETE_COMMAND){
+		executeDeleteCommand();
+	}
+	else if (command == SEARCH_COMMAND){
+		executeSearchCommand();
+	}
+	else if (command == UNDO_COMMAND){
+		executeUndoCommand();
+	}
+	else if (command == REDO_COMMAND){
+		executeRedoCommand();
+	}
+	else if (command == COMPLETE_COMMAND){
+		executeCompleteCommand();
+	}
+	else if (command == UNCOMPLETE_COMMAND){
+		executeUncompleteCommand();
+	}
+	else if (command == SLOT_COMMAND) {
+		//This will be handled by updateLineText(). This will ensure exception does not occur.
+	}
+	else if (command == CLIP_COMMAND) {
+		updateLineText(input, true);
+	}
+	else {
+		executeAddNaturalParsing(input);
+	}
+}
+
+void ProgramController::executeHomeCommand()
+{
+	displayCase = DISPLAY_HOME_CASE;
+	searchKeywords.clear();
+	consoleString = DISPLAY_CHANGE;
+}
+
+void ProgramController::executeAllCommand()
+{
+	displayCase = DISPLAY_ALL_CASE;
+	searchKeywords.clear();
+	consoleString = DISPLAY_CHANGE;
+}
+
+void ProgramController::executeAddCommand()
+{
 	try {
-		if (command == HOME_COMMAND) {
-			displayCase = DISPLAY_HOME_CASE;
-			searchKeywords.clear();
+		AddParser addParsing;
+		BaseClassParser * addParse = &addParsing;
+		dataPackage = addParse->parseAndReturn(arguments);
+		deployer.executeAdd(dataPackage);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+void ProgramController::executeEditCommand()
+{
+	try {
+		EditParser editParsing;
+		BaseClassParser * editParse = &editParsing;
+		dataPackage = editParse->parseAndReturn(arguments);
+		deployer.executeEdit(dataPackage, displayDate, searchKeywords, displayCase);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ProgramController::executeDeleteCommand()
+{
+	try {
+		DeleteParser deleteParsing;
+		BaseClassParser * deleteParse = &deleteParsing;
+		dataPackage = deleteParse->parseAndReturn(arguments);
+		deployer.executeDelete(dataPackage, displayDate, searchKeywords, displayCase);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ProgramController::executeSearchCommand()
+{
+	try {
+		SearchParser searchParsing;
+		BaseClassParser * searchParse = &searchParsing;
+		string argument = searchParse->parseSearchArgs(arguments);
+		searchKeywords = deployer.executeSearch(argument);
+		consoleString = deployer.returnConsoleString();
+		if (!searchKeywords.empty()) {
+			displayCase = DISPLAY_KEYWORD_CASE;
 		}
-		else if (command == ALL_COMMAND) {
-			displayCase = DISPLAY_ALL_CASE;
-			searchKeywords.clear();
-		}
-		else if (command == ADD_COMMAND) {
-			AddParser addParsing;
-			BaseClassParser * addParse = &addParsing;
-			dataPackage = addParse->parseAndReturn(arguments);
-			deployer.executeAdd(dataPackage);
-		}
-		else if (command == EDIT_COMMAND){
-			EditParser editParsing;
-			BaseClassParser * editParse = &editParsing;
-			dataPackage = editParse->parseAndReturn(arguments);
-			deployer.executeEdit(dataPackage, displayDate, searchKeywords, displayCase);
-		}
-		else if (command == DELETE_COMMAND){
-			DeleteParser deleteParsing;
-			BaseClassParser * deleteParse = &deleteParsing;
-			dataPackage = deleteParse->parseAndReturn(arguments);
-			deployer.executeDelete(dataPackage, displayDate, searchKeywords, displayCase);
-		}
-		else if (command == SEARCH_COMMAND){
-			SearchParser searchParsing;
-			BaseClassParser * searchParse = &searchParsing;
-			string argument = searchParse->parseSearchArgs(arguments);
-			searchKeywords = deployer.executeSearch(argument);
-			if (!searchKeywords.empty()) {
-				displayCase = DISPLAY_KEYWORD_CASE;
-			}
-		}
-		else if (command == UNDO_COMMAND){
-			deployer.executeUndo();
-		}
-		else if (command == REDO_COMMAND){
-			deployer.executeRedo();
-		}
-		else if (command == COMPLETE_COMMAND){
-			CompleteParser completeParsing;
-			BaseClassParser * completeParse = &completeParsing;
-			dataPackage = completeParse->parseAndReturn(arguments);
-			deployer.executeComplete(dataPackage, displayDate, searchKeywords, displayCase);
-		}
-		else if (command == UNCOMPLETE_COMMAND){
-			CompleteParser completeParsing;
-			BaseClassParser * completeParse = &completeParsing;
-			dataPackage = completeParse->parseAndReturn(arguments);
-			deployer.executeUncomplete(dataPackage, displayDate, searchKeywords, displayCase);
-		}
-		else if (command == SLOT_COMMAND) {
-			//This will be handled by updateLineText(). This will ensure exception does not occur.
-		}
-		else if (command == CLIP_COMMAND) {
-			updateLineText(input, true);
-		}
-		else {
-			AddParser addParsing;
-			BaseClassParser * addParse = &addParsing;
-			dataPackage = addParse->parseNLAndReturn(input);
-			deployer.executeAdd(dataPackage);
-		}
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ProgramController::executeUndoCommand()
+{
+	deployer.executeUndo();
+	consoleString = deployer.returnConsoleString();
+}
+
+void ProgramController::executeRedoCommand()
+{
+	deployer.executeRedo();
+	consoleString = deployer.returnConsoleString();
+}
+
+void ProgramController::executeCompleteCommand()
+{
+	try {
+		CompleteParser completeParsing;
+		BaseClassParser * completeParse = &completeParsing;
+		dataPackage = completeParse->parseAndReturn(arguments);
+		deployer.executeComplete(dataPackage, displayDate, searchKeywords, displayCase);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ProgramController::executeUncompleteCommand()
+{
+	try {
+		CompleteParser completeParsing;
+		BaseClassParser * completeParse = &completeParsing;
+		dataPackage = completeParse->parseAndReturn(arguments);
+		deployer.executeUncomplete(dataPackage, displayDate, searchKeywords, displayCase);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ProgramController::executeAddNaturalParsing(string input)
+{
+	try {
+		AddParser addParsing;
+		BaseClassParser * addParse = &addParsing;
+		dataPackage = addParse->parseNLAndReturn(input);
+		deployer.executeAdd(dataPackage);
 		consoleString = deployer.returnConsoleString();
 	}
 	catch (const exception& ex){
@@ -139,6 +233,7 @@ void ProgramController::executeSuggestionSelection(string selection, string line
 		searchKeywords.clear();
 		searchKeywords.push_back(selection);
 		displayCase = DISPLAY_KEYWORD_CASE;
+		consoleString = SELECT_KEYWORD;
 	}
 	refreshTableDisplay();
 }
@@ -159,53 +254,100 @@ string ProgramController::updateLineText(string inputText, bool isEnterPressed)
 { 
 	string completer;
 	CommandAndArgumentParser inputParse(inputText);
-	string command = inputParse.getCommand();
-	string arguments = inputParse.getArguments();
-	try{
-		if (command == ADD_COMMAND && arguments.empty()) {
-			string empty;
-			completer = ADD_FORMAT(empty, empty, empty, empty);
+	command = inputParse.getCommand();
+	arguments = inputParse.getArguments();
+	if (command == ADD_COMMAND && arguments.empty()) {
+		completer = executeAddFormatLineUpdater();
+	}
+	else if (command == SLOT_COMMAND && arguments.empty()) {
+		completer = executeSlotFormatLineUpdater();
+	}
+	else if (command == EDIT_COMMAND && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
+		completer = executeEditLineUpdater(inputText);
+	}
+	else if (command == CLIP_COMMAND && ((inputText.substr(inputText.length() - 1, 1) == " "  && !isEnterPressed) || isEnterPressed)) {
+		completer = executeClipLineUpdater(arguments);
+	}
+	else if (command == SLOT_COMMAND && isEnterPressed) {
+		completer = executeSlotLineUpdater(arguments);
+	}
+	return completer;
+}
+
+string ProgramController::executeAddFormatLineUpdater()
+{
+	string empty;
+	return ADD_FORMAT(empty, empty, empty, empty);
+}
+
+string ProgramController::executeSlotFormatLineUpdater()
+{
+	return SLOT_FORMAT;
+}
+
+string ProgramController::executeEditLineUpdater(string inputText)
+{
+	string completer;
+	try {
+		EditParser newEdit;
+		BaseClassParser * edit = &newEdit;
+		int argPosition = edit->convertToPosition(arguments);
+		if (argPosition >= 0) {
+			string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
+			completer = inputText + append;
 		}
-		if (command == SLOT_COMMAND && arguments.empty()) {
-			completer = SLOT_FORMAT;
+		return completer;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+		return completer;
+	}
+}
+
+string ProgramController::executeClipLineUpdater(string arguments)
+{
+	string completer;
+	try {
+		EditParser newEdit;
+		BaseClassParser * edit = &newEdit;
+		int argPosition = edit->convertToPosition(arguments);
+		if (argPosition >= 0)
+		{
+			string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
+			if (!append.empty()) {
+				completer = ADD_APPEND + append;
+				consoleString = SUCCESS_CLIP(arguments);
+			}
+			else {
+				consoleString = CLIP_ERROR;
+			}
 		}
 		else {
-			if (command == EDIT_COMMAND && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
-				EditParser newEdit;
-				BaseClassParser * edit = &newEdit;
-				int argPosition = edit->convertToPosition(arguments);
-				if (argPosition >= 0)
-				{
-					string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
-					completer = inputText + append;
-				}
-			}
-			else if (command == CLIP_COMMAND && ((inputText.substr(inputText.length() - 1, 1) == " "  && !isEnterPressed) || isEnterPressed)) {
-				EditParser newEdit;
-				BaseClassParser * edit = &newEdit;
-				int argPosition = edit->convertToPosition(arguments);
-				if (argPosition >= 0)
-				{
-					string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
-					if (!append.empty()) {
-						completer = ADD_APPEND + append;
-					}
-				}
-			}
-			else if (command == SLOT_COMMAND && isEnterPressed) {
-				SearchParser newSearch;
-				BaseClassParser * search = &newSearch;
-				dataPackage = search->parsefreeSlotCheck(arguments);
-				pair <string, string> result = deployer.executeGetEarliestFreeSlot(dataPackage);
-				if (!result.first.empty() && !result.second.empty()) {
-					string empty;
-					completer = ADD_FORMAT(empty, result.first, result.second, empty);
-					consoleString = SLOTS_AVAILABLE(result.first, result.second);
-				}
-				else {
-					consoleString = NO_SLOTS_AVAILABLE;
-				}
-			}
+			consoleString = CLIP_ERROR;
+		}
+		return completer;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+		return completer;
+	}
+}
+
+string ProgramController::executeSlotLineUpdater(string arguments)
+{
+	string completer;
+	try {
+		SearchParser newSearch;
+		BaseClassParser * search = &newSearch;
+		dataPackage = search->parsefreeSlotCheck(arguments);
+		pair <string, string> result = deployer.executeGetEarliestFreeSlot(dataPackage);
+		if (!result.first.empty() && !result.second.empty()) {
+			string empty;
+			completer = ADD_FORMAT(empty, result.first, result.second, empty);
+			consoleString = SLOTS_AVAILABLE(result.first, result.second);
+		}
+		else {
+			consoleString = NO_SLOTS_AVAILABLE;
 		}
 		return completer;
 	}
