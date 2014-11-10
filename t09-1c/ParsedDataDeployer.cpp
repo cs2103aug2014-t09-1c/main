@@ -139,13 +139,13 @@ void ParsedDataDeployer::executeComplete(ParsedDataPackage completePackage, stri
 		if (!isTestMode) {
 			CompleteLogic newComplete(fileName, date, keywords, displayCase);
 			BaseClassLogic * completer = &newComplete;
-			completer->execute(completePackage.getStartEndPositions(), 1);
+			completer->execute(completePackage.getStartEndPositions(), COMPLETE);
 			UndoLogic::instance()->storeUndo(fileName, "modify", completer->getLinesForUndo(), completer->getPosForUndo());
 		}
 		else {
 			CompleteLogic newComplete(testVectorStore, date, keywords, displayCase);
 			BaseClassLogic * completer = &newComplete;
-			completer->execute(completePackage.getStartEndPositions(), 1);
+			completer->execute(completePackage.getStartEndPositions(), COMPLETE);
 			testVectorStore = completer->getEntriesVector();
 		}
 		consoleString = COMPLETED_COMPLETE;
@@ -161,13 +161,13 @@ void ParsedDataDeployer::executeUncomplete(ParsedDataPackage uncompletePackage, 
 		if (!isTestMode) {
 			CompleteLogic newComplete(fileName, date, keywords, displayCase);
 			BaseClassLogic * completer = &newComplete;
-			completer->execute(uncompletePackage.getStartEndPositions(), 0);
+			completer->execute(uncompletePackage.getStartEndPositions(), UNCOMPLETE);
 			UndoLogic::instance()->storeUndo(fileName, "modify", completer->getLinesForUndo(), completer->getPosForUndo());
 		}
 		else {
 			CompleteLogic newComplete(testVectorStore, date, keywords, displayCase);
 			BaseClassLogic * completer = &newComplete;
-			completer->execute(uncompletePackage.getStartEndPositions(), 0);
+			completer->execute(uncompletePackage.getStartEndPositions(), UNCOMPLETE);
 			testVectorStore = completer->getEntriesVector();
 		}
 		consoleString = COMPLETED_UNCOMPLETE;

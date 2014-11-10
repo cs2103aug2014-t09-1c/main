@@ -164,7 +164,8 @@ bool SearchLogic::checkTimedTaskEligibility(string input, string line)
 	TimeLogic inputTime = createTimeLogic(date, input);
 
 	isEligible = isFirstEarlierThanSecond(startTime, inputTime) && isFirstEarlierThanSecond(inputTime, endTime);
-	if (!isEligible && end.substr(5, 2) == "+1") {
+	string dayAddition = end.substr(5, 2);
+	if (!isEligible && dayAddition == "+1") {
 		TimeLogic inputTimePlusOne = createTimeLogic(date, input + "+1");
 		isEligible = isFirstEarlierThanSecond(startTime, inputTimePlusOne) && isFirstEarlierThanSecond(inputTimePlusOne, endTime);
 	}

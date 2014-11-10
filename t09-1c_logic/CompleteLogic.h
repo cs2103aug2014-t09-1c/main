@@ -15,7 +15,8 @@ private:
 	void editCompletion(int fromPosition, int toPosition, bool complete);
 	void checkFromToValidity(int fromPosition, int toPosition, int size);
 	void storeOldEntryForUndo(int filePosition);
-
+	const int COMPLETE = 1;
+	const int UNCOMPLETE = 0;
 public:
 	CompleteLogic(string fileName, string date, vector<string> keywords, int displayCase);
 	CompleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);

@@ -23,6 +23,7 @@
 #define FAILED_REDO \
 	"Nothing to Redo."
 
+
 class ParsedDataDeployer
 {
 private:
@@ -32,6 +33,8 @@ private:
 	vector<string> testVectorStore;
 	bool isTestMode = false;
 
+	const int COMPLETE = 1;
+	const int UNCOMPLETE = 0;
 public:
 	ParsedDataDeployer(string fileName);
 	ParsedDataDeployer(vector<string> testVector);

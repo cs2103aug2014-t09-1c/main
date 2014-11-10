@@ -61,10 +61,10 @@ void CompleteLogic::checkFromToValidity(int fromPosition, int toPosition, int si
 void CompleteLogic::execute(map<string, int> fromToPositions, int executionCase)
 {
 	try {
-		if (executionCase == 1) {
+		if (executionCase == COMPLETE) {
 			editCompletion(fromToPositions[FROM_POSITION], fromToPositions[TO_POSITION], true);
 		}
-		else if (executionCase == 0) {
+		else if (executionCase == UNCOMPLETE) {
 			editCompletion(fromToPositions[FROM_POSITION], fromToPositions[TO_POSITION], false);
 		}
 		else {

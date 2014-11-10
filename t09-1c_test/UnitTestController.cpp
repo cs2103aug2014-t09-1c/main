@@ -38,7 +38,7 @@ namespace t091c_test
 			size_t vectorSizeTest5 = 4;
 			Assert::AreEqual(vectorSizeTest5, test.returnTestVector().size());
 		}
-		TEST_METHOD(INTEGRATED_TESTING_EDIT)
+		TEST_METHOD(INTEGRATED_TESTING_EDIT)//to show different ways of editing
 		{
 			vector<string> testVector;
 			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
@@ -46,20 +46,20 @@ namespace t091c_test
 			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
 			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
 			
-			ProgramController test(testVector);
+			ProgramController test(testVector); //edit time
 			test.executeEntry("edit 1 [test1][051114][1100][test1]");
 			string testString1 = "<name>test1</name><date>05/11/2014</date><start></start><end>11:00</end><category>test1</category><complete>no</complete><type>deadline</type>";
 			Assert::AreEqual(testString1, test.returnTestVector()[0]);
 
-			test.executeEntry("edit 2 [test2][051114][1500][test2]");
+			test.executeEntry("edit 2 [test2][051114][1500][test2]");// edit deadline to timed
 			string testString2 = "<name>test2</name><date>05/11/2014</date><start></start><end>15:00</end><category>test2</category><complete>no</complete><type>deadline</type>";
 			Assert::AreEqual(testString2, test.returnTestVector()[1]);
 
-			test.executeEntry("edit 3 [test2][051114][1500-1700][test2]");
+			test.executeEntry("edit 3 [test2][051114][1500-1700][test2]");//edit name, category and deadline to timed
 			string testString3 = "<name>test2</name><date>05/11/2014</date><start>15:00</start><end>17:00</end><category>test2</category><complete>no</complete><type>timed</type>";
 			Assert::AreEqual(testString3, test.returnTestVector()[2]);
 		}
-		TEST_METHOD(INTEGRATED_TESTING_DELETE)
+		TEST_METHOD(INTEGRATED_TESTING_DELETE)//to show basic case that delete single line is working, and borderline cases where delete range exceeds task number range
 		{
 			vector<string> testVector;
 			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
@@ -90,7 +90,7 @@ namespace t091c_test
 			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
 			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
 
-			ProgramController test(testVector);
+			ProgramController test(testVector);//test for single complete, mass complete and boundary cases
 			test.executeEntry("all");
 			test.executeEntry("complete 1");
 			string expected1 = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>";
@@ -111,7 +111,7 @@ namespace t091c_test
 			Assert::AreEqual(expected3, test.returnTestVector()[2]);
 			Assert::AreEqual(expected4, test.returnTestVector()[3]);
 		}
-		TEST_METHOD(INTEGRATED_TESTING_UNCOMPLETE)
+		TEST_METHOD(INTEGRATED_TESTING_UNCOMPLETE)//test for single uncomplete, mass uncomplete and boundary cases
 		{
 			vector<string> testVector;
 			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
@@ -162,7 +162,7 @@ namespace t091c_test
 			string expected4 = "";
 			Assert::AreEqual(expected4, lineText4);
 		}
-		TEST_METHOD(INTEGRATED_TESTING_SEARCH)
+		TEST_METHOD(INTEGRATED_TESTING_SEARCH)//filter valid search results
 		{
 			vector<string> testVector;
 			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
@@ -214,6 +214,22 @@ namespace t091c_test
 			string lineText6 = test.updateLineText("slot [051114][1200-1700][0200]", true);
 			string expected6 = "add [][051114][1500-1700][]";
 			Assert::AreEqual(expected6, lineText6);
+			string lineText7 = test.updateLineText("slot [051114][1501-1700][0200]", true);//boundary case
+			string expected7 = "";
+			Assert::AreEqual(expected7, lineText7);
+			string lineText8 = test.updateLineText("slot [051114][1500-1501][0001]", true);//boundary case
+			string expected8 = "add [][051114][1500-1501][]";
+			Assert::AreEqual(expected8, lineText8);
+			string lineText9 = test.updateLineText("slot [051114][1700-1500][0200]", true);//flipped
+			string expected9 = "";
+			Assert::AreEqual(expected9, lineText9);
+			string lineText10 = test.updateLineText("slot [051114][0000-2359][1300]", true);//boundary case
+			string expected10 = "add [][051114][0000-1300][]";
+			Assert::AreEqual(expected10, lineText10);
+			string lineText11 = test.updateLineText("slot [051114][0000-2359][2359]", true);//boundary case
+			string expected11 = "";
+			Assert::AreEqual(expected11, lineText11);
+
 		}
 		TEST_METHOD(INTEGRATED_TESTING_DISPLAY_ALL_COMPLETED)
 		{
