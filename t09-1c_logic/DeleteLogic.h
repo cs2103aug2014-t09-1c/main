@@ -12,6 +12,10 @@ class DeleteLogic :
 {
 private:
 	void checkFromToValidity(int fromPosition, int toPosition, int size);
+	/*
+	* Readjusts determined file positions when an entry is deleted to prevent wrong
+	* deletions and overflow. Returns a vector<string> containing new file positions.
+	*/
 	vector<int> reAdjustPos(vector<int> pos, int deletedPos);
 	void storeOldEntryForUndo(int filePosition);
 

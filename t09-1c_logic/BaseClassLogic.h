@@ -129,6 +129,9 @@ public:
 	vector<string> getSortedLineEntries();
 	vector<int> getSortedLinePositions();
 
+	/*These are the virtual methods for BaseClassLogic child classes. These should not
+	be accessed without the use of the child class's method. Should that occur,
+	assertion failure will occur.*/
 	virtual void execute(map<string,string> lineEntries);
 	virtual void execute(map<string, int> fromToPositions);
 	virtual void execute(map<string, int> fromToPositions, int executionCase);
@@ -140,6 +143,8 @@ public:
 	virtual pair <string, string> getEarliestFreeSlot(map<string, string> fromToTime, map<string, int> duration);
 	virtual pair <int, int> getTodayCompletionStat(string todayDate);
 
+	/*These methods is to access the old line entries and positions that have been
+	modified for Undo Logic storage and later retrieval*/
 	stack<string> getLinesForUndo();
 	stack<int> getPosForUndo();
 };

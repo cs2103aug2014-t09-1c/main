@@ -7,7 +7,7 @@ const QString initialise;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-	control("example.txt")
+	control("GoodleStorage.txt")
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint );
     ui->setupUi(this);
