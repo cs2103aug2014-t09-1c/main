@@ -240,10 +240,10 @@ namespace t091c_test
 			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
 			ProgramController test(testVector);
 			vector<vector<string>> display1 = test.displayTable("05/11/2014");
-			size_t expected1 = 4;
+			size_t expected1 = 3;
 			Assert::AreEqual(display1.size(), expected1);
 			vector<vector<string>> display2 = test.displayTable("06/11/2014");
-			size_t expected2 = 1;
+			size_t expected2 = 0;
 			Assert::AreEqual(display2.size(), expected2);
 		}
 		TEST_METHOD(INTEGRATED_TESTING_DISPLAY_NONE_COMPLETED)
