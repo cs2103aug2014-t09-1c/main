@@ -1,0 +1,4964 @@
+//@author: a0116410y
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccombobox.cpp
+	 */
+
+#include "ccombobox.h"
+#include <QLineEdit>
+
+CComboBox::CComboBox()
+{
+
+}
+
+CComboBox::CComboBox(QGroupBox *par)
+{
+    setParent(par);
+    setEditable(true);
+    lineEdit()->setStyleSheet("QLineEdit {padding: 2px ; border-image: url(:/Button/Resources/BORDER_COMBO.png);}");
+    lineEdit()->setFont(QFont("Segoe UI", 15));
+    connect(this, SIGNAL(editTextChanged(QString)),this,SLOT(textChanged(QString)));
+}
+
+void CComboBox::textChanged(QString edit)
+{
+    showPopup();
+    setEditable(true);
+}
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccombobox.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccombobox.h
+	 */
+
+#ifndef CCOMBOBOX_H
+#define CCOMBOBOX_H
+
+#include <QComboBox>
+#include <QGroupBox>
+
+class CComboBox : public QComboBox
+{
+    Q_OBJECT
+public:
+    CComboBox();
+    CComboBox(QGroupBox *par);
+public slots:
+    void textChanged(QString edit);
+
+};
+
+#endif // CCOMBOBOX_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccombobox.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccompleter.cpp
+	 */
+
+#include "ccompleter.h"
+#include <QAbstractItemView>
+
+CCompleter::CCompleter()
+{
+}
+
+CCompleter::CCompleter(const QStringList& words, QObject * parent) :
+QCompleter(parent), m_list(words), m_model()
+{
+    setModel(&m_model);
+    popup()->setFont(QFont("Segoe UI", 13));
+}
+
+void CCompleter::update(QStringList suggestions)
+{
+	QStringList filtered = suggestions;
+    m_model.setStringList(filtered);
+    complete();
+}
+
+QString CCompleter::word()
+{
+    return m_word;
+}
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccompleter.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccompleter.h
+	 */
+
+#ifndef CCOMPLETER_H
+#define CCOMPLETER_H
+
+#include <QString>
+#include <QStringList>
+#include <QStringListModel>
+#include <QCompleter>
+
+class CCompleter : public QCompleter
+{
+    Q_OBJECT
+public:
+    CCompleter();
+    CCompleter(const QStringList& words, QObject * parent);
+    QString word();
+	void update(QStringList suggestions);
+private:
+    QStringList m_list;
+    QStringListModel m_model;
+    QString m_word;
+
+};
+
+#endif // CCOMPLETER_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccompleter.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\clineedit.cpp
+	 */
+
+#include "clineedit.h"
+#include <QAbstractItemView>
+#include "ui_mainwindow.h"
+#include "QLabel"
+
+using namespace std;
+
+CLineEdit::CLineEdit(QWidget *parent)
+: QLineEdit(parent), c(0)
+{
+    setFont(QFont("Segoe UI", 15));
+    CCompleter * completer = new CCompleter(QStringList(), this);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    setCompleter(completer);
+    connect(this, SIGNAL(returnPressed()),this, SLOT(sendToParser()));
+	connect(this, SIGNAL(toSetText(const QString&)), this, SLOT(setText(const QString&)));
+}
+
+CLineEdit::~CLineEdit()
+{
+}
+
+void CLineEdit::sendToParser()
+{
+	QString originalText = text();
+	string inputText = originalText.toUtf8().constData();
+	emit sendText(inputText);
+	clear();
+	emit emitFeedback(originalText, true);
+}
+
+void CLineEdit::setCompleter(CCompleter *completer)
+{
+    if (c){
+        QObject::disconnect(c, 0, this, 0);
+    }
+
+        c = completer;
+
+    if (!c){
+        return;
+    }
+
+    c->setWidget(this);
+	connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
+}
+
+CCompleter *CLineEdit::completer() const
+{
+    return c;
+}
+
+void CLineEdit::insertCompletion(const QString & completion)
+{
+	string choiceString = completion.toUtf8().constData();
+	string inputText = text().toUtf8().constData();
+	emit emitSuggestionSelected(choiceString, inputText);
+    QString& s = QString("");
+    setText(s);
+    //selectAll();
+}
+
+
+void CLineEdit::keyPressEvent(QKeyEvent *e)
+{
+	switch (e->key())
+	{
+		case Qt::Key_Semicolon:
+			e->ignore();		
+			moveToNextEntry();
+			return;
+	}
+	if (c && c->popup()->isVisible() && c->popup()->currentIndex().row() >= 0) {
+    // The following keys are forwarded by the completer to the widget
+        switch (e->key())
+        {
+            case Qt::Key_Enter:
+            case Qt::Key_Return:
+            case Qt::Key_Escape:
+            case Qt::Key_Tab:
+            case Qt::Key_Backtab:
+			e->ignore();
+			return;				// Let the completer do default behaviour
+        }
+    }
+    bool isShortcut = (e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_E;
+    if (!isShortcut)
+    QLineEdit::keyPressEvent(e); // Don't send the shortcut (CTRL-E) to the text edit.
+
+    if (!c) {
+        return;
+    }
+
+    bool ctrlOrShift = e->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
+    if (!isShortcut && !ctrlOrShift && e->modifiers() != Qt::NoModifier) {
+        c->popup()->hide();
+        return;
+    }
+
+	emit emitFeedback(text(), false);
+    c->popup()->setCurrentIndex(c->completionModel()->index(-1, 0));
+}
+
+void CLineEdit::updateCompleter(QStringList suggestions)
+{
+	c->update(suggestions);
+}
+
+void CLineEdit::updateLineText(string text)
+{
+	const QString string = QString::fromStdString(text);
+	emit toSetText(string);
+	moveToNextEntry();
+}
+
+void CLineEdit::moveToNextEntry()
+{
+	QString openingType = "[";
+	QString closingType = "]";
+	int nextEntryPos = text().indexOf(openingType, cursorPosition());
+	if (nextEntryPos < 0) {
+		nextEntryPos = text().indexOf(openingType, 0);
+	}
+	if (nextEntryPos >= 0) {
+		setCursorPosition(nextEntryPos + 1);
+		int entryLength = text().indexOf(closingType, cursorPosition()) - nextEntryPos;
+		cursorForward(true, entryLength - 1);
+	}
+}
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\clineedit.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\clineedit.h
+	 */
+
+#ifndef CLINEEDIT_H
+#define CLINEEDIT_H
+
+#include "ccompleter.h"
+#include <QKeyEvent>
+#include <QLineEdit>
+
+using namespace std;
+
+class CLineEdit: public QLineEdit
+{
+    Q_OBJECT
+public:
+    CLineEdit(QWidget *parent = 0);
+    ~CLineEdit();
+
+    void setCompleter(CCompleter *c);
+    CCompleter *completer() const;
+
+protected:
+    void keyPressEvent(QKeyEvent *e);
+	void moveToNextEntry();
+
+private slots:
+	void insertCompletion(const QString& completion);
+    void sendToParser();
+	void updateCompleter(QStringList suggestions);
+	void updateLineText(string text);
+
+signals:
+	void toSetText(const QString & text);
+	void emitFeedback(QString feedback, bool isEnterPressed);
+	void sendText(string text);
+	void emitSuggestionSelected(string selection, string lineText);
+
+private:
+    CCompleter *c;
+};
+
+#endif // CLINEEDIT_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\clineedit.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\cmenubar.cpp
+	 */
+
+#include "cmenubar.h"
+#include <QPoint>
+#include <QMouseEvent>
+#include <QDebug>
+#include <QLabel>
+
+CMenuBar::CMenuBar()
+{
+    moving = false;
+}
+CMenuBar::CMenuBar(QWidget *par)
+{
+    setParent(par);
+    moving = false;
+    setMouseTracking(false);
+}
+
+void CMenuBar::mousePressEvent(QMouseEvent *event)
+{
+    QLabel::mousePressEvent(event);
+    if((event->button() == Qt::LeftButton)) {
+        moving = true;
+        offset = event->pos();
+    }
+}
+
+void CMenuBar::mouseMoveEvent(QMouseEvent *event)
+{
+    QLabel::mouseMoveEvent(event);
+    if(moving)
+        parentWidget()->parentWidget()->move(event->globalPos() - offset);
+}
+
+void CMenuBar::mouseReleaseEvent(QMouseEvent *event)
+{
+    QLabel::mouseReleaseEvent(event);
+    if(event->button() == Qt::LeftButton) {
+        moving = false;
+    }
+}
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\cmenubar.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\cmenubar.h
+	 */
+
+#ifndef CMENUBAR_H
+#define CMENUBAR_H
+
+#include <QLabel>
+
+class QPoint;
+class QMouseEvent;
+class QWidget;
+
+class CMenuBar : public QLabel
+{
+public:
+    CMenuBar();
+    CMenuBar(QWidget *par);
+
+protected:
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+
+private:
+    QPoint offset;
+    bool moving;
+};
+
+#endif // CMENUBAR_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\cmenubar.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ctable.cpp
+	 */
+
+#include "ctable.h"
+#include <QHeaderView>
+#include <QTableView>
+#include <QKeyEvent>
+#include <vector>
+#include <QPainter>
+
+const QString& numHeader = NUMBER_HEADER;
+const QString& toDoHeader = TODO_HEADER;
+const QString& categoryHeader = CATEGORY_HEADER;
+const QString& startHeader = START_TIME_HEADER;
+const QString& endHeader = END_TIME_HEADER;
+const QString& completeHeader = COMPLETE_HEADER;
+
+CTable::CTable()
+{
+}
+CTable::CTable(QWidget *par)
+{
+    setParent(par);
+    setSelectionMode(QAbstractItemView::SingleSelection);
+    setSelectionBehavior(QAbstractItemView::SelectRows);
+	setTableFormat();
+	setTableHeaders();
+	setWordWrap(true);
+}
+
+void CTable::setTableFormat()
+{
+	initialiseHighlight();
+	verticalHeader()->setVisible(false);
+	verticalHeader()->setDefaultSectionSize(20);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	setColumnCount(6);
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+	horizontalHeader()->setFont(QFont("Segoe UI", 8));
+	setColumnWidth(NUMBER_FIELD, NUMBER_COLUMN_WIDTH);
+	setColumnWidth(TODO_FIELD, TODO_COLUMN_WIDTH);
+	setColumnWidth(CATEGORY_FIELD, CATEGORY_COLUMN_WIDTH);
+	setColumnWidth(START_TIME_FIELD, START_TIME_COLUMN_WIDTH);
+	setColumnWidth(END_TIME_FIELD, END_TIME_COLUMN_WIDTH);
+	setColumnWidth(COMPLETE_FIELD, COMPLETE_COLUMN_WIDTH);
+}
+
+void CTable::setTableHeaders()
+{
+	QStringList header;
+	header << numHeader << toDoHeader << categoryHeader << startHeader << endHeader << completeHeader;
+	setHorizontalHeaderLabels(header);
+}
+
+void CTable::createTableData(vector<vector<string>> listData)
+{
+	vector<vector<string>> list = listData;
+    clearContents();
+	setRowCount(0);
+    int listSize = list.size();
+    for (int i = 0; i < listSize; ++i) {
+        insertRow(i);
+        QTableWidgetItem *num = new QTableWidgetItem(QString::number(i + 1));
+		num->setFlags(num->flags() ^ Qt::ItemIsEditable);
+		num->setTextAlignment(Qt::AlignCenter);
+        setItem(i,NUMBER_FIELD,num);
+        for (int j = 0; j < 5; ++j) {
+            QString stringGet = QString::fromStdString(list[i][j]);
+			stringGet = wrapLongString(stringGet);
+            QTableWidgetItem *item = new QTableWidgetItem(stringGet);
+			item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+			if (j != 0) {
+				item->setTextAlignment(Qt::AlignCenter);
+			}
+			if (j == 4) {
+				if (stringGet == "Lapsed") {
+					item->setBackground(QBrush(Qt::red, Qt::FDiagPattern));
+				}
+			}
+            setItem(i,j + 1, item);
+			verticalHeader()->setSectionResizeMode(i, QHeaderView::ResizeToContents);
+        }
+    }
+	show();
+}
+
+void CTable::initialiseHighlight()
+{
+    QItemSelectionModel *sm = selectionModel();
+    connect (sm,SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(selectRowSlot(QModelIndex,QModelIndex)));
+}
+
+void CTable::selectRowSlot(const QModelIndex & selected, const QModelIndex & deselected)
+{
+    QItemSelectionModel *sm = selectionModel();
+    emit sm->select(selected,QItemSelectionModel::Columns);
+}
+
+void CTable::keyPressEvent(QKeyEvent *event)
+{
+    QTableWidget::keyPressEvent(event);
+    switch (event->key()) {
+        case Qt::Key_Tab:
+        event->ignore();
+    }
+}
+
+QString CTable::wrapLongString(QString string)
+{
+	const int CriticalPos = 25;
+	const QString wrapper = "-\n";
+	QString iterString = string;
+	QString tempString = string;
+	int count = 0;
+	int endlineAddCorrection = 0;
+
+	while (count < string.length()) {
+		QString firstWord = iterString.split(" ").at(0);
+		QString firstNewLine = iterString.split("\n").at(0);
+		if (firstWord.length() > CriticalPos && firstNewLine.length() >= firstWord.length()) {
+			count += CriticalPos;
+			tempString.insert(count + endlineAddCorrection, wrapper);
+			endlineAddCorrection += wrapper.length();
+			iterString = iterString.remove(0, CriticalPos);
+		}
+		else {
+			int nextWordPos = min(firstWord.length(), firstNewLine.length()) + 1;
+			iterString = iterString.remove(0, nextWordPos);
+			count += nextWordPos;
+		}
+	}
+	return tempString;
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ctable.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ctable.h
+	 */
+
+#ifndef CTABLE_H
+#define CTABLE_H
+
+#include <QTableWidget>
+#include <QStringList>
+#include <QItemSelectionModel>
+#include <vector>
+#include <iostream>
+
+#define NUMBER_FIELD \
+	0
+#define NUMBER_HEADER \
+	"Number"
+#define NUMBER_COLUMN_WIDTH \
+	51
+#define TODO_FIELD \
+	1
+#define TODO_HEADER \
+	"To-Do"
+#define TODO_COLUMN_WIDTH \
+	222
+#define CATEGORY_FIELD \
+	2
+#define CATEGORY_HEADER \
+	"Category"
+#define CATEGORY_COLUMN_WIDTH \
+	120
+#define START_TIME_FIELD \
+	3
+#define START_TIME_HEADER \
+	"Start"
+#define START_TIME_COLUMN_WIDTH \
+	118
+#define END_TIME_FIELD \
+	4
+#define END_TIME_HEADER \
+	"Deadline/End"
+#define END_TIME_COLUMN_WIDTH \
+	118
+#define COMPLETE_FIELD \
+	5
+#define COMPLETE_HEADER \
+	"Complete?"
+#define COMPLETE_COLUMN_WIDTH \
+	63
+
+using namespace std;
+
+class CTable : public QTableWidget
+{
+    Q_OBJECT
+public:
+    CTable();
+    CTable(QWidget *par);
+	
+
+private:
+	void setTableFormat();
+	void setTableHeaders();
+    void initialiseHighlight();
+    void keyPressEvent(QKeyEvent *event);
+	QString wrapLongString(QString string);
+
+public slots:
+	void createTableData(vector<vector<string>> listData);
+private slots:
+    void selectRowSlot(const QModelIndex & selected, const QModelIndex & deselected);
+
+};
+
+
+#endif // CTABLE_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ctable.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\mainwindow.cpp
+	 */
+
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "qscrollbar.h"
+
+const QString initialise;
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+	control("GoodleStorage.txt")
+{
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint );
+    ui->setupUi(this);
+	initiateLineEditConnections();
+	initiateTableWidgetConnections();
+	initiateCommandLabelConnections();
+	initiateConsoleOutConnections();
+	initiateProgressBarConnections();
+	updateTableData();
+	updateConsoleOutput();
+	determineCommandLabel(initialise);
+}
+
+void MainWindow::initiateLineEditConnections()
+{
+	connect(ui->lineEdit, SIGNAL(sendText(string)), this, SLOT(sendInputToController(string)));
+	connect(ui->lineEdit, SIGNAL(emitFeedback(QString, bool)), this, SLOT(sendFeedbackToController(QString, bool)));
+	connect(ui->lineEdit, SIGNAL(emitSuggestionSelected(string, string)), this, SLOT(getSuggestionResponse(string, string)));
+	connect(this, SIGNAL(sendSuggestionContentsToCompleter(QStringList)), ui->lineEdit, SLOT(updateCompleter(QStringList)));
+	connect(this, SIGNAL(sendToLineEditAutoComplete(string)), ui->lineEdit, SLOT(updateLineText(string)));
+	connect(ui->lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(determineCommandLabel(const QString&)));
+}
+
+void MainWindow::initiateTableWidgetConnections()
+{
+	connect(this, SIGNAL(sendTableData(vector<vector<string>>)), ui->tableWidget, SLOT(createTableData(vector<vector<string>>)));
+}
+
+void MainWindow::initiateProgressBarConnections()
+{
+	connect(this, SIGNAL(sendMaxToProgressBar(int)), ui->progressBar, SLOT(setMaximum(int)));
+	connect(this, SIGNAL(sendValToProgressBar(int)), ui->progressBar, SLOT(setValue(int)));
+}
+
+void MainWindow::initiateConsoleOutConnections()
+{
+	connect(this, SIGNAL(sendToConsoleOutput(const QString&)), ui->consoleOutput, SLOT(setText(const QString&)));
+}
+
+void MainWindow::initiateCommandLabelConnections()
+{
+	connect(this, SIGNAL(setCommandLabel(const QString&)), ui->commandLabel, SLOT(setText(const QString&)));
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::sendInputToController(string text)
+{
+	control.executeEntry(text);
+	updateConsoleOutput();
+	updateTableData();
+}
+
+void MainWindow::updateTableData()
+{
+	vector<vector<string>> tableData = control.refreshTableDisplay();
+	emit sendTableData(tableData);
+	getProgressBarValueAdd();
+}
+
+void MainWindow::getSuggestionResponse(string selection, string lineText)
+{
+	control.executeSuggestionSelection(selection, lineText);
+	updateConsoleOutput();
+	updateTableData();
+}
+
+void MainWindow::sendFeedbackToController(QString text, bool isEnterPressed)
+{
+	bool isForCompleter = false;
+	QStringList suggestions;
+	string inputText = text.toUtf8().constData();
+	if (text.length() >= 5 && text.left(6).contains("search", Qt::CaseInsensitive)) {
+		vector<string> suggestionBoxList = control.populateSuggestionBox(inputText);
+		
+		foreach(string str, suggestionBoxList) {
+			if (!str.empty()) {
+				QString string = QString::fromStdString(str);
+				suggestions << string;
+			}
+		}
+		isForCompleter = true;
+	}
+	emit sendSuggestionContentsToCompleter(suggestions);
+	if (!isForCompleter) {
+		string lineEdit = control.updateLineText(inputText, isEnterPressed);
+		if (!lineEdit.empty()) {
+			emit sendToLineEditAutoComplete(lineEdit);
+		}
+	}
+	if (isEnterPressed) {
+		updateConsoleOutput();
+	}
+}
+
+void MainWindow::getProgressBarValueAdd()
+{
+	pair<int, int> stats = control.getCompletedStatToday();
+	if (stats.second > 0) {
+		ui->progressBar->setFormat("%v/%m");
+		emit sendMaxToProgressBar(stats.second);
+		emit sendValToProgressBar(stats.first);
+	}
+	else {
+		ui->progressBar->setFormat(EMPTY_TODAY_TODO);
+		emit sendMaxToProgressBar(1);
+		emit sendValToProgressBar(1);
+	}
+}
+
+void MainWindow::updateConsoleOutput()
+{
+	string output = control.getConsoleString();
+	if (!output.empty()) {
+		const QString consoleOut = QString::fromStdString(output);
+		emit sendToConsoleOutput(consoleOut);
+		control.clearConsoleString();
+	}
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+	int currentPos = ui->tableWidget->verticalScrollBar()->value();
+	switch (e->key())
+	{
+	case Qt::Key_Down:
+		e->ignore();
+		ui->tableWidget->verticalScrollBar()->setValue(currentPos + 1);
+		return;
+	case Qt::Key_Up:
+		e->ignore();
+		ui->tableWidget->verticalScrollBar()->setValue(currentPos - 1);
+		return;
+	}
+}
+
+void MainWindow::determineCommandLabel(const QString& text)
+{
+	QString command = text.split(" ").at(0).toLower();
+	if (command == ADD_COMMAND) {
+		const QString label = ADD_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == EDIT_COMMAND) {
+		const QString label = EDIT_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == DELETE_COMMAND) {
+		const QString label = DELETE_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == COMPLETE_COMMAND) {
+		const QString label = COMPLETE_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == UNCOMPLETE_COMMAND) {
+		const QString label = UNCOMPLETE_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == SEARCH_COMMAND) {
+		const QString label = SEARCH_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == CLIP_COMMAND) {
+		const QString label = CLIP_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else if (command == SLOT_COMMAND) {
+		const QString label = SLOT_LABEL_FORMAT;
+		emit setCommandLabel(label);
+	}
+	else {
+		const QString label = COMMAND_LIST;
+		emit setCommandLabel(label);
+	}
+}
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\mainwindow.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\mainwindow.h
+	 */
+
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+#include "ProgramController.h"
+
+#define COMMAND_LIST \
+	"Commands: home, all, add, edit, delete, complete, uncomplete, undo, redo, search, clip, slot"
+#define ADD_LABEL_FORMAT \
+	"add [<name>][<date (day/DDMMYY)>][<time (deadline: HHMM /timed: HHMM-HHMM>][<category>]"
+#define EDIT_LABEL_FORMAT \
+	"edit <number> [<name>][<date (day/DDMMYY)>][<time (deadline: HHMM /timed: HHMM-HHMM>][<category>]"
+#define DELETE_LABEL_FORMAT \
+	"delete <number> / delete <from> to <to>"
+#define COMPLETE_LABEL_FORMAT \
+	"complete <number> / complete <from> to <to>"
+#define UNCOMPLETE_LABEL_FORMAT \
+	"uncomplete <number> / uncomplete <from> to <to>"
+#define SEARCH_LABEL_FORMAT \
+	"search <keywords>"
+#define CLIP_LABEL_FORMAT \
+	"clip <number>"
+#define SLOT_LABEL_FORMAT \
+	"slot [<date (day/DDMMYY)>][<desired time: HHMM-HHMM>][<desired duration: HHMM>]"
+#define EMPTY_TODAY_TODO \
+	"Nothing to complete today."
+
+
+namespace Ui {
+class MainWindow;
+}
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+
+private:
+    Ui::MainWindow *ui;
+	ProgramController control;
+	void updateTableData();
+	void updateConsoleOutput();
+	void initiateLineEditConnections();
+	void initiateTableWidgetConnections();
+	void initiateProgressBarConnections();
+	void initiateConsoleOutConnections();
+	void initiateCommandLabelConnections();
+
+
+protected:
+	void keyPressEvent(QKeyEvent *e);
+
+private slots:
+	void sendInputToController(string text);
+	/*
+	* Gets keyword from the controller.  
+	*/
+	void getSuggestionResponse(string selection, string lineText);
+	/*
+	* sends feedback for every keystroke.
+	*/
+	void sendFeedbackToController(QString text, bool isEnterPressed);
+	void getProgressBarValueAdd();
+	void determineCommandLabel(const QString& text);
+
+signals:
+	void sendTableData(vector<vector<string>> data);
+	void sendToSuggestionBox(QStringList suggestions);
+	void sendSuggestionContentsToCompleter(QStringList list);
+	void sendToLineEditAutoComplete(string text);
+	void sendMaxToProgressBar(int maximum);
+	void sendValToProgressBar(int value);	
+	void sendToConsoleOutput(const QString&);
+	void setCommandLabel(const QString&);
+
+};
+
+#endif // MAINWINDOW_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\mainwindow.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ParsedDataDeployer.cpp
+	 */
+
+#include "stdafx.h"
+#include "ParsedDataDeployer.h"
+#include "AddLogic.h"
+#include "DeleteLogic.h"
+#include "EditLogic.h"
+#include "SearchLogic.h"
+#include "UndoLogic.h"
+#include "CompleteLogic.h"
+#include "DisplayLogic.h"
+
+ParsedDataDeployer::ParsedDataDeployer(string fileName)
+{
+	this->fileName = fileName;
+}
+
+ParsedDataDeployer::ParsedDataDeployer(vector<string> testVector)
+{
+	isTestMode = true;
+	testVectorStore = testVector;
+}
+
+ParsedDataDeployer::~ParsedDataDeployer()
+{
+}
+
+void ParsedDataDeployer::executeAdd(ParsedDataPackage addPackage)
+{
+	try {
+		if (!isTestMode) {
+			AddLogic newAdd(fileName);
+			BaseClassLogic * add = &newAdd;
+			add->execute(addPackage.getLineEntries());
+			UndoLogic::instance()->storeUndo(fileName);
+		}
+		else {
+			AddLogic newAdd(testVectorStore);
+			BaseClassLogic * add = &newAdd;
+			add->execute(addPackage.getLineEntries());
+			testVectorStore = add->getEntriesVector();
+		}
+		consoleString = COMPLETED_ADD;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ParsedDataDeployer::executeDelete(ParsedDataPackage deletePackage, string date, vector<string> keywords, int displayCase)
+{
+	try {
+		if (!isTestMode) {
+			DeleteLogic newDelete(fileName, date, keywords, displayCase);
+			BaseClassLogic * deleter = &newDelete;
+			deleter->execute(deletePackage.getStartEndPositions());
+			UndoLogic::instance()->storeUndo(fileName, "delete", deleter->getLinesForUndo(), deleter->getPosForUndo());
+		}
+		else {
+			DeleteLogic newDelete(testVectorStore, date, keywords, displayCase);
+			BaseClassLogic * deleter = &newDelete;
+			deleter->execute(deletePackage.getStartEndPositions());
+			testVectorStore = deleter->getEntriesVector();
+		}
+		consoleString = COMPLETED_DELETE;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ParsedDataDeployer::executeEdit(ParsedDataPackage editPackage, string date , vector<string> keywords, int displayCase)
+{
+	try {
+		if (!isTestMode) {
+			EditLogic newEdit(fileName, date, keywords, displayCase);
+			BaseClassLogic * edit = &newEdit;
+			edit->execute(editPackage.getStartEndPositions(), editPackage.getLineEntries());
+			UndoLogic::instance()->storeUndo(fileName, "modify", edit->getLinesForUndo(), edit->getPosForUndo());
+		}
+		else {
+			EditLogic newEdit(testVectorStore, date, keywords, displayCase);
+			BaseClassLogic * edit = &newEdit;
+			edit->execute(editPackage.getStartEndPositions(), editPackage.getLineEntries());
+			testVectorStore = edit->getEntriesVector();
+		}
+		consoleString = COMPLETED_EDIT;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+vector<string> ParsedDataDeployer::executeSearch(string searchPackage)
+{
+	vector<string> keywords;
+	try {
+		if (!isTestMode) {
+			SearchLogic newSearch(fileName);
+			BaseClassLogic * search = &newSearch;
+			keywords = search->createKeywords(searchPackage);
+		}
+		else {
+			SearchLogic newSearch(testVectorStore);
+			BaseClassLogic * search = &newSearch;
+			keywords = search->createKeywords(searchPackage);
+		}
+		string size = std::to_string(keywords.size());
+		consoleString = SEARCH_RESULTS(size);
+		return keywords;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+		return keywords;
+	}
+}
+
+void ParsedDataDeployer::executeUndo()
+{
+	if (!UndoLogic::instance()->isUndoEmpty()) {
+		UndoLogic::instance()->undo(fileName);
+		consoleString = COMPLETED_UNDO;
+	}
+	else {
+		consoleString = FAILED_UNDO;
+	}
+}
+
+void ParsedDataDeployer::executeRedo()
+{
+	if (!UndoLogic::instance()->isRedoEmpty()) {
+		UndoLogic::instance()->redo(fileName);
+		consoleString = COMPLETED_REDO;
+	}
+	else {
+		consoleString = FAILED_REDO;
+	}
+}
+
+void ParsedDataDeployer::executeComplete(ParsedDataPackage completePackage, string date, vector<string> keywords, int displayCase)
+{
+	try {
+		if (!isTestMode) {
+			CompleteLogic newComplete(fileName, date, keywords, displayCase);
+			BaseClassLogic * completer = &newComplete;
+			completer->execute(completePackage.getStartEndPositions(), COMPLETE);
+			UndoLogic::instance()->storeUndo(fileName, "modify", completer->getLinesForUndo(), completer->getPosForUndo());
+		}
+		else {
+			CompleteLogic newComplete(testVectorStore, date, keywords, displayCase);
+			BaseClassLogic * completer = &newComplete;
+			completer->execute(completePackage.getStartEndPositions(), COMPLETE);
+			testVectorStore = completer->getEntriesVector();
+		}
+		consoleString = COMPLETED_COMPLETE;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ParsedDataDeployer::executeUncomplete(ParsedDataPackage uncompletePackage, string date, vector<string> keywords, int displayCase)
+{
+	try {
+		if (!isTestMode) {
+			CompleteLogic newComplete(fileName, date, keywords, displayCase);
+			BaseClassLogic * completer = &newComplete;
+			completer->execute(uncompletePackage.getStartEndPositions(), UNCOMPLETE);
+			UndoLogic::instance()->storeUndo(fileName, "modify", completer->getLinesForUndo(), completer->getPosForUndo());
+		}
+		else {
+			CompleteLogic newComplete(testVectorStore, date, keywords, displayCase);
+			BaseClassLogic * completer = &newComplete;
+			completer->execute(uncompletePackage.getStartEndPositions(), UNCOMPLETE);
+			testVectorStore = completer->getEntriesVector();
+		}
+		consoleString = COMPLETED_UNCOMPLETE;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+vector<vector<string>> ParsedDataDeployer::getDisplayEvents(string date, vector<string> keywords, int displayCase)
+{
+	vector<vector<string>> displayEventList;
+	try {
+		if (!isTestMode) {
+			DisplayLogic newDisplay(fileName, date, keywords, displayCase);
+			BaseClassLogic * displayer = &newDisplay;
+			displayEventList = displayer->displayEvents();
+		}
+		else {
+			DisplayLogic newDisplay(testVectorStore, date, keywords, displayCase);
+			BaseClassLogic * displayer = &newDisplay;
+			displayEventList = displayer->displayEvents();
+		}
+		return displayEventList;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+		return displayEventList;
+	}
+}
+
+string ParsedDataDeployer::executeFormatContentsToLineEdit(int position, string date, vector<string> keywords, int displayCase)
+{
+	string contentFormatter;
+	try {
+		if (!isTestMode) {
+			DisplayLogic newDisplay(fileName, date, keywords, displayCase);
+			BaseClassLogic * displayer = &newDisplay;
+			contentFormatter = displayer->formatContentsToLineEdit(position);
+		}
+		else {
+			DisplayLogic newDisplay(testVectorStore, date, keywords, displayCase);
+			BaseClassLogic * displayer = &newDisplay;
+			contentFormatter = displayer->formatContentsToLineEdit(position);
+		}
+		return contentFormatter;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+		return contentFormatter;
+	}
+}
+
+pair <string, string> ParsedDataDeployer::executeGetEarliestFreeSlot(ParsedDataPackage freeSlotPackage)
+{
+	pair <string, string> freeSlotData;
+	try {
+		if (!isTestMode) {
+			SearchLogic newSearch(fileName);
+			BaseClassLogic * search = &newSearch;
+			freeSlotData = search->getEarliestFreeSlot(freeSlotPackage.getLineEntries(), freeSlotPackage.getStartEndPositions());
+		}
+		else {
+			SearchLogic newSearch(testVectorStore);
+			BaseClassLogic * search = &newSearch;
+			freeSlotData = search->getEarliestFreeSlot(freeSlotPackage.getLineEntries(), freeSlotPackage.getStartEndPositions());
+		}
+		return freeSlotData;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+		return freeSlotData;
+	}
+}
+
+pair<int, int> ParsedDataDeployer::executeGetTodayCompletionStat(string todayDate)
+{
+	pair<int, int> completionStat;
+	try {
+		if (!isTestMode) {
+			SearchLogic newSearch(fileName);
+			BaseClassLogic * search = &newSearch;
+			completionStat = search->getTodayCompletionStat(todayDate);
+		}
+		else {
+			SearchLogic newSearch(testVectorStore);
+			BaseClassLogic * search = &newSearch;
+			completionStat = search->getTodayCompletionStat(todayDate);
+		}
+		return completionStat;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+		return completionStat;
+	}
+}
+
+string ParsedDataDeployer::returnConsoleString()
+{
+	return consoleString;
+}
+
+void ParsedDataDeployer::clearConsoleString()
+{
+	consoleString.clear();
+}
+
+vector<string> ParsedDataDeployer::returnTestVector()
+{
+	return testVectorStore;
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ParsedDataDeployer.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ParsedDataDeployer.h
+	 */
+
+#pragma once
+#ifndef PARSE_DATA_DEPLOYER
+#define PARSE_DATA_DEPLOYER
+
+#include "ParsedDataPackage.h"
+
+#define COMPLETED_ADD \
+	"Add performed successfully."
+#define COMPLETED_EDIT \
+	"Edit performed successfully."
+#define COMPLETED_DELETE \
+	"Delete performed successfully."
+#define COMPLETED_UNDO \
+	"Undo performed successfully."
+#define COMPLETED_REDO \
+	"Redo performed successfully."
+#define COMPLETED_COMPLETE \
+	"Complete performed successfully."
+#define COMPLETED_UNCOMPLETE \
+	"Uncomplete performed successfully."
+#define FAILED_UNDO \
+	"Nothing to Undo."
+#define FAILED_REDO \
+	"Nothing to Redo."
+#define SEARCH_RESULTS(number) \
+	"Search returns " + number + " result(s)."
+
+
+class ParsedDataDeployer
+{
+private:
+	string consoleString;
+	string fileName = "";
+
+	vector<string> testVectorStore;
+	bool isTestMode = false;
+
+	const int COMPLETE = 1;
+	const int UNCOMPLETE = 0;
+public:
+	ParsedDataDeployer(string fileName);
+	ParsedDataDeployer(vector<string> testVector);
+	~ParsedDataDeployer();
+	void executeAdd(ParsedDataPackage addPackage);
+	void executeDelete(ParsedDataPackage deletePackage, string date, vector<string> keywords, int displayCase);
+	void executeEdit(ParsedDataPackage editPackage, string date, vector<string> keywords, int displayCase);
+	vector<string> executeSearch(string fileName);
+	void executeUndo();
+	void executeRedo();
+	void executeComplete(ParsedDataPackage completePackage, string date, vector<string> keywords, int displayCase);
+	void executeUncomplete(ParsedDataPackage uncompletePackage, string date, vector<string> keywords, int displayCase);
+	vector<vector<string>> getDisplayEvents(string date, vector<string> keywords, int displayCase);
+	
+	string executeFormatContentsToLineEdit(int position, string date, vector<string> keywords, int displayCase);
+	pair <string, string> executeGetEarliestFreeSlot(ParsedDataPackage freeSlotPackage);
+	pair<int, int> executeGetTodayCompletionStat(string todayDate);
+	string returnConsoleString();
+	void clearConsoleString();
+
+	vector<string> returnTestVector();
+};
+#endif
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ParsedDataDeployer.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ProgramController.cpp
+	 */
+
+#include "stdafx.h"
+#include "ProgramController.h"
+#include "ParsedDataDeployer.h"
+#include "ParsedDataPackage.h"
+#include <vector>
+#include "CompleteParser.h"
+
+//after an input is scanned by UI method, call to method sendToParse is made to send input to Parser
+//after Parser returns the variables in ParsedDataPackage, send the details to logic
+//after file output returns an output, controller sends it to UI
+
+ProgramController::ProgramController(string fileName) : deployer(fileName)
+{
+	this->fileName = fileName;
+	file.open(fileName, ios::out | ios::app);
+	file << "";
+	displayDate = getTodayDateInString();
+	consoleString = WELCOME_MESSAGE;
+}
+
+ProgramController::ProgramController(vector<string> testVector) : deployer(testVector)
+{
+	isTestMode = true;
+	displayDate = getTodayDateInString();
+}
+
+ProgramController::~ProgramController()
+{
+	if (!isTestMode) {
+		file.close();
+	}
+}
+
+void ProgramController::executeEntry(string input)
+{
+	clearConsoleString();
+	CommandAndArgumentParser inputParse(input);
+
+	command = inputParse.getCommand();
+	arguments = inputParse.getArguments();
+
+	if (command == HOME_COMMAND) {
+		executeHomeCommand();
+	}
+	else if (command == ALL_COMMAND) {
+		executeAllCommand();
+	}
+	else if (command == ADD_COMMAND) {
+		executeAddCommand();
+	}
+	else if (command == EDIT_COMMAND){
+		executeEditCommand();
+	}
+	else if (command == DELETE_COMMAND){
+		executeDeleteCommand();
+	}
+	else if (command == SEARCH_COMMAND){
+		executeSearchCommand();
+	}
+	else if (command == UNDO_COMMAND){
+		executeUndoCommand();
+	}
+	else if (command == REDO_COMMAND){
+		executeRedoCommand();
+	}
+	else if (command == COMPLETE_COMMAND){
+		executeCompleteCommand();
+	}
+	else if (command == UNCOMPLETE_COMMAND){
+		executeUncompleteCommand();
+	}
+	else if (command == SLOT_COMMAND) {
+		//This will be handled by updateLineText(). This will ensure exception does not occur.
+	}
+	else if (command == CLIP_COMMAND) {
+		updateLineText(input, true);
+	}
+	else {
+		executeAddNaturalParsing(input);
+	}
+}
+
+void ProgramController::executeHomeCommand()
+{
+	displayCase = DISPLAY_HOME_CASE;
+	searchKeywords.clear();
+	consoleString = DISPLAY_CHANGE;
+}
+
+void ProgramController::executeAllCommand()
+{
+	displayCase = DISPLAY_ALL_CASE;
+	searchKeywords.clear();
+	consoleString = DISPLAY_CHANGE;
+}
+
+void ProgramController::executeAddCommand()
+{
+	try {
+		AddParser addParsing;
+		BaseClassParser * addParse = &addParsing;
+		dataPackage = addParse->parseAndReturn(arguments);
+		deployer.executeAdd(dataPackage);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+void ProgramController::executeEditCommand()
+{
+	try {
+		EditParser editParsing;
+		BaseClassParser * editParse = &editParsing;
+		dataPackage = editParse->parseAndReturn(arguments);
+		deployer.executeEdit(dataPackage, displayDate, searchKeywords, displayCase);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ProgramController::executeDeleteCommand()
+{
+	try {
+		DeleteParser deleteParsing;
+		BaseClassParser * deleteParse = &deleteParsing;
+		dataPackage = deleteParse->parseAndReturn(arguments);
+		deployer.executeDelete(dataPackage, displayDate, searchKeywords, displayCase);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ProgramController::executeSearchCommand()
+{
+	try {
+		SearchParser searchParsing;
+		BaseClassParser * searchParse = &searchParsing;
+		string argument = searchParse->parseSearchArgs(arguments);
+		searchKeywords = deployer.executeSearch(argument);
+		consoleString = deployer.returnConsoleString();
+		if (!searchKeywords.empty()) {
+			displayCase = DISPLAY_KEYWORD_CASE;
+		}
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ProgramController::executeUndoCommand()
+{
+	deployer.executeUndo();
+	consoleString = deployer.returnConsoleString();
+}
+
+void ProgramController::executeRedoCommand()
+{
+	deployer.executeRedo();
+	consoleString = deployer.returnConsoleString();
+}
+
+void ProgramController::executeCompleteCommand()
+{
+	try {
+		CompleteParser completeParsing;
+		BaseClassParser * completeParse = &completeParsing;
+		dataPackage = completeParse->parseAndReturn(arguments);
+		deployer.executeComplete(dataPackage, displayDate, searchKeywords, displayCase);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ProgramController::executeUncompleteCommand()
+{
+	try {
+		CompleteParser completeParsing;
+		BaseClassParser * completeParse = &completeParsing;
+		dataPackage = completeParse->parseAndReturn(arguments);
+		deployer.executeUncomplete(dataPackage, displayDate, searchKeywords, displayCase);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+void ProgramController::executeAddNaturalParsing(string input)
+{
+	try {
+		AddParser addParsing;
+		BaseClassParser * addParse = &addParsing;
+		dataPackage = addParse->parseNLAndReturn(input);
+		deployer.executeAdd(dataPackage);
+		consoleString = deployer.returnConsoleString();
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+	}
+}
+
+vector<string> ProgramController::populateSuggestionBox(string input)
+{
+	CommandAndArgumentParser inputParse(input);
+
+	command = inputParse.getCommand();
+	arguments = inputParse.getArguments();
+
+	vector<string> suggestions;
+
+	if (command == SEARCH_COMMAND) {
+		SearchParser searchParsing;
+		BaseClassParser * searchParse = &searchParsing;
+		string argument = searchParse->parseSearchArgs(arguments);
+		suggestions = deployer.executeSearch(argument);
+	}
+	return suggestions;
+}
+
+void ProgramController::executeSuggestionSelection(string selection, string lineText)
+{
+	CommandAndArgumentParser inputParse(lineText);
+	string command = inputParse.getCommand();
+
+	if (command == SEARCH_COMMAND) {
+		searchKeywords.clear();
+		searchKeywords.push_back(selection);
+		displayCase = DISPLAY_KEYWORD_CASE;
+		consoleString = SELECT_KEYWORD;
+	}
+	refreshTableDisplay();
+}
+
+vector<vector<string>> ProgramController::refreshTableDisplay()
+{
+	return displayTable(displayDate);
+}
+
+vector<vector<string>> ProgramController::displayTable(string date)
+{
+	vector<vector<string>> forTableDisplay;
+	forTableDisplay = deployer.getDisplayEvents(date, searchKeywords, displayCase);
+	return forTableDisplay;
+}
+
+string ProgramController::updateLineText(string inputText, bool isEnterPressed)
+{ 
+	string completer;
+	CommandAndArgumentParser inputParse(inputText);
+	command = inputParse.getCommand();
+	arguments = inputParse.getArguments();
+	if (command == ADD_COMMAND && arguments.empty()) {
+		completer = executeAddFormatLineUpdater();
+	}
+	else if (command == SLOT_COMMAND && arguments.empty()) {
+		completer = executeSlotFormatLineUpdater();
+	}
+	else if (command == EDIT_COMMAND && inputText.substr(inputText.length() - 1, 1) == " " && !isEnterPressed) {
+		completer = executeEditLineUpdater(inputText);
+	}
+	else if (command == CLIP_COMMAND && ((inputText.substr(inputText.length() - 1, 1) == " "  && !isEnterPressed) || isEnterPressed)) {
+		completer = executeClipLineUpdater(arguments);
+	}
+	else if (command == SLOT_COMMAND && isEnterPressed) {
+		completer = executeSlotLineUpdater(arguments);
+	}
+	return completer;
+}
+
+string ProgramController::executeAddFormatLineUpdater()
+{
+	string empty;
+	return ADD_FORMAT(empty, empty, empty, empty);
+}
+
+string ProgramController::executeSlotFormatLineUpdater()
+{
+	return SLOT_FORMAT;
+}
+
+string ProgramController::executeEditLineUpdater(string inputText)
+{
+	string completer;
+	try {
+		EditParser newEdit;
+		BaseClassParser * edit = &newEdit;
+		int argPosition = edit->convertToPosition(arguments);
+		if (argPosition >= 0) {
+			string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
+			completer = inputText + append;
+		}
+		return completer;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+		return completer;
+	}
+}
+
+string ProgramController::executeClipLineUpdater(string arguments)
+{
+	string completer;
+	try {
+		EditParser newEdit;
+		BaseClassParser * edit = &newEdit;
+		int argPosition = edit->convertToPosition(arguments);
+		if (argPosition >= 0)
+		{
+			string append = deployer.executeFormatContentsToLineEdit(argPosition, displayDate, searchKeywords, displayCase);
+			if (!append.empty()) {
+				completer = ADD_APPEND + append;
+				consoleString = SUCCESS_CLIP(arguments);
+			}
+			else {
+				consoleString = CLIP_ERROR;
+			}
+		}
+		else {
+			consoleString = CLIP_ERROR;
+		}
+		return completer;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+		return completer;
+	}
+}
+
+string ProgramController::executeSlotLineUpdater(string arguments)
+{
+	string completer;
+	try {
+		SearchParser newSearch;
+		BaseClassParser * search = &newSearch;
+		dataPackage = search->parsefreeSlotCheck(arguments);
+		pair <string, string> result = deployer.executeGetEarliestFreeSlot(dataPackage);
+		if (!result.first.empty() && !result.second.empty()) {
+			string empty;
+			completer = ADD_FORMAT(empty, result.first, result.second, empty);
+			consoleString = SLOTS_AVAILABLE(result.first, result.second);
+		}
+		else {
+			consoleString = NO_SLOTS_AVAILABLE;
+		}
+		return completer;
+	}
+	catch (const exception& ex){
+		consoleString = ex.what();
+		return completer;
+	}
+}
+
+pair<int, int> ProgramController::getCompletedStatToday()
+{
+	return deployer.executeGetTodayCompletionStat(displayDate);
+}
+
+vector<string> ProgramController::returnTestVector()
+{
+	return deployer.returnTestVector();
+}
+
+string ProgramController::getConsoleString()
+{
+	return consoleString;
+}
+
+void ProgramController::clearConsoleString()
+{
+	consoleString.clear();
+	deployer.clearConsoleString();
+}
+
+string ProgramController::getTodayDateInString()
+{
+	time_t t = time(0);   // get time now
+	struct tm * now = localtime(&t);
+
+	char buffer[80];
+	strftime(buffer, 80, "%d/%m/%Y", now);
+	string out = buffer;
+
+	return out;
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ProgramController.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ProgramController.h
+	 */
+
+#pragma once
+#ifndef PROGRAM_CONTROLLER
+#define PROGRAM_CONTROLLER
+
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <string>
+#include <sstream>
+#include <vector>
+#include <fstream>
+#include "ParsedDataDeployer.h"
+#include "CommandAndArgumentParser.h"
+#include "AddParser.h"
+#include "DeleteParser.h"
+#include "EditParser.h"
+#include "SearchParser.h"
+#include "ParsedDataPackage.h"
+
+#define WELCOME_MESSAGE \
+	"Welcome. Please pick a command."
+#define DISPLAY_ALL_CASE \
+	-1
+#define DISPLAY_HOME_CASE \
+	0
+#define DISPLAY_KEYWORD_CASE \
+	1
+#define HOME_COMMAND \
+	"home"
+#define ALL_COMMAND \
+	"all"
+#define ADD_COMMAND \
+	"add"
+#define ADD_APPEND \
+	"add "
+#define EDIT_COMMAND \
+	"edit"
+#define DELETE_COMMAND \
+	"delete"
+#define SEARCH_COMMAND \
+	"search"
+#define UNDO_COMMAND \
+	"undo"
+#define REDO_COMMAND \
+	"redo"
+#define COMPLETE_COMMAND \
+	"complete"
+#define UNCOMPLETE_COMMAND \
+	"uncomplete"
+#define SLOT_COMMAND \
+	"slot"
+#define CLIP_COMMAND \
+	"clip"
+#define SLOT_FORMAT \
+	"slot [][][]"
+#define ADD_FORMAT(name, date, time, category) \
+	"add [" + name + "][" + date + "][" + time + "][" + category + "]"
+#define NO_SLOTS_AVAILABLE \
+	"No free slots in this time-frame."
+#define SLOTS_AVAILABLE(date, time) \
+	"Earliest free slot found: " +date + " " + time 
+#define CLIP_ERROR \
+	"No instance of selection is available for clipping."
+#define SUCCESS_CLIP(position) \
+	"Number " + position + " has been clipped to the input box."
+#define SELECT_KEYWORD \
+	"Matching keywords are shown."
+#define DISPLAY_CHANGE \
+	"Display has been changed according to selection."
+
+class ProgramController
+{
+private:
+	fstream file;
+	bool isTestMode;
+
+	string fileName;
+	string displayDate;
+	vector<string> searchKeywords;
+	int displayCase = 0;
+	
+	string consoleString;
+	
+	string command;
+	string arguments;
+	ParsedDataPackage dataPackage;
+
+	ParsedDataDeployer deployer;
+
+	string getTodayDateInString();
+
+	void executeHomeCommand();
+	void executeAllCommand();
+	void executeAddCommand();
+	void executeEditCommand();
+	void executeDeleteCommand();
+	void executeSearchCommand();
+	void executeUndoCommand();
+	void executeRedoCommand();
+	void executeCompleteCommand();
+	void executeUncompleteCommand();
+	void executeAddNaturalParsing(string input);
+
+	string executeAddFormatLineUpdater();
+	string executeSlotFormatLineUpdater();
+	string executeEditLineUpdater(string inputText);
+	string executeClipLineUpdater(string arguments);
+	string executeSlotLineUpdater(string arguments);
+
+public:
+	ProgramController(string filename);
+	ProgramController(vector<string> testVector);
+	~ProgramController();
+
+	/*
+	* Main Entry Point of Program. Executes command entry.
+	*/
+	void executeEntry(string input);
+	/*
+	* Returns search result for suggestion box input.
+	*/
+	vector<string> populateSuggestionBox(string input);
+	/*
+	* Populates keywords vector string and changes display case to search case.
+	*/
+	void executeSuggestionSelection(string selection, string lineText);
+	vector<vector<string>> refreshTableDisplay();
+	vector<vector<string>> displayTable(string date);
+	/*
+	* Updates the input box with new string
+	*/
+	string updateLineText(string inputText, bool isEnterPressed);
+	void ConnectToCommandFeedback(string input);
+	pair<int, int> getCompletedStatToday();
+
+	vector<string> returnTestVector();
+	string getConsoleString();
+	void clearConsoleString();
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ProgramController.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileController.cpp
+	 */
+
+#include "stdafx.h"
+#include "FileController.h"
+
+
+FileController::FileController()
+{
+}
+
+
+FileController::~FileController()
+{
+}
+
+bool FileController::checkFile(string fileName)
+{
+	ofstream myFile(fileName, ios::out | ios::app);
+
+	if (myFile.is_open()) {
+		myFile << "";
+		myFile.close();
+		return true;
+	}
+	else { return false; }
+}
+
+vector<string> FileController::parseFileToMemoryVector(string fileName)
+{
+	vector<string> toMemory;
+	string line;
+
+	ifstream myFile(fileName);
+
+	if (myFile.is_open()) {
+		while (getline(myFile, line)) {
+			toMemory.push_back(line);
+		}
+		myFile.close();
+	}
+	else { return toMemory; }
+
+	return toMemory;
+}
+bool FileController::cloneMemoryVectorToFile(string fileName, vector<string> memVector)
+{
+	std::ofstream myFile(fileName);
+		if (myFile.is_open()) {
+			for (vector<string>::iterator it = memVector.begin(); it != memVector.end(); ++it) {
+			myFile << *it << "\n";
+		}
+		myFile.close();
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+string FileController::declareFileAccessError()
+{
+	return BAD_ACCESS;
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileController.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileController.h
+	 */
+
+#pragma once
+#ifndef FILE_CONTROLLER
+#define FILE_CONTROLLER
+
+#include <string>
+#include <vector>
+#include <iostream>
+#include <fstream>
+
+#define BAD_ACCESS \
+	"Error. File cannot be accessed."
+
+using namespace std;
+
+class FileController
+{
+protected:
+	FileController();
+	~FileController();
+
+public:
+	//Checks if file is open.
+	static bool checkFile(string fileName);
+	//Copies file contents to memory in a vector.
+	static vector<string> parseFileToMemoryVector(string fileName);
+	//Re-writes file as copy of the vector input.
+	static bool cloneMemoryVectorToFile(string fileName, vector<string> memVector);
+	static string declareFileAccessError();
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileController.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileEntryFormatter.cpp
+	 */
+
+#include "stdafx.h"
+#include "FileEntryFormatter.h"
+
+
+FileEntryFormatter::FileEntryFormatter()
+{
+}
+
+
+FileEntryFormatter::~FileEntryFormatter()
+{
+}
+
+size_t FileEntryFormatter::getAttributedEntryPosition(string attribute, string lineEntry)
+{
+	string openingAttribute = OPENING_ATTR(attribute);
+	size_t foundOpeningAttributeAt = lineEntry.find(openingAttribute);
+	size_t attributeEntryStartAt = foundOpeningAttributeAt + openingAttribute.size();
+	
+	return attributeEntryStartAt;
+}
+
+size_t FileEntryFormatter::getAttributeEntrySize(string attribute, string lineEntry)
+{
+	size_t attributeEntrySize = 0;
+	string closingAttribute = CLOSING_ATTR(attribute);
+	size_t foundClosingAttributeAt = lineEntry.find(closingAttribute);
+	
+	if (foundClosingAttributeAt != string::npos) {
+		attributeEntrySize = foundClosingAttributeAt - getAttributedEntryPosition(attribute, lineEntry);
+	}
+	return attributeEntrySize;
+}
+
+string FileEntryFormatter::createAttributedEntry(string attribute, string entry)
+{
+	string openingAttribute = OPENING_ATTR(attribute);
+	string closingAttribute = CLOSING_ATTR(attribute);
+	string attributedEntry = openingAttribute + entry + closingAttribute;
+
+	return attributedEntry;
+}
+
+string FileEntryFormatter::getAttributeEntry(string attribute, string lineEntry)
+{
+	string attributeEntry = "";
+	size_t attributeEntryStartAt = getAttributedEntryPosition(attribute, lineEntry);
+	
+	if (attributeEntryStartAt != string::npos) {
+		size_t attributeEntrySize = getAttributeEntrySize(attribute, lineEntry);
+		attributeEntry = lineEntry.substr(attributeEntryStartAt, attributeEntrySize);
+	}
+
+	return attributeEntry;
+}
+
+string FileEntryFormatter::addAttributedEntryToLineEntry(string attributedEntry, string lineEntry)
+{
+	lineEntry += attributedEntry;
+	return lineEntry;
+}
+
+string FileEntryFormatter::deleteAttributedEntryFromLineEntry(string attribute, string lineEntry)
+{
+	string openingAttribute = OPENING_ATTR(attribute);
+	string closingAttribute = CLOSING_ATTR(attribute);
+	size_t foundOpeningAttributeAt = lineEntry.find(openingAttribute);
+	
+	if (foundOpeningAttributeAt != string::npos) {
+		size_t attributedEntrySize = openingAttribute.size() +
+			getAttributeEntrySize(attribute, lineEntry) + closingAttribute.size();
+
+		lineEntry.erase(foundOpeningAttributeAt, attributedEntrySize);
+	}
+
+	return lineEntry;
+}
+
+string FileEntryFormatter::editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry)
+{
+	size_t attributeEntryStartAt = getAttributedEntryPosition(attribute, lineEntry);
+
+	if (attributeEntryStartAt != string::npos) {
+		size_t attributeEntrySize = getAttributeEntrySize(attribute, lineEntry);
+
+		lineEntry.erase(attributeEntryStartAt, attributeEntrySize);
+
+		lineEntry.insert(attributeEntryStartAt, newAttributeEntry);
+	}
+
+	return lineEntry;
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileEntryFormatter.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileEntryFormatter.h
+	 */
+
+#pragma once
+#ifndef FILE_ENTRY_FORMATTER
+#define FILE_ENTRY_FORMATTER
+
+#include <string>
+#include <iostream>
+
+#define OPENING_ATTR(attribute) \
+	"<" + attribute + ">"
+#define CLOSING_ATTR(attribute) \
+	"</" + attribute + ">"
+
+using namespace std;
+
+class FileEntryFormatter
+{
+
+private:
+	static size_t getAttributedEntryPosition(string attribute, string lineEntry);
+	static size_t getAttributeEntrySize(string attribute, string lineEntry);
+
+public:
+	FileEntryFormatter();
+	~FileEntryFormatter();
+
+	//Methods below deal with entry formatting.
+	/*
+	*Encloses given entry to the given attribute
+	*Returns a string containing the attributed entry
+	*/
+	static string createAttributedEntry(string attribute, string entry);
+	/*
+	*Gets entry of the given attribute found in lineEntry
+	*Returns a string containing the entry. If no attribute matching
+	*string attribute is found, return empty string.
+	*/
+	static string getAttributeEntry(string attribute, string lineEntry);
+	/*
+	*Appends attributed entry to lineEntry
+	*Returns the line with the attributed entry appended
+	*/
+	static string addAttributedEntryToLineEntry(string attributedEntry, string lineEntry);
+	/*
+	*Deletes attributed entry to lineEntry
+	*Returns the line with the attributed entry deleted
+	*/
+	static string deleteAttributedEntryFromLineEntry(string attribute, string lineEntry);
+	/*
+	*Edits attributed entry in lineEntry to that of newAttributeEntry
+	*Returns the line with the attributed entry edited
+	*/
+	static string editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry);
+};
+
+#endif
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileEntryFormatter.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\MemoryController.cpp
+	 */
+
+#include "stdafx.h"
+#include "MemoryController.h"
+
+
+MemoryController::MemoryController()
+{
+}
+
+
+MemoryController::~MemoryController()
+{
+}
+
+vector<string> MemoryController::getVector()
+{
+	return vectorInMemory;
+}
+
+int MemoryController::getVectorSize() 
+{
+	return vectorInMemory.size();
+}
+
+void MemoryController::setVector(vector<string> newVector)
+{
+	vectorInMemory = newVector;
+}
+
+string MemoryController::getLineEntry(int position)
+{
+	return vectorInMemory[position];
+}
+
+void MemoryController::appendLineEntry(string lineEntry)
+{
+	vectorInMemory.push_back(lineEntry);
+}
+
+void MemoryController::insertLineEntry(int position, string line)
+{
+	int vectorSize = vectorInMemory.size();
+	if (position < vectorSize) {
+		vector<string>::iterator it;
+		it = vectorInMemory.begin() + position;
+		vectorInMemory.insert(it, line);
+	}
+	else {
+		appendLineEntry(line);
+	}
+}
+
+bool MemoryController::deleteLineEntry(int position)
+{
+	int vectorSize = vectorInMemory.size();
+	if (position < vectorSize) {
+		vectorInMemory.erase(vectorInMemory.begin() + position);
+		return true;
+	}
+	else { return false; }
+}
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\MemoryController.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\MemoryController.h
+	 */
+
+#pragma once
+#ifndef MEMORY_CONTROLLER
+#define MEMORY_CONTROLLER
+
+#include <string>
+#include <vector>
+#include <iostream>
+
+
+
+using namespace std;
+
+class MemoryController
+{
+private:
+	vector<string> vectorInMemory;
+
+public:
+	MemoryController();
+	~MemoryController();
+	vector<string> getVector();
+	int getVectorSize();
+	void setVector(vector<string> newVector);
+	string getLineEntry(int position);
+	void appendLineEntry(string lineEntry);
+	void insertLineEntry(int position, string line);
+	bool deleteLineEntry(int position);
+	
+
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\MemoryController.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\AddLogic.cpp
+	 */
+
+#include "stdafx.h"
+#include "AddLogic.h"
+
+AddLogic::AddLogic(string fileName) try : BaseClassLogic(fileName)
+{
+}
+
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+AddLogic::AddLogic(vector<string> testVector) : BaseClassLogic(testVector)
+{
+}
+
+AddLogic::~AddLogic()
+{
+}
+
+string AddLogic::getLineEntry()
+{
+	return lineEntry;
+}
+
+void AddLogic::appendToLineEntry(string attribute, string entry)
+{
+	string attributedEntry = createAttributedEntry(attribute, entry);
+	lineEntry = addAttributedEntryToLineEntry(attributedEntry, lineEntry);
+}
+
+void AddLogic::determineType()
+{
+	bool isNameEmpty = isParameterStringEmpty(getAttributeEntry(NAME_ATTRIBUTE, lineEntry));
+	bool isDateEmpty = isParameterStringEmpty(getAttributeEntry(DATE_ATTRIBUTE, lineEntry));
+	bool isStartTimeEmpty = isParameterStringEmpty(getAttributeEntry(START_ATTRIBUTE, lineEntry));
+	bool isEndTimeEmpty = isParameterStringEmpty(getAttributeEntry(END_ATTRIBUTE, lineEntry));
+
+	if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty && isNameEmpty) {
+		//do nothing
+		//toLog("No type failure")
+	}
+	else if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty) {
+		appendToLineEntry(TYPE_ATTRIBUTE, FLOAT_TASK_TYPE);
+	}
+	else if (isStartTimeEmpty && isEndTimeEmpty) {
+		lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, END_OF_DAY_TIME, lineEntry);
+		appendToLineEntry(TYPE_ATTRIBUTE, DEADLINE_TASK_TYPE);
+	}
+	else if (isStartTimeEmpty) {
+		appendToLineEntry(TYPE_ATTRIBUTE, DEADLINE_TASK_TYPE);
+	}
+	else {
+		appendToLineEntry(TYPE_ATTRIBUTE, TIMED_TASK_TYPE);
+	}
+}
+
+void AddLogic::addCompleteEntry()
+{
+	appendToLineEntry(COMPLETE_ATTRIBUTE, TASK_NOT_COMPLETE);
+}
+
+void AddLogic::validChecks() 
+{
+	determineType();
+	if (isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, lineEntry))) {
+		throw runtime_error(ADD_LOGIC_MISSING_ERROR);
+	}
+	//toLog("TYPE CHECK PASSED: " + getAttributeEntry(TYPE_ATTRIBUTE, lineEntry));
+	if (!isDateAndTimeCorrect(lineEntry)) {
+		throw runtime_error(ADD_LOGIC_TIME_DATE_ERROR);
+	}
+	//toLog("DATE AND TIME CHECK PASSED");
+	else {
+		string type = getAttributeEntry(TYPE_ATTRIBUTE, lineEntry);
+		if (type == "") {
+			throw runtime_error(ADD_LOGIC_MISSING_ERROR);
+		}
+	}
+}
+
+void AddLogic::execute(map<string,string> lineEntries)
+{
+	if (!isTestMode) {
+		appendToLineEntry(CREATION_ATTRIBUTE, getTimeNowInString());
+	}
+	appendToLineEntry(NAME_ATTRIBUTE, lineEntries[NAME_ATTRIBUTE]);
+	appendToLineEntry(DATE_ATTRIBUTE, lineEntries[DATE_ATTRIBUTE]);
+	appendToLineEntry(START_ATTRIBUTE, lineEntries[START_ATTRIBUTE]);
+	appendToLineEntry(END_ATTRIBUTE, lineEntries[END_ATTRIBUTE]);
+	appendToLineEntry(CATEGORY_ATTRIBUTE, lineEntries[CATEGORY_ATTRIBUTE]);
+	addCompleteEntry();
+
+	try{
+		validChecks();
+		appendToFile(lineEntry);
+		if (isTestMode) {
+			updateSortedEntries();
+		}
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\AddLogic.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\AddLogic.h
+	 */
+
+#pragma once
+#ifndef ADD_LOGIC
+#define ADD_LOGIC
+
+#include "BaseClassLogic.h"
+
+#define ADD_LOGIC_TIME_DATE_ERROR \
+	"Please enter a valid DDMMYY date and HHMM time!"
+#define ADD_LOGIC_MISSING_ERROR \
+	"Please enter at least a name, a date, a start time or an end time!"
+
+class AddLogic :
+	public BaseClassLogic
+{
+private:
+	string lineEntry;
+	void appendToLineEntry(string attribute, string entry);
+	
+	/*
+	*Determines the type of the event to be added if it is either
+	*a deadline, timed or float task
+	*/
+	void determineType();
+	/*
+	*Writes the complete attribute with a no entry into the event to be added
+	*/
+	void addCompleteEntry();
+	/*
+	*It is to be accessed before entry is appended to file to ensure that all entries are valid.
+	*Throws an exception if it fails.
+	*/
+	void validChecks();
+
+public:
+	AddLogic(string fileName);
+	AddLogic(vector<string> testVector);
+	~AddLogic();
+
+	//This method must only be used in automated Testing purposes.
+	string getLineEntry();
+	
+	void execute(map<string, string> lineEntries);
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\AddLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\BaseClassLogic.cpp
+	 */
+
+#include "stdafx.h"
+#include "BaseClassLogic.h"
+
+BaseClassLogic::BaseClassLogic(string fileName) try : fileHandler(fileName)
+{
+}
+
+catch (const exception& ex) 
+{
+	throw runtime_error(ex.what());
+}
+
+BaseClassLogic::BaseClassLogic(vector<string> testVector) : fileHandler(testVector)
+{
+	isTestMode = true;
+}
+
+BaseClassLogic::BaseClassLogic(string fileName, string date, vector<string> keywords, int displayCase) try : fileHandler(fileName)
+{
+	this->date = date;
+	this->keywords = keywords;
+	this->displayCase = displayCase;
+	updateSortedEntries();
+}
+
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+BaseClassLogic::BaseClassLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase) : fileHandler(testVector)
+{
+	this->date = date;
+	this->keywords = keywords;
+	this->displayCase = displayCase;
+	updateSortedEntries();
+	isTestMode = true;
+}
+
+BaseClassLogic::~BaseClassLogic()
+{
+}
+
+void BaseClassLogic::toLog(string log)
+{
+	FileLogic logger("log.txt");
+	logger.appendToFile(log);
+}
+
+// Start of FileLogic Interface methods
+int BaseClassLogic::getEntriesSize()
+{
+	return fileHandler.getSize();
+}
+
+vector<string> BaseClassLogic::getEntriesVector()
+{
+	return fileHandler.getVector();
+}
+
+string BaseClassLogic::getLineFromPositionNumber(int position)
+{
+	return fileHandler.getLineFromPositionNumber(position);
+}
+
+void BaseClassLogic::appendToFile(string lineEntry)
+{
+	fileHandler.appendToFile(lineEntry);
+}
+
+void BaseClassLogic::addToPositionNumber(int position, string lineEntry)
+{
+	fileHandler.addToPositionNumber(position, lineEntry);
+}
+
+void BaseClassLogic::editLine(int position, string newLineEntry)
+{
+	fileHandler.editLine(position, newLineEntry);
+}
+
+void BaseClassLogic::deleteLine(int position) 
+{
+	fileHandler.deleteLine(position);
+}
+
+string BaseClassLogic::createAttributedEntry(string attribute, string entry)
+{
+	return FileLogic::createAttributedEntry(attribute, entry);
+}
+
+string BaseClassLogic::getAttributeEntry(string attribute, string lineEntry)
+{
+	return FileLogic::getAttributeEntry(attribute, lineEntry);
+}
+
+string BaseClassLogic::addAttributedEntryToLineEntry(string attributedEntry, string lineEntry)
+{
+	return FileLogic::addAttributedEntryToLineEntry(attributedEntry, lineEntry);
+}
+
+string BaseClassLogic::deleteAttributedEntryFromLineEntry(string attribute, string lineEntry)
+{
+	return FileLogic::deleteAttributedEntryFromLineEntry(attribute, lineEntry);
+}
+
+string BaseClassLogic::editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry)
+{
+	return FileLogic::editAttributedEntryFromLineEntry(attribute, newAttributeEntry, lineEntry);
+}
+// End of FileLogic Interface methods
+
+// Start of TimeLogic Interface methods
+TimeLogic BaseClassLogic::createTimeLogic(string date, string time)
+{
+	TimeLogic obj(date, time);
+	return obj;
+}
+
+bool BaseClassLogic::getTimeFormatCheck(TimeLogic obj)
+{
+	return obj.getTimeFormatCheck();
+}
+
+string BaseClassLogic::getStringDate(TimeLogic obj)
+{
+	return obj.getStringDate();
+}
+
+string BaseClassLogic::getStringTime(TimeLogic obj)
+{
+	return obj.getStringTime();
+}
+
+string BaseClassLogic::returnPlusOne(TimeLogic obj)
+{
+	return obj.returnPlusOne();
+}
+
+bool BaseClassLogic::isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2)
+{
+	return TimeLogic::isFirstEarlierThanSecond(time1, time2);
+}
+
+bool BaseClassLogic::isTimeBeforeNow(TimeLogic time1)
+{
+	return TimeLogic::isTimeBeforeNow(time1);
+}
+
+string BaseClassLogic::getTimeNowInString()
+{
+	return TimeLogic::getTimeNowInString();
+}
+
+TimeLogic BaseClassLogic::addHours(TimeLogic obj, int hours, int min)
+{
+	obj.addHours(hours, min);
+	return obj;
+}
+// End of TimeLogic Interface methods
+
+vector<string> BaseClassLogic::getSortedLineEntries()
+{
+	return sortedLineEntries;
+}
+
+vector<int> BaseClassLogic::getSortedLinePositions()
+{
+	return sortedLineFilePositions;
+}
+
+void BaseClassLogic::updateSortedEntries()
+{
+	sortedLineEntries.clear();
+	sortedLineFilePositions.clear();
+	if (displayCase == 0){
+		getListOfEventsHome(date);
+	}
+	else if (displayCase == -1) {
+		getAllEntries();
+	}
+	else{
+		getListOfEventsHaving(keywords);
+	}
+}
+
+string BaseClassLogic::getDate()
+{
+	return date;
+}
+
+void BaseClassLogic::getListOfEventsHaving(vector<string> keywords)
+{
+	int size = getEntriesSize();
+
+	for (int i = 0; i < size; ++i) {
+		string line = getLineFromPositionNumber(i);
+		if (isDateAndTimeCorrect(line)) {
+			if (checkKeywordCriteria(line, keywords)) {
+				if (getAttributeEntry(TYPE_ATTRIBUTE, line) == FLOAT_TASK_TYPE) {
+					sortedLineEntries.push_back(line);
+					sortedLineFilePositions.push_back(i);
+				}
+				else if (!isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, line))) {
+					addNonFloatEventToEntry(i);
+				}
+			}
+		}
+	}
+}
+
+void BaseClassLogic::getListOfEventsHome(string fromDate)
+{
+	int size = fileHandler.getSize();
+
+	TimeLogic dateQualifier = createTimeLogic(date, START_OF_DAY_TIME);
+
+	for (int i = 0; i < size; ++i) {
+		string line = getLineFromPositionNumber(i);
+		if (isDateAndTimeCorrect(line)) {
+			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == FLOAT_TASK_TYPE && getAttributeEntry(COMPLETE_ATTRIBUTE, line) != TASK_COMPLETE) {
+				sortedLineEntries.push_back(line);
+				sortedLineFilePositions.push_back(i);
+			}
+			else if (!isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, line))) {
+				string lineDateString = getAttributeEntry(DATE_ATTRIBUTE, line);
+				TimeLogic lineDate = createTimeLogic(lineDateString, START_OF_DAY_TIME);
+				if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE){
+					string endTime = getAttributeEntry(END_ATTRIBUTE, line);
+					lineDate = createTimeLogic(lineDateString, endTime);
+				}
+				bool isNotCompleted = getAttributeEntry(COMPLETE_ATTRIBUTE, line) == TASK_NOT_COMPLETE;
+
+				if (getTimeFormatCheck(lineDate)) {
+					if (isFirstEarlierThanSecond(dateQualifier, lineDate) || isNotCompleted) {
+						addNonFloatEventToEntry(i);
+					}
+				}
+			}
+		}
+	}
+}
+
+void BaseClassLogic::getAllEntries()
+{
+	int size = getEntriesSize();
+
+	for (int i = 0; i < size; ++i) {
+		string line = getLineFromPositionNumber(i);
+		if (isDateAndTimeCorrect(line)) {
+			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == FLOAT_TASK_TYPE) {
+				sortedLineEntries.push_back(line);
+				sortedLineFilePositions.push_back(i);
+			}
+			else if (!isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, line))) {
+				addNonFloatEventToEntry(i);
+			}
+		}
+	}
+}
+
+TimeLogic BaseClassLogic::getPriorityDateTime(string line)
+{
+	string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+	string lineTime;
+	if (getAttributeEntry(TYPE_ATTRIBUTE, line) == DEADLINE_TASK_TYPE) {
+		lineTime = getAttributeEntry(END_ATTRIBUTE, line);
+	}
+	else if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE) {
+		lineTime = getAttributeEntry(START_ATTRIBUTE, line);
+	}
+	TimeLogic priorityDateTime = createTimeLogic(lineDate, lineTime);
+	return priorityDateTime;
+}
+
+void BaseClassLogic::addNonFloatEventToEntry(int iteration)
+{
+	string line = fileHandler.getLineFromPositionNumber(iteration);
+
+	if (sortedLineEntries.size() == 0) {
+		sortedLineEntries.push_back(line);
+		sortedLineFilePositions.push_back(iteration);
+	}
+	else {
+		vector<string>::iterator it1 = sortedLineEntries.begin();
+		vector<int>::iterator it2 = sortedLineFilePositions.begin();
+		int minSize = 0;
+		int maxSize = sortedLineEntries.size() - 1;
+
+		// Addition of Non-Float Entry is done using binary search to minimise complexity.
+		while (maxSize >= minSize) {
+			int mid = (minSize + maxSize) / 2;
+			string checkLine = sortedLineEntries[mid];
+
+			if (getAttributeEntry(TYPE_ATTRIBUTE, checkLine) == FLOAT_TASK_TYPE) {
+				if (maxSize == minSize) {
+					sortedLineEntries.insert(it1 + minSize, line);
+					sortedLineFilePositions.insert(it2 + minSize, iteration);
+					break;
+				}
+				else {
+					maxSize = mid;
+				}
+			}
+			else {
+				TimeLogic checkLineTimeLogic = getPriorityDateTime(checkLine);
+				TimeLogic deadline = getPriorityDateTime(line);
+
+				bool isEqualDateTime = (checkLineTimeLogic.getStringTime() == deadline.getStringTime()) && (checkLineTimeLogic.getStringDate() == deadline.getStringDate());
+				bool isDeadlinePrioritise = (getAttributeEntry(TYPE_ATTRIBUTE, line) == DEADLINE_TASK_TYPE) && (getAttributeEntry(TYPE_ATTRIBUTE, checkLine) == TIMED_TASK_TYPE) && isEqualDateTime;
+
+				if ((isFirstEarlierThanSecond(deadline, checkLineTimeLogic) && !isEqualDateTime) || isDeadlinePrioritise) {
+					if (maxSize == minSize) {
+						sortedLineEntries.insert(it1 + minSize, line);
+						sortedLineFilePositions.insert(it2 + minSize, iteration);
+						break;
+					}
+					else {
+						maxSize = mid;
+					}
+				}
+				else {
+					if (minSize == maxSize) {
+						sortedLineEntries.push_back(line);
+						sortedLineFilePositions.push_back(iteration);
+						break;
+					}
+					else {
+						minSize = mid + 1;
+					}
+				}
+			}
+		}
+	}
+}
+
+bool BaseClassLogic::checkKeywordCriteria(string line, vector<string> keywords)
+{
+	bool isCriteriaMet = false;
+	int numKeywords = keywords.size();
+	for (int i = 0; i < numKeywords && !isCriteriaMet; ++i) {
+		string keyword = keywords[i];
+		bool isMatchName = getAttributeEntry(NAME_ATTRIBUTE, line) == keyword;
+		bool isMatchCategory = getAttributeEntry(CATEGORY_ATTRIBUTE, line) == keyword;
+
+		string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+		TimeLogic date = createTimeLogic(lineDate, START_OF_DAY_TIME);
+
+		string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
+		TimeLogic endTime = createTimeLogic(lineDate, lineEnd);
+
+		bool isMatchDate = lineDate == keyword && getTimeFormatCheck(date);
+		bool isMatchEndDate = getStringDate(endTime) == keyword && getTimeFormatCheck(endTime);
+		
+		string lineStart = getAttributeEntry(START_ATTRIBUTE, line);
+		TimeLogic startTime = createTimeLogic(lineDate, lineStart);
+		bool isMatchStart = lineStart == keyword && getTimeFormatCheck(startTime);
+		bool isMatchEnd = getStringTime(endTime) == keyword && getTimeFormatCheck(endTime);
+
+		bool isWithinTime = checkIfTimedTaskWithinTimeKeyword(line, keyword);
+		isCriteriaMet = isMatchName || isMatchCategory || isMatchDate || isMatchEndDate || isMatchStart || isMatchEnd || isWithinTime;
+	}
+	return isCriteriaMet;
+}
+
+bool BaseClassLogic::checkIfTimedTaskWithinTimeKeyword(string line, string timeKeyword)
+{
+	bool isWithinTime = false;
+	if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE) {
+		string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+		string lineStart = getAttributeEntry(START_ATTRIBUTE, line);
+		string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
+
+		TimeLogic startTime = createTimeLogic(lineDate, lineStart);
+		TimeLogic endTime = createTimeLogic(lineDate, lineEnd);
+		TimeLogic keywordTime = createTimeLogic(lineDate, timeKeyword);
+
+		isWithinTime = isFirstEarlierThanSecond(startTime, keywordTime) && isFirstEarlierThanSecond(keywordTime, endTime);
+		if (lineEnd.substr(5, 2) == "+1") {
+			TimeLogic keywordTimePlusOne = createTimeLogic(lineDate, timeKeyword + "+1");
+			isWithinTime = isFirstEarlierThanSecond(startTime, keywordTimePlusOne) && isFirstEarlierThanSecond(keywordTimePlusOne, endTime);
+		}
+	}
+	return isWithinTime;
+}
+
+bool BaseClassLogic::isDateAndTimeCorrect(string lineEntry)
+{
+	string date = getAttributeEntry(DATE_ATTRIBUTE, lineEntry);
+	string startTime = getAttributeEntry(START_ATTRIBUTE, lineEntry);
+	string endTime = getAttributeEntry(END_ATTRIBUTE, lineEntry);
+	string type = getAttributeEntry(TYPE_ATTRIBUTE, lineEntry);
+
+	bool isDateEmpty = isParameterStringEmpty(getAttributeEntry(DATE_ATTRIBUTE, lineEntry));
+	bool isStartTimeEmpty = isParameterStringEmpty(getAttributeEntry(START_ATTRIBUTE, lineEntry));
+	bool isEndTimeEmpty = isParameterStringEmpty(getAttributeEntry(END_ATTRIBUTE, lineEntry));
+
+	if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty && type == FLOAT_TASK_TYPE) {
+		return true;
+	}
+	else if (isStartTimeEmpty && isEndTimeEmpty && type == FLOAT_TASK_TYPE) {
+		TimeLogic check = createTimeLogic(date, START_OF_DAY_TIME);
+		return getTimeFormatCheck(check);
+	}
+	else if (isStartTimeEmpty && type == DEADLINE_TASK_TYPE) {
+		TimeLogic check = createTimeLogic(date, endTime);
+		return getTimeFormatCheck(check);
+	}
+	else {
+		TimeLogic checkStart = createTimeLogic(date, startTime);
+		TimeLogic checkEnd = createTimeLogic(date, endTime);
+
+		return (getTimeFormatCheck(checkStart) && getTimeFormatCheck(checkEnd)
+			&& isFirstEarlierThanSecond(checkStart, checkEnd) && startTime != endTime);
+	}
+}
+
+void BaseClassLogic::execute(map<string, string> lineEntries)
+{
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+}
+
+void BaseClassLogic::execute(map<string, int> fromToPositions)
+{
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+}
+
+void BaseClassLogic::execute(map<string, int> fromToPositions, int executionCase)
+{
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+}
+
+void BaseClassLogic::execute(map<string, int> position, map<string, string> lineEntries)
+{
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+}
+
+vector<vector<string>> BaseClassLogic::displayEvents()
+{
+	vector<vector<string>> placeHolder;
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+	return placeHolder;
+}
+
+vector<string> BaseClassLogic::createKeywords(string input)
+{
+	vector<string> placeHolder;
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+	return placeHolder;
+}
+
+string BaseClassLogic::formatContentsToLineEdit(int position) 
+{
+	string placeHolder;
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+	return placeHolder;
+}
+
+pair <string, string> BaseClassLogic::getEarliestFreeSlot(map<string, string> fromToTime, map<string, int> duration)
+{
+	pair <string, string> placeHolder;
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+	return placeHolder;
+}
+
+pair <int, int> BaseClassLogic::getTodayCompletionStat(string todayDate)
+{
+	pair <int, int> placeHolder;
+	assert(false && "THIS SHOULD NOT BE ACCESSED!!!");
+	return placeHolder;
+}
+
+stack<string> BaseClassLogic::getLinesForUndo()
+{
+	return OldLineEntriesForUndo;
+}
+
+stack<int> BaseClassLogic::getPosForUndo()
+{
+	return oldLinePosforUndo;
+}
+
+bool BaseClassLogic::isParameterStringEmpty(string parameter)
+{
+	return parameter.find_first_not_of(' ') == std::string::npos;
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\BaseClassLogic.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\BaseClassLogic.h
+	 */
+
+#pragma once
+#ifndef BASE_CLASS_LOGIC
+#define BASE_CLASS_LOGIC
+
+#include "FileLogic.h"
+#include "TimeLogic.h"
+#include <stack>
+#include <map>
+#include "assert.h"
+
+#define CREATION_ATTRIBUTE \
+	"CreationDate"
+#define NAME_ATTRIBUTE \
+	"name"
+#define DATE_ATTRIBUTE \
+	"date"
+#define START_ATTRIBUTE \
+	"start"
+#define END_ATTRIBUTE \
+	"end"
+#define CATEGORY_ATTRIBUTE \
+	"category"
+#define COMPLETE_ATTRIBUTE \
+	"complete"
+#define TYPE_ATTRIBUTE \
+	"type"
+#define FROM_POSITION \
+	"fromPos"
+#define TO_POSITION \
+	"toPos"
+
+#define DEADLINE_TASK_TYPE \
+	"deadline"
+#define TIMED_TASK_TYPE \
+	"timed"
+#define FLOAT_TASK_TYPE \
+	"float"
+#define TASK_NOT_COMPLETE \
+	"no"
+#define TASK_COMPLETE \
+	"yes"
+#define START_OF_DAY_TIME \
+	"00:00"
+#define END_OF_DAY_TIME \
+	"23:59"
+
+
+class BaseClassLogic
+{
+private:
+	FileLogic fileHandler;
+	string date;
+	vector<string> keywords;
+	int displayCase;
+
+	/*These are the private sorting methods applicable to all Logic specific methods.
+	These sorting methods provide the algorithm that will provide the fixed
+	sort of to-dos for the user interface, which is different from the sort
+	in the file. */	
+	void getListOfEventsHome(string fromDate);
+
+	/*These are the private sorting helper methods applicable to all Logic specific methods.*/
+	TimeLogic getPriorityDateTime(string line);
+	void addNonFloatEventToEntry(int iteration);
+	bool checkKeywordCriteria(string line, vector<string> keywords);
+	bool checkIfTimedTaskWithinTimeKeyword(string line, string timeKeyword);
+
+	/*These are the private sorting helper variables applicable to all Logic specific methods.*/
+	vector<string> sortedLineEntries; //This stores the sorted entries as determined by the sorting algorithm
+	vector<int> sortedLineFilePositions; // This stores the filePositions of each entry in lineEntries respectively.
+
+protected:
+	BaseClassLogic(string fileName);
+	BaseClassLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	BaseClassLogic(vector<string> testVector);
+	BaseClassLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
+	virtual ~BaseClassLogic();
+
+	bool isTestMode = false;
+	void toLog(string log);
+
+	/*These are the interface methods for the FileLogic class.
+	  Consult FileLogic.h for more information about these methods. */
+	string getLineFromPositionNumber(int position);
+	void appendToFile(string lineEntry);
+	void addToPositionNumber(int position, string lineEntry);
+	void editLine(int position, string newLineEntry);
+	void deleteLine(int position);
+	string createAttributedEntry(string attribute, string entry);
+	string getAttributeEntry(string attribute, string lineEntry);
+	string addAttributedEntryToLineEntry(string attributedEntry, string lineEntry);
+	string deleteAttributedEntryFromLineEntry(string attribute, string lineEntry);
+	string editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry);
+
+	/*These are the interface methods for the TimeLogic class.
+	  Consult TimeLogic.h for more information about these methods. */
+	TimeLogic createTimeLogic(string date, string time);
+	bool getTimeFormatCheck(TimeLogic obj);
+	string getStringDate(TimeLogic obj);
+	string getStringTime(TimeLogic obj);
+	string returnPlusOne(TimeLogic obj);
+	bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
+	bool isTimeBeforeNow(TimeLogic time1);
+	string getTimeNowInString();
+	TimeLogic addHours(TimeLogic obj, int hours, int min);
+
+	/*These are the protected sorting methods applicable to all Logic specific methods.
+	  These sorting methods provide the algorithm that will provide the fixed
+	  sort of to-dos for the user interface, which is different from the sort
+	  in the file. */
+	void getListOfEventsHaving(vector<string> keywords);
+	void getAllEntries();
+	void updateSortedEntries();
+
+	/* These methods are protected helper functions applicable to all Logic specific methods.*/
+	bool isParameterStringEmpty(string parameter);
+	bool isDateAndTimeCorrect(string lineEntry);
+	string getDate();
+
+	stack<string> OldLineEntriesForUndo;
+	stack<int> oldLinePosforUndo;
+
+public:
+	/*These are the public interface methods for the FileLogic class.
+	  These methods are the only necessary methods for automated testing purposes.
+	  Consult FileLogic.h or this file for more information about these methods. */
+	int getEntriesSize();
+	vector<string> getEntriesVector();
+	vector<string> getSortedLineEntries();
+	vector<int> getSortedLinePositions();
+
+	/*These are the virtual methods for BaseClassLogic child classes. These should not
+	be accessed without the use of the child class's method. Should that occur,
+	assertion failure will occur.*/
+	virtual void execute(map<string,string> lineEntries);
+	virtual void execute(map<string, int> fromToPositions);
+	virtual void execute(map<string, int> fromToPositions, int executionCase);
+	virtual void execute(map<string, int> position, map<string, string> lineEntries);
+	virtual vector<vector<string>> displayEvents();
+
+	virtual vector<string> createKeywords(string input);
+	virtual string formatContentsToLineEdit(int position);
+	virtual pair <string, string> getEarliestFreeSlot(map<string, string> fromToTime, map<string, int> duration);
+	virtual pair <int, int> getTodayCompletionStat(string todayDate);
+
+	/*These methods is to access the old line entries and positions that have been
+	modified for Undo Logic storage and later retrieval*/
+	stack<string> getLinesForUndo();
+	stack<int> getPosForUndo();
+};
+
+#endif
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\BaseClassLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\CompleteLogic.cpp
+	 */
+
+#include "stdafx.h"
+#include "CompleteLogic.h"
+
+CompleteLogic::CompleteLogic(string fileName, string date, vector<string> keywords, int displayCase) try : BaseClassLogic(fileName, date, keywords, displayCase)
+{
+}
+
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+CompleteLogic::CompleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase) : BaseClassLogic(testVector, date, keywords, displayCase)
+{
+}
+
+CompleteLogic::~CompleteLogic()
+{
+}
+
+void CompleteLogic::editCompletion(int fromPosition, int toPosition, bool complete)
+{
+	vector<int> positions = getSortedLinePositions();
+	int positionSize = positions.size();
+	int startPosition = fromPosition - 1;
+	int endPosition = toPosition - 1;
+	try {
+		checkFromToValidity(startPosition, endPosition, positionSize);
+		for (int i = startPosition; i <= endPosition; ++i) {
+			int filePosition = positions[i];
+			storeOldEntryForUndo(filePosition);
+			string line = getLineFromPositionNumber(filePosition);
+			if (complete) {
+				line = editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, TASK_COMPLETE, line);
+			}
+			else {
+				line = editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, TASK_NOT_COMPLETE, line);
+			}
+			editLine(filePosition, line);
+		}
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+
+void CompleteLogic::storeOldEntryForUndo(int filePosition)
+{
+	oldLinePosforUndo.push(filePosition);
+	string line = getLineFromPositionNumber(filePosition);
+	OldLineEntriesForUndo.push(line);
+	//toLog("Undo Storage of Complete passed");
+}
+
+void CompleteLogic::checkFromToValidity(int fromPosition, int toPosition, int size)
+{
+	if (fromPosition >= size || fromPosition < 0 || toPosition >= size || toPosition < 0) {
+		//toLog("COMPLETE SLOT OUT OF BOUNDS");
+		throw runtime_error(SLOT_IN_EXCESS);
+	}
+}
+
+void CompleteLogic::execute(map<string, int> fromToPositions, int executionCase)
+{
+	try {
+		if (executionCase == COMPLETE) {
+			editCompletion(fromToPositions[FROM_POSITION], fromToPositions[TO_POSITION], true);
+		}
+		else if (executionCase == UNCOMPLETE) {
+			editCompletion(fromToPositions[FROM_POSITION], fromToPositions[TO_POSITION], false);
+		}
+		else {
+			assert(false && "Wrong execution case inserted.");
+		}
+		if (isTestMode) {
+			updateSortedEntries();
+		}
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\CompleteLogic.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\CompleteLogic.h
+	 */
+
+#pragma once
+#ifndef COMPLETE_LOGIC
+#define COMPLETE_LOGIC
+
+#include "BaseClassLogic.h"
+
+#define SLOT_IN_EXCESS \
+	"Chosen number(s) out of bounds"
+
+class CompleteLogic :
+	public BaseClassLogic
+{
+
+private:
+	void editCompletion(int fromPosition, int toPosition, bool complete);
+	void checkFromToValidity(int fromPosition, int toPosition, int size);
+	void storeOldEntryForUndo(int filePosition);
+	const int COMPLETE = 1;
+	const int UNCOMPLETE = 0;
+public:
+	CompleteLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	CompleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
+	~CompleteLogic();
+
+	void execute(map<string, int> fromToPositions, int executionCase);
+	
+	stack<string> getLinesForUndo();
+	stack<int> getPosForUndo();
+
+};
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\CompleteLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DeleteLogic.cpp
+	 */
+
+#include "stdafx.h"
+#include "DeleteLogic.h"
+
+DeleteLogic::DeleteLogic(string fileName, string date, vector<string> keywords, int displayCase) try : BaseClassLogic(fileName, date, keywords, displayCase)
+{
+}
+
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+DeleteLogic::DeleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase) : BaseClassLogic(testVector, date, keywords, displayCase)
+{
+}
+
+DeleteLogic::~DeleteLogic()
+{
+}
+
+void DeleteLogic::checkFromToValidity(int fromPosition, int toPosition, int size)
+{
+	if (fromPosition >= size || fromPosition < 0 || toPosition >= size || toPosition < 0) {
+		throw runtime_error(SLOT_IN_EXCESS);
+	}
+}
+
+vector<int> DeleteLogic::reAdjustPos(vector<int> pos, int deletedPos)
+{
+	vector<int> positions = pos;
+	int posSize = positions.size();
+	for (int i = 0; i < posSize; ++i) {
+		if (positions[i] > deletedPos) {
+			--positions[i];
+		}
+		//toLog("New Pos: " + positions[i]);
+	}
+	return positions;
+}
+
+void DeleteLogic::execute(map<string, int> fromToPositions)
+{
+	vector<int> positions = getSortedLinePositions();
+	int positionSize = getSortedLinePositions().size();
+	int startPosition = fromToPositions[FROM_POSITION] - 1;
+	int toPosition = fromToPositions[TO_POSITION] - 1;
+	try {
+		checkFromToValidity(startPosition, toPosition, positionSize);
+		for (int i = toPosition; i >= startPosition; --i) {
+			int filePosition = positions[i];
+			storeOldEntryForUndo(filePosition);
+			string line = getLineFromPositionNumber(filePosition);
+			deleteLine(filePosition);
+			positions = reAdjustPos(positions, filePosition);
+		}
+		if (isTestMode) {
+			updateSortedEntries();
+		}
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+
+void DeleteLogic::storeOldEntryForUndo(int filePosition)
+{
+	oldLinePosforUndo.push(filePosition);
+	string line = getLineFromPositionNumber(filePosition);
+	OldLineEntriesForUndo.push(line);
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DeleteLogic.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DeleteLogic.h
+	 */
+
+#pragma once
+#ifndef DELETE_LOGIC
+#define DELETE_LOGIC
+
+#include "BaseClassLogic.h"
+
+#define SLOT_IN_EXCESS \
+	"Chosen number(s) out of bounds"
+
+class DeleteLogic :
+	public BaseClassLogic
+{
+private:
+	void checkFromToValidity(int fromPosition, int toPosition, int size);
+	/*
+	* Readjusts determined file positions when an entry is deleted to prevent wrong
+	* deletions and overflow. Returns a vector<string> containing new file positions.
+	*/
+	vector<int> reAdjustPos(vector<int> pos, int deletedPos);
+	void storeOldEntryForUndo(int filePosition);
+
+public:
+	DeleteLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	DeleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
+	~DeleteLogic();
+
+	void execute(map<string, int> fromToPositions);
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DeleteLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DisplayLogic.cpp
+	 */
+
+#include "stdafx.h"
+#include "DisplayLogic.h"
+
+DisplayLogic::DisplayLogic(string fileName, string date, vector<string> keywords, int displayCase) try : BaseClassLogic(fileName, date, keywords, displayCase)
+{
+}
+
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+DisplayLogic::DisplayLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase) : BaseClassLogic(testVector, date, keywords, displayCase)
+{
+}
+
+DisplayLogic::~DisplayLogic()
+{
+}
+
+vector<string> DisplayLogic::putToVectorEventDatails(string line)
+{
+	vector<string> eventVector;
+	eventVector.push_back(getAttributeEntry(NAME_ATTRIBUTE, line));
+	eventVector.push_back(getAttributeEntry(CATEGORY_ATTRIBUTE, line));
+	
+	string pos2;
+	if (getAttributeEntry(START_ATTRIBUTE, line) != "") {
+		if (getAttributeEntry(DATE_ATTRIBUTE, line) == getDate()) {
+			pos2 = TODAY + getAttributeEntry(START_ATTRIBUTE, line);
+		}
+		else {
+			pos2 = getAttributeEntry(DATE_ATTRIBUTE, line) + " " + getAttributeEntry(START_ATTRIBUTE, line);
+		}
+	}
+	else {
+		pos2 = NO_START_STRING;
+	}
+
+	string pos3;
+	TimeLogic endDate = createTimeLogic(getAttributeEntry(DATE_ATTRIBUTE, line), getAttributeEntry(END_ATTRIBUTE, line));
+
+	if (getStringTime(endDate) != "") {
+		if (getStringDate(endDate) == getDate()) {
+			pos3 = TODAY + getStringTime(endDate);
+		}
+		else {
+			pos3 = getStringDate(endDate) + " " + endDate.getStringTime();
+		}
+	}
+	else {
+		pos2 = FLOAT_START_STRING;
+		pos3 = FLOAT_END_STRING;
+	}
+	eventVector.push_back(pos2);
+	eventVector.push_back(pos3);
+
+	bool isNotComplete = getAttributeEntry(COMPLETE_ATTRIBUTE, line) == TASK_NOT_COMPLETE;
+	string displayComplete = (isTimeBeforeNow(endDate) && isNotComplete) ? LAPSED : getAttributeEntry(COMPLETE_ATTRIBUTE, line);
+	displayComplete = (displayComplete == TASK_COMPLETE || displayComplete == TASK_NOT_COMPLETE || displayComplete == LAPSED) ? displayComplete : UNKNOWN;
+	eventVector.push_back(displayComplete);
+
+	return eventVector;
+}
+
+vector<vector<string>> DisplayLogic::displayEvents()
+{
+	vector<vector<string>> toDisplay;
+	vector<string> eventList = getSortedLineEntries();
+	for (size_t i = 0; i < eventList.size(); ++i) {
+		vector<string> parsedEvent = putToVectorEventDatails(eventList[i]);
+		toDisplay.push_back(parsedEvent);
+	}
+	return toDisplay;
+}
+
+string DisplayLogic::formatContentsToLineEdit(int position)
+{
+	const int DDMMYYYY_FULL_LENGTH = 10;
+	const int HHMM_FULL_LENGTH = 5;
+	const int HHMMPLUS1_FULL_LENGTH = 7;
+	const int TIME_DATE_COMP_INPUT_SIZE = 2;
+	const int PLUS_ONE_SIZE = 2;
+	const int MM_POS = 3;
+
+
+	string lineAppend;
+	vector<string> eventList = getSortedLineEntries();
+	int size = eventList.size();
+	if (position <= size && position > 0) {
+		string line = eventList[position - 1];
+		string name = getAttributeEntry(NAME_ATTRIBUTE, line);
+		string date = getAttributeEntry(DATE_ATTRIBUTE, line);
+		if (date.length() == DDMMYYYY_FULL_LENGTH) {
+			date = date.substr(0, TIME_DATE_COMP_INPUT_SIZE) + date.substr(MM_POS, TIME_DATE_COMP_INPUT_SIZE) + date.substr(8, TIME_DATE_COMP_INPUT_SIZE);
+		}
+		string start = getAttributeEntry(START_ATTRIBUTE, line);
+		if (start.length() == HHMM_FULL_LENGTH) {
+			start = start.substr(0, TIME_DATE_COMP_INPUT_SIZE) + start.substr(MM_POS, TIME_DATE_COMP_INPUT_SIZE);
+		}
+		string end = getAttributeEntry(END_ATTRIBUTE, line);
+		if (end.length() == HHMM_FULL_LENGTH) {
+			end = end.substr(0, TIME_DATE_COMP_INPUT_SIZE) + end.substr(MM_POS, TIME_DATE_COMP_INPUT_SIZE);
+		}
+		else if (end.length() == HHMMPLUS1_FULL_LENGTH) {
+			end = end.substr(0, TIME_DATE_COMP_INPUT_SIZE) + end.substr(MM_POS, TIME_DATE_COMP_INPUT_SIZE + PLUS_ONE_SIZE);
+		}
+		string category = getAttributeEntry(CATEGORY_ATTRIBUTE, line);
+
+		lineAppend = STRUCT_PARAM_FORMAT(name, date, start + ((start != "") ? TIME_DELIMETER : "") + end, category);
+	}
+	return lineAppend;
+}
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DisplayLogic.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DisplayLogic.h
+	 */
+
+#pragma once
+#ifndef DISPLAY_LOGIC
+#define DISPLAY_LOGIC
+
+#include "BaseClassLogic.h"
+#include <iostream>
+
+#define NO_START_STRING \
+	"Do by ->"
+#define FLOAT_START_STRING \
+	"-"
+#define FLOAT_END_STRING \
+	"-"
+#define TODAY \
+	"Today, "
+#define LAPSED \
+	"Lapsed"
+#define UNKNOWN \
+	"???"
+#define STRUCT_PARAM_FORMAT(name, date, time, category) \
+	"[" + name + "][" + date + "][" + time + "][" + category + "]"
+#define TIME_DELIMETER \
+	"-"
+
+using namespace std;
+
+class DisplayLogic
+	: public BaseClassLogic
+{
+private:
+	vector<string> putToVectorEventDatails(string line);
+
+public:
+	DisplayLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	DisplayLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
+	~DisplayLogic();
+
+	vector<vector<string>> displayEvents();
+	string formatContentsToLineEdit(int position);
+	
+};
+
+#endif 
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DisplayLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DL_Algorithm.cpp
+	 */
+
+#include "stdafx.h"
+#include "DL_Algorithm.h"
+#include <vector>
+#include <map>
+#include <climits>
+
+
+DL_Algorithm::DL_Algorithm()
+{
+}
+
+
+DL_Algorithm::~DL_Algorithm()
+{
+}
+
+int DL_Algorithm::findDLCost(string word, string dictWord) 
+{
+	if (word.length() == 0) {
+		return dictWord.length() * INSERT_COST;
+	}
+	if (dictWord.length() == 0) {
+		return word.length() * DELETE_COST;
+	}
+
+	vector<vector<int>> charTable(word.length(), vector<int>(dictWord.length()));
+
+	map<char, int> charIndexSource;
+	if (tolower(word.at(0)) != tolower(dictWord.at(0))) {
+		charTable[0][0] = min(REPLACE_COST, DELETE_COST + INSERT_COST);
+	}
+	charIndexSource.insert(pair<char,int>(word.at(0), 0));
+
+	for (size_t i = 1; i < word.length(); ++i) {
+		int deleteDist = charTable[i - 1][0] + DELETE_COST;
+		int insertDist = (i + 1) * DELETE_COST + INSERT_COST;
+		int matchDist = i * DELETE_COST + (tolower(word.at(i)) == tolower(dictWord.at(0)) ? 0 : REPLACE_COST);
+		charTable[i][0] = min(min(deleteDist, insertDist), matchDist);
+	}
+
+	for (size_t j = 1; j < dictWord.length(); ++j) {
+		int deleteDist = (j + 1) * INSERT_COST + DELETE_COST;
+		int insertDist = charTable[0][j - 1] + INSERT_COST;
+		int matchDist = j * INSERT_COST + (tolower(word.at(0)) == tolower(dictWord.at(j)) ? 0 : REPLACE_COST);
+		charTable[0][j] = min(min(deleteDist, insertDist), matchDist);
+	}
+
+	for (size_t i = 1; i < word.length(); ++i) {
+		int sourceLetterMatchIndexMax = tolower(word.at(i)) == tolower(dictWord.at(0)) ? 0 : -1;
+		for (size_t j = 1; j < dictWord.length(); ++j) {
+			int swapCandidateIndex = charIndexSource[dictWord.at(j)];
+			int jToSwap = sourceLetterMatchIndexMax;
+			int deleteDist = charTable[i - 1][j] + DELETE_COST;
+			int insertDist = charTable[i][j - 1] + INSERT_COST;
+			int matchDistance = charTable[i - 1][j - 1];
+			if (tolower(word.at(i)) != tolower(dictWord.at(j))) {
+				matchDistance += REPLACE_COST;
+			}
+			else {
+				sourceLetterMatchIndexMax = j;
+			}
+			
+			int distanceSwap;
+			if (swapCandidateIndex != NULL && jToSwap != -1) {
+				int iToSwap = swapCandidateIndex;
+				int beforeSwapCost;
+				if (iToSwap == 0 && jToSwap == 0) {
+					beforeSwapCost = 0;
+				}
+				else {
+					beforeSwapCost = charTable[max(0, iToSwap - 1)][max(0, jToSwap - 1)];
+				}
+				distanceSwap = beforeSwapCost + (i - iToSwap - 1) * DELETE_COST + (j - jToSwap - 1) * INSERT_COST + SWAP_COST;
+			}
+			else {
+				distanceSwap = INT_MAX;
+			}
+
+			charTable[i][j] = min(min(min(deleteDist, insertDist), matchDistance), distanceSwap);
+		}
+		charIndexSource.insert(pair<char,int>(tolower(word.at(i)), i));
+	}
+	return charTable[word.length() - 1][dictWord.length() - 1];
+}
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DL_Algorithm.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DL_Algorithm.h
+	 */
+
+#pragma once
+
+//Damerau_Levenshtein Algorithm class was adapted from 
+// http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance
+
+#ifndef Damerau_Levenshtein_Algorithm
+#define Damerau_Levenshtein_Algorithm
+
+#define DELETE_COST \
+	5
+#define INSERT_COST \
+	0
+#define REPLACE_COST \
+	4
+#define SWAP_COST \
+	3
+
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+class DL_Algorithm
+{
+public:
+	DL_Algorithm();
+	~DL_Algorithm();
+	int findDLCost(string word, string dictWord);
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DL_Algorithm.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\EditLogic.cpp
+	 */
+
+#include "stdafx.h"
+#include "EditLogic.h"
+
+EditLogic::EditLogic(string fileName, string date, vector<string> keywords, int displayCase) try : BaseClassLogic(fileName, date, keywords, displayCase)
+{
+}
+
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+EditLogic::EditLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase) : BaseClassLogic(testVector, date, keywords, displayCase)
+{
+}
+
+EditLogic::~EditLogic()
+{
+}
+
+void EditLogic::redetermineType()
+{
+	bool isNameEmpty = isParameterStringEmpty(getAttributeEntry(NAME_ATTRIBUTE, lineEntry));
+	bool isDateEmpty = isParameterStringEmpty(getAttributeEntry(DATE_ATTRIBUTE, lineEntry));
+	bool isStartTimeEmpty = isParameterStringEmpty(getAttributeEntry(START_ATTRIBUTE, lineEntry));
+	bool isEndTimeEmpty = isParameterStringEmpty(getAttributeEntry(END_ATTRIBUTE, lineEntry));
+
+	if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty && isNameEmpty) {
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, "" , lineEntry);
+		//toLog("EDIT TO EMPTY TYPE");
+	}
+	else if (isStartTimeEmpty && isEndTimeEmpty && isDateEmpty) {
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, FLOAT_TASK_TYPE, lineEntry);
+	}
+	else if (isStartTimeEmpty && isEndTimeEmpty) {
+		lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, END_OF_DAY_TIME, lineEntry);
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, DEADLINE_TASK_TYPE, lineEntry);
+	}
+	else if (isStartTimeEmpty) {
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, DEADLINE_TASK_TYPE, lineEntry);
+	}
+	else {
+		lineEntry = editAttributedEntryFromLineEntry(TYPE_ATTRIBUTE, TIMED_TASK_TYPE, lineEntry);
+	}
+}
+
+void EditLogic::resetCompletion()
+{
+	lineEntry = editAttributedEntryFromLineEntry(COMPLETE_ATTRIBUTE, TASK_NOT_COMPLETE, lineEntry);
+}
+
+void EditLogic::editValidChecks()
+{
+	redetermineType();
+	if (isParameterStringEmpty(getAttributeEntry(TYPE_ATTRIBUTE, lineEntry))) {
+		throw runtime_error(EDIT_LOGIC_MISSING_ERROR);
+	}
+	if (!isDateAndTimeCorrect(lineEntry)) {
+		throw runtime_error(EDIT_LOGIC_TIME_DATE_ERROR);
+	}
+	else {
+		string type = getAttributeEntry(TYPE_ATTRIBUTE, lineEntry);
+		if (type == "") {
+			throw runtime_error(EDIT_LOGIC_MISSING_ERROR);
+		}
+	}
+}
+
+void EditLogic::checkPosValidity(int position, int size)
+{
+	if (position >= size || position < 0) {
+		throw runtime_error(EDIT_SLOT_EXCESS_ERROR);
+		//toLog("POS CHECK FAILED");
+	}
+}
+
+void EditLogic::editEntries(map<string, string> lineEntries)
+{
+	lineEntry = editAttributedEntryFromLineEntry(NAME_ATTRIBUTE, lineEntries[NAME_ATTRIBUTE], lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(DATE_ATTRIBUTE, lineEntries[DATE_ATTRIBUTE], lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(START_ATTRIBUTE, lineEntries[START_ATTRIBUTE], lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(END_ATTRIBUTE, lineEntries[END_ATTRIBUTE], lineEntry);
+	lineEntry = editAttributedEntryFromLineEntry(CATEGORY_ATTRIBUTE, lineEntries[CATEGORY_ATTRIBUTE], lineEntry);
+}
+
+void EditLogic::execute(map<string, int> position, map<string, string> lineEntries)
+{
+	int intPos = position[FROM_POSITION];
+	int pos = intPos - 1;
+	vector<int> positions = getSortedLinePositions();
+	int size = positions.size();
+	try {
+		checkPosValidity(pos, size);
+		int filePosition = positions[pos];
+		oldLinePosforUndo.push(filePosition);
+		lineEntry = getLineFromPositionNumber(filePosition);
+		OldLineEntriesForUndo.push(lineEntry);
+		editEntries(lineEntries);
+		resetCompletion();
+		editValidChecks();
+		editLine(filePosition, lineEntry);
+		if (isTestMode) {
+			updateSortedEntries();
+		}
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\EditLogic.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\EditLogic.h
+	 */
+
+#pragma once
+#ifndef EDIT_LOGIC
+#define EDIT_LOGIC
+
+#include "BaseClassLogic.h"
+
+#define EDIT_LOGIC_TIME_DATE_ERROR \
+	"Please enter a valid DDMMYY date and HHMM time!"
+#define EDIT_LOGIC_MISSING_ERROR \
+	"Please enter at least a name, a date, a start time or an end time!"
+#define EDIT_SLOT_EXCESS_ERROR \
+	"Edit Failed. Selected number is out of bounds."
+
+class EditLogic :
+	public BaseClassLogic
+{
+private:
+	string lineEntry;
+
+	/*
+	*Re-Determines the type of the event to be added if it is either
+	*a deadline, timed or float task. This should only be run after all entries are edited.
+	*/
+	void redetermineType();
+	/*
+	*Resets the completion to Not completed
+	*/
+	void resetCompletion();
+	void editValidChecks();
+	void checkPosValidity(int position, int size);
+	void editEntries(map<string, string> lineEntries);
+
+public:
+	EditLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	EditLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
+	~EditLogic();
+
+	void execute(map<string, int> position, map<string, string> lineEntries);
+	
+	string getLineEntry();
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\EditLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\FileLogic.cpp
+	 */
+
+#include "stdafx.h"
+#include "FileLogic.h"
+
+FileLogic::FileLogic(string fileName) : memoryHandler()
+{
+	this->fileName = fileName;
+	try {
+		fileAccess();
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+
+FileLogic::FileLogic(vector<string> testVector) : memoryHandler()
+{
+	memoryHandler.setVector(testVector);
+	isTestMode = true;
+}
+
+FileLogic::~FileLogic()
+{
+}
+
+int FileLogic::getSize()
+{
+	return memoryHandler.getVectorSize();
+}
+
+vector<string> FileLogic::getVector()
+{
+	return memoryHandler.getVector();
+}
+
+void FileLogic::fileAccess()
+{
+	if (FileController::checkFile(fileName))
+	{
+		memoryHandler.setVector(FileController::parseFileToMemoryVector(fileName));
+	}
+	else {
+		throw runtime_error(FILE_ACCESS_ERROR);
+	}
+}
+
+string FileLogic::getFileName()
+{
+	return fileName;
+}
+
+void FileLogic::changeFile(string fileName)
+{
+	this->fileName = fileName;
+	try {
+		fileAccess();
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+
+string FileLogic::getLineFromPositionNumber(int position)
+{
+	if (position < getSize()) {
+		return memoryHandler.getLineEntry(position);
+	}
+	else {
+		return "";
+	}
+}
+
+void FileLogic::appendToFile(string lineEntry)
+{
+	memoryHandler.appendLineEntry(lineEntry);
+	if (!isTestMode) {
+		FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
+	}
+}
+
+void FileLogic::addToPositionNumber(int position, string lineEntry)
+{
+	if (getSize() >= position) {
+		memoryHandler.insertLineEntry(position, lineEntry);
+		if (!isTestMode) {
+			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
+		}
+	}
+}
+
+void FileLogic::editLine(int position, string lineEntry) 
+{
+	if (memoryHandler.getVectorSize() > position) {
+		memoryHandler.deleteLineEntry(position);
+		memoryHandler.insertLineEntry(position, lineEntry);
+		if (!isTestMode) {
+			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
+		}
+	}
+}
+
+void FileLogic::deleteLine(int position)
+{
+	if (memoryHandler.getVectorSize() > position) {
+		memoryHandler.deleteLineEntry(position);
+		if (!isTestMode) {
+			FileController::cloneMemoryVectorToFile(fileName, memoryHandler.getVector());
+		}
+	}
+}
+
+string FileLogic::createAttributedEntry(string attribute, string entry)
+{
+	return FileEntryFormatter::createAttributedEntry(attribute, entry);
+}
+
+string FileLogic::getAttributeEntry(string attribute, string lineEntry)
+{
+	return FileEntryFormatter::getAttributeEntry(attribute, lineEntry);
+}
+
+string FileLogic::addAttributedEntryToLineEntry(string attributedEntry, string lineEntry)
+{
+	return FileEntryFormatter::addAttributedEntryToLineEntry(attributedEntry, lineEntry);
+}
+
+string FileLogic::deleteAttributedEntryFromLineEntry(string attribute, string lineEntry)
+{
+	return FileEntryFormatter::deleteAttributedEntryFromLineEntry(attribute, lineEntry);
+}
+
+string FileLogic::editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry)
+{
+	return FileEntryFormatter::editAttributedEntryFromLineEntry(attribute, newAttributeEntry, lineEntry);
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\FileLogic.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\FileLogic.h
+	 */
+
+#pragma once
+#ifndef FILE_LOGIC
+#define FILE_LOGIC
+
+#include "FileEntryFormatter.h"
+#include "FileController.h"
+#include "MemoryController.h"
+
+#define FILE_ACCESS_ERROR \
+	"File cannot be accessed"
+
+class FileLogic
+{
+private:
+	
+	string fileName;
+	MemoryController memoryHandler;
+
+	bool isTestMode = false;
+
+public:
+
+	FileLogic(string fileName);
+	FileLogic(vector<string> testVector);
+	~FileLogic();
+
+	void fileAccess();
+	void changeFile(string fileName);
+	string getFileName();
+	
+	//These are floating file logic functions that accesses IO functions
+	int getSize();
+	vector<string> getVector();
+	string getLineFromPositionNumber(int position);
+	void appendToFile(string lineEntry);
+	void addToPositionNumber(int position, string lineEntry);
+	void editLine(int position, string newLineEntry);
+	void deleteLine(int position);
+
+	/*These are the interface methods for the FileEntryFormatter class.
+	  Consult FileEntryFormatter.h for more information about these methods. */
+	static string createAttributedEntry(string attribute, string entry);
+	static string getAttributeEntry(string attribute, string lineEntry);
+	static string addAttributedEntryToLineEntry(string attributedEntry, string lineEntry);
+	static string deleteAttributedEntryFromLineEntry(string attribute, string lineEntry);
+	static string editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry);
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\FileLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\SearchLogic.cpp
+	 */
+
+#include "stdafx.h"
+#include "SearchLogic.h"
+
+
+SearchLogic::SearchLogic(string fileName) try : BaseClassLogic(fileName)
+{
+}
+
+catch (const exception& ex)
+{
+	throw runtime_error(ex.what());
+}
+
+SearchLogic::SearchLogic(vector<string> testVector) : BaseClassLogic(testVector)
+{
+}
+
+SearchLogic::~SearchLogic()
+{
+}
+		
+vector<string> SearchLogic::createKeywords(string input)
+{
+	transform(input.begin(), input.end(), input.begin(), ::tolower);
+
+	if (input.length() >= MIMUMUM_LENGTH) {
+		int numberOfEvents = getEntriesSize();
+		for (int i = 0; i < numberOfEvents; ++i) {
+			string line = getLineFromPositionNumber(i);
+			checkCategoryMatch(input, line);
+			checkNameMatch(input, line);
+			checkDateMatch(input, line);
+			checkEndTimeMatch(input, line);
+			checkTimedTaskMatch(input, line);
+		}
+		
+	}
+	return keywords;
+}
+
+void SearchLogic::checkTimedTaskMatch(string input, string line)
+{
+	if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE) {
+		if (checkTimedTaskEligibility(input, line)) {
+			determinePriority(input, 0);
+		}
+	}
+}
+
+void SearchLogic::checkEndTimeMatch(string input, string line)
+{
+	DL_Algorithm diffCost;
+	string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+	string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
+	TimeLogic endDateTime = createTimeLogic(lineDate, lineEnd);
+	string endTime = getStringTime(endDateTime);
+	int endDifference = diffCost.findDLCost(input, endTime);
+
+	if (endDifference <= DATETIMEMAXCOST)
+	{
+		if (endDateTime.getTimeFormatCheck()) {
+			determinePriority(endTime, endDifference);
+		}
+	}
+
+}
+void SearchLogic::checkDateMatch(string input, string line)
+{
+	DL_Algorithm diffCost;
+	string lineStartDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+	string lineEndTime = getAttributeEntry(END_ATTRIBUTE, line);
+	
+	TimeLogic endDateTime = createTimeLogic(lineStartDate, lineEndTime);
+	string lineEndDate = getStringDate(endDateTime);
+	
+	int lineDateDifference = diffCost.findDLCost(input, lineStartDate);
+	int endDateDifference = diffCost.findDLCost(input, lineEndDate);
+
+	if (lineDateDifference <= DATETIMEMAXCOST || endDateDifference <= DATETIMEMAXCOST) {
+		TimeLogic dateCheck = createTimeLogic(lineStartDate, START_OF_DAY_TIME);
+		if (getTimeFormatCheck(dateCheck) && getTimeFormatCheck(dateCheck)) {
+			determinePriority(lineStartDate, lineDateDifference);
+			determinePriority(lineEndDate, endDateDifference);
+		}
+	}
+}
+void SearchLogic::checkCategoryMatch(string input, string line)
+{
+	DL_Algorithm diffCost;
+	string lineCategory = getAttributeEntry(CATEGORY_ATTRIBUTE, line);
+	int categoryDifference = diffCost.findDLCost(input, lineCategory);
+	if (categoryDifference <= NONDATETIMEMAXCOST) {
+		insertToKeywordVector(input, lineCategory, categoryDifference);
+	}
+}
+
+void SearchLogic::checkNameMatch(string input, string line)
+{
+	DL_Algorithm diffCost;
+	string lineName = getAttributeEntry(NAME_ATTRIBUTE, line);
+	int nameDifference = diffCost.findDLCost(input, lineName);
+	if (nameDifference <= NONDATETIMEMAXCOST) {
+		insertToKeywordVector(input, lineName, nameDifference);
+	}
+}
+
+void SearchLogic::insertToKeywordVector(string input, string keyword, int diffCost)
+{
+	string keywordCopy = keyword;
+	transform(keywordCopy.begin(), keywordCopy.end(), keywordCopy.begin(), ::tolower);
+	diffCost = (keywordCopy.find(input) != string::npos) ? -1 : diffCost;
+	determinePriority(keyword, diffCost);
+}
+
+void SearchLogic::determinePriority(string keyword, int diffCost) 
+{
+	int size = keywords.size();
+
+	bool isCopy = false;
+	for (int i = 0; i < size; ++i) {
+		string suggestion = keywords[i];
+		if (keyword == suggestion) {
+			isCopy = true;
+			break;
+		}
+	}
+
+	if (!isCopy) {
+		if (keywords.size() == 0) {
+			keywords.push_back(keyword);
+			keywordPriority.push_back(diffCost);
+		}
+		else {
+			for (int i = 0; i < size; ++i) {
+				if (keywordPriority[i] >= diffCost) {
+					vector<string>::iterator it1;
+					it1 = keywords.begin() + i;
+					keywords.insert(it1, keyword);
+
+					vector<int>::iterator it2;
+					it2 = keywordPriority.begin() + i;
+					keywordPriority.insert(it2, diffCost);
+
+					if (keywords.size() > SUGGESTIONS_LIMIT) {
+						keywords.resize(SUGGESTIONS_LIMIT);
+					}
+					break;
+				}
+			}
+		}
+	}
+}
+
+bool SearchLogic::checkTimedTaskEligibility(string input, string line)
+{
+	bool isEligible;
+
+	string date = getAttributeEntry(DATE_ATTRIBUTE, line);
+	string start = getAttributeEntry(START_ATTRIBUTE, line);
+	string end = getAttributeEntry(END_ATTRIBUTE, line);
+
+	TimeLogic startTime = createTimeLogic(date, start);
+	TimeLogic endTime = createTimeLogic(date, end);
+	TimeLogic inputTime = createTimeLogic(date, input);
+
+	isEligible = isFirstEarlierThanSecond(startTime, inputTime) && isFirstEarlierThanSecond(inputTime, endTime);
+	string dayAddition = end.substr(5, 2);
+	if (!isEligible && dayAddition == "+1") {
+		TimeLogic inputTimePlusOne = createTimeLogic(date, input + "+1");
+		isEligible = isFirstEarlierThanSecond(startTime, inputTimePlusOne) && isFirstEarlierThanSecond(inputTimePlusOne, endTime);
+	}
+	return isEligible;
+}
+
+pair<string, string> SearchLogic::getEarliestFreeSlot(map<string, string> fromToTime, map<string, int> duration)
+{
+	string date = fromToTime[DATE_ATTRIBUTE];
+	string fromTime = fromToTime[START_ATTRIBUTE];
+	string toTime = fromToTime[END_ATTRIBUTE];
+	int hoursToAdd = duration[FROM_POSITION];
+	int minsToAdd = duration[TO_POSITION];
+
+	string start;
+	string end;
+	if (hoursToAdd <= 23 && minsToAdd <= 59) {
+		string iterDate = date;
+		string iterTime = fromTime;
+		TimeLogic to(date, toTime);
+
+		vector<string> dateKey;
+		dateKey.push_back(date);
+		getListOfEventsHaving(dateKey);
+		vector<string> eventList = getSortedLineEntries();
+		int size = eventList.size();
+		for (int i = 0; i < size; ++i) {
+			string line = eventList[i];
+			if (getAttributeEntry(TYPE_ATTRIBUTE, line) == TIMED_TASK_TYPE) {
+				//Gets the necessary details.
+				string lineDate = getAttributeEntry(DATE_ATTRIBUTE, line);
+				string lineStart = getAttributeEntry(START_ATTRIBUTE, line);
+				string lineEnd = getAttributeEntry(END_ATTRIBUTE, line);
+				//Instantiates the necessary TimeLogic objects.
+				TimeLogic lineStartTime = createTimeLogic(lineDate, lineStart);
+				TimeLogic lineEndTime = createTimeLogic(lineDate, lineEnd);
+				TimeLogic addedTime = createTimeLogic(iterDate, iterTime);
+				bool isLineEndingEarlier = isFirstEarlierThanSecond(lineEndTime, addedTime);
+				addedTime = addHours(addedTime, hoursToAdd, minsToAdd);
+
+				//If this if block is accessed, free slot is found
+				if ((isFirstEarlierThanSecond(addedTime, to) && isFirstEarlierThanSecond(addedTime, lineStartTime))) {
+					break;
+				}
+				//No free slot found yet. Search will shift iterTime to the timed task
+				//endtime as new base time.
+				else if (!isLineEndingEarlier) {
+					iterDate = getStringDate(lineEndTime);
+					iterTime = getStringTime(lineEndTime);
+					//toLog("At current iteration" + iterDate + " " + iterTime);
+				}
+			}
+		}
+		//Checks free slot is within duration after being checked against timed tasks 
+		//in event file.
+		TimeLogic addedTime = createTimeLogic(iterDate, iterTime);
+		addedTime = addHours(addedTime, hoursToAdd, minsToAdd);
+		if (isFirstEarlierThanSecond(addedTime, to)) {
+			date = iterDate;
+			start = iterTime;
+			end = getStringTime(addedTime) + returnPlusOne(addedTime);
+		}
+	}
+	string uiDate, uiTime;
+	if (!start.empty() && !end.empty()) {
+		uiDate = date.substr(0, 2) + date.substr(3, 2) + date.substr(8, 2);
+		uiTime = start.substr(0, 2) + start.substr(3, 2) + "-" + end.substr(0, 2) + end.substr(3, end.size()-3);
+	}
+	pair<string, string> pairTime(uiDate, uiTime);
+	return pairTime;
+}
+
+pair<int, int> SearchLogic::getTodayCompletionStat(string todayDate)
+{
+	vector<string> dateKey;
+	dateKey.push_back(todayDate);
+	getListOfEventsHaving(dateKey);
+	vector<string> eventList = getSortedLineEntries();
+	int completed = 0;
+	int eventsToday = eventList.size();
+	for (int i = 0; i < eventsToday; ++i) {
+		if (getAttributeEntry(COMPLETE_ATTRIBUTE, eventList[i]) == TASK_COMPLETE) {
+			++completed;
+		}
+	}
+	pair<int, int> stats(completed, eventsToday);
+	return stats;
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\SearchLogic.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\SearchLogic.h
+	 */
+
+#pragma once
+#ifndef SEARCH_LOGIC
+#define SEARCH_LOGIC
+
+#include "BaseClassLogic.h"
+#include "DL_Algorithm.h"
+
+#define SUGGESTIONS_LIMIT \
+	20
+#define MIMUMUM_LENGTH \
+	2
+#define NONDATETIMEMAXCOST \
+	10
+#define DATETIMEMAXCOST \
+	0
+
+class SearchLogic :
+	public BaseClassLogic
+{
+
+private:
+	vector<string> keywords;
+	vector<int> keywordPriority;
+
+	int getSimilarityMatch(string keyword, string type, string entry);
+	/*
+	* Checks if timed task is within searched date and time
+	*/
+	bool checkTimedTaskEligibility(string input, string line);
+	/*
+	* Determines how the search suggestion box will be ordered according
+	* to keyword matches and diff costs by Levenshtein algorithm
+	*/
+	void determinePriority(string keyword, int diffCost);
+
+	void checkCategoryMatch(string input, string line);
+	void checkNameMatch(string input, string line);
+	void checkDateMatch(string input, string line);
+	void checkEndTimeMatch(string input, string line);
+	void checkTimedTaskMatch(string input, string line);
+	void insertToKeywordVector(string input, string keyword, int diffCost);
+	
+public:
+	
+	SearchLogic(string fileName);
+	SearchLogic(vector<string> testVector);
+	~SearchLogic();
+	/*
+	* Creates keywords and returns vector containing such that near matches input.
+	*/
+	vector<string> createKeywords(string input);
+	/*
+	* Responsible for finding the earliest free slot according to the duration and
+	* free time present. Returns a pair of strings which contain date and duration
+	* of earliest free slot.
+	*/
+	pair<string,string> getEarliestFreeSlot(map<string,string> fromToTime, map<string, int> duration);
+	/*
+	* Responsible for determining completion of today's task.. Returns a pair of 
+	* integers which contain the number of completed tasks against 
+	* tasks that should be done according to todayDate
+	*/	
+	pair<int, int> getTodayCompletionStat(string todayDate);
+
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\SearchLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\TimeLogic.cpp
+	 */
+
+#include "stdafx.h"
+#include "TimeLogic.h"
+#include <sstream>
+
+
+TimeLogic::TimeLogic(string date, string time)
+{
+	stringDate = date;
+	stringTime = time;
+	checkAndCorrectPlusOne();
+	convertStringToTimeLogic(stringDate, stringTime);
+}
+
+
+TimeLogic::~TimeLogic()
+{
+}
+
+bool TimeLogic::getTimeFormatCheck()
+{
+	return timeFormatCheck;
+}
+
+string TimeLogic::returnPlusOne()
+{
+	string plusOne;
+	if (isPlusOne) {
+		plusOne = "+1";
+	}
+	return plusOne;
+}
+
+string TimeLogic::getStringDate()
+{
+	return stringDate;
+}
+
+string TimeLogic::getStringTime()
+{
+	return stringTime;
+}
+
+void TimeLogic::checkAndCorrectPlusOne()
+{
+	if (stringTime.size() == 7 && stringTime.substr(5, 2) == "+1") {
+		stringTime = stringTime.substr(0, 5);
+		stringDate = addOneDay(stringDate);
+		isPlusOne = true;
+	}
+}
+
+string TimeLogic::addOneDay(string date)
+{
+	const char* str = date.c_str();
+	int tempYear, tempMonth, tempDay;
+	sscanf(str, "%2d/%2d/%4d", &tempDay, &tempMonth, &tempYear);
+	if (isDateValid(tempDay, tempMonth, tempYear)) {
+		time_t t = time(0);
+		struct tm * now = localtime(&t);
+		now->tm_year = tempYear - 1900;
+		now->tm_mon = tempMonth - 1;
+		now->tm_mday = tempDay + 1;
+		time_t nextDay = mktime(now);
+		struct tm * newDay = localtime(&nextDay);
+		char buffer[80];
+		strftime(buffer, 80, "%d/%m/%Y", newDay);
+		string newDate = buffer;
+		return buffer;
+	}
+	return date;
+}
+
+void TimeLogic::addHours(int hours, int mins)
+{
+	if (hours <= 23 && hours >= 0 && mins <= 59 && mins >= 0) {
+		string oldDate = stringDate;
+		if (getTimeFormatCheck()) {
+			time_t t = time(0);
+			struct tm * now = localtime(&t);
+			now->tm_year = year - 1900;
+			now->tm_mon = month - 1;
+			now->tm_mday = day;
+			now->tm_hour = hour + hours;
+			now->tm_min = min + mins;
+			time_t newTime = mktime(now);
+			struct tm * newTm = localtime(&newTime);
+			char newDt[80];
+			strftime(newDt, 80, "%d/%m/%Y", newTm);
+			string newDate = newDt;
+			if ((newDate != oldDate && !isPlusOne) || newDate == oldDate) {
+				if (newDate != oldDate) {
+					isPlusOne = true;
+				}
+				stringDate = newDate;
+				char newHHMM[80];
+				strftime(newHHMM, 80, "%H:%M", newTm);
+				string newTime = newHHMM;
+				stringTime = newTime;
+				convertStringToTimeLogic(stringDate, stringTime);
+			}
+		}
+	}
+}
+
+void TimeLogic::convertStringToTimeLogic(string dateString, string timeString)
+{
+	if (timeString.size() == 5 && dateString.size() == 10) {
+		convertAndInsertDate(dateString);
+		if (isDateValid(day, month, year))
+		{
+			convertAndInsertTime(timeString);
+			if (!isTimeValid(hour, min)) {
+				timeFormatCheck = false;
+			}
+		}
+		else {
+			timeFormatCheck = false;
+		}
+	}
+	else {
+		timeFormatCheck = false;
+	}
+}
+void TimeLogic::convertAndInsertDate(string date) 
+{
+	const char* str = date.c_str();
+	sscanf(str, "%2d/%2d/%4d", &day, &month, &year);
+}
+
+void TimeLogic::convertAndInsertTime(string time)
+{
+	const char* str = time.c_str();
+	sscanf(str, "%2d:%2d", &hour, &min);
+}
+
+bool TimeLogic::isDateValid(int day, int mon, int year)
+{
+	if (!(2005 <= year))
+		return false;
+	if (!(1 <= mon && mon <= 12))
+		return false;
+	if (!(1 <= day && day <= 31))
+		return false;
+	if ((day == 31) && (mon == 2 || mon == 4 || mon == 6 || mon == 9 || mon == 11))
+		return false;
+	if ((day == 30) && (mon == 2))
+		return false;
+	if ((mon == 2) && (day == 29) && (year % 4 != 0))
+		return false;
+	if ((mon == 2) && (day == 29) && (year % 400 == 0))
+		return true;
+	if ((mon == 2) && (day == 29) && (year % 100 == 0))
+		return false;
+	if ((mon == 2) && (day == 29) && (year % 4 == 0))
+		return true;
+
+	return true;
+}
+
+bool TimeLogic::isTimeValid(int hour, int min) 
+{
+	if (hour >= 24 || hour < 0) {
+		return false;
+	}
+	if (min >= 60 || min < 0) {
+		return false;
+	}
+	return true;
+}
+
+bool TimeLogic::isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2)
+{
+	bool boolStore = false;
+	if (time1.getTimeFormatCheck() && time2.getTimeFormatCheck()) {
+		int iterator = 0;
+		int numberEqual = 0;
+		int time1Vector[] = { time1.year, time1.month, time1.day, time1.hour, time1.min };
+		int time2Vector[] = { time2.year, time2.month, time2.day, time2.hour, time2.min };
+		while (iterator < sizeof(time1Vector)) {
+
+			if (!boolStore) {
+				boolStore = (time1Vector[iterator] < time2Vector[iterator]);
+				if (time1Vector[iterator] > time2Vector[iterator]) {
+					break;
+				}
+			}
+			bool isEqual = (time1Vector[iterator] == time2Vector[iterator]);
+			if (isEqual) {
+				numberEqual++;
+			}
+			iterator++;
+		}
+		if (numberEqual == 5) {
+			boolStore = true;
+		}
+	}
+	return boolStore;
+}
+
+bool TimeLogic::isTimeBeforeNow(TimeLogic time1)
+{
+	bool boolStore = false;
+	if (time1.getTimeFormatCheck()) {
+		int iterator = 0;
+		time_t t = time(0);   // get time now
+		struct tm * now = localtime(&t);
+		int todayVector[] = { (now->tm_year + 1900), (now->tm_mon + 1), now->tm_mday, now->tm_hour, now->tm_min };
+		int time1Vector[] = { time1.year, time1.month, time1.day, time1.hour, time1.min};
+		while (iterator < sizeof(todayVector)) {
+			boolStore = (time1Vector[iterator] < todayVector[iterator]);
+			if (time1Vector[iterator] != todayVector[iterator]) {
+				break;
+			}
+			iterator++;
+		}
+	}
+	return boolStore;
+}
+
+string TimeLogic::getTimeNowInString()
+{
+	time_t t = time(0);   // get time now
+	struct tm * now = localtime(&t);
+
+	char buffer[80];
+	strftime(buffer, 80, "%d/%m/%Y %H:%M", now);
+	string out = buffer;
+
+	return out;
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\TimeLogic.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\TimeLogic.h
+	 */
+
+#pragma once
+#ifndef TIME_LOGIC
+#define TIME_LOGIC
+
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <time.h>
+#include <ctime>
+#include <iostream>
+#include <list>
+
+using namespace std;
+
+class TimeLogic
+{
+private:
+	bool timeFormatCheck = true;
+	bool isPlusOne = false;
+
+	string stringDate;
+	string stringTime;
+	int year, month, day, hour, min;
+	
+	//Set-Up TimeLogic Functions
+	void convertStringToTimeLogic(string dateString, string timeString);
+	void convertAndInsertDate(string date);
+	void convertAndInsertTime(string time);
+	/*
+	* Checks Date Validity. NOTE THAT ANY YEAR BEFORE 2005 IS CONSIDERED INVALID.
+	*/
+	bool isDateValid(int day, int mon, int year);
+	bool isTimeValid(int hour, int min);
+	/*
+	* Corrects date if the input time contains "+1"
+	*/
+	void checkAndCorrectPlusOne();
+	string addOneDay(string date);
+
+public:
+	TimeLogic(string date, string time); //time should be in "dd/mm/yyyy" & "HH:MM" format. NO EXCEPTIONS.
+	~TimeLogic();
+	bool getTimeFormatCheck();
+	string returnPlusOne();
+	string getStringDate();
+	string getStringTime();
+	void addHours(int hours, int mins);
+
+	//These are functions which controller and logic can access staticlly
+	/*
+	* Compares two Time Logics and returns if time 1 is earlier than time 2. Having same
+	* time integers is considered earlier for time parsing reasons.
+	*/
+	static bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
+	static bool isTimeBeforeNow(TimeLogic time1);
+	static string getTimeNowInString();
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\TimeLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\UndoLogic.cpp
+	 */
+
+#include "stdafx.h"
+#include "UndoLogic.h"
+
+UndoLogic* UndoLogic::_instance = 0;
+
+UndoLogic::UndoLogic()
+{
+}
+
+
+UndoLogic::~UndoLogic()
+{
+}
+
+UndoLogic* UndoLogic::instance()
+{
+	if (_instance == 0) {
+		_instance = new UndoLogic();
+	}
+	return _instance;
+}
+
+void UndoLogic::reset()
+{
+	_instance = new UndoLogic();
+}
+
+bool UndoLogic::isUndoEmpty()
+{
+	return undoCase.empty();
+}
+
+bool UndoLogic::isRedoEmpty()
+{
+	return redoCase.empty();
+}
+
+void UndoLogic::clearRedo()
+{
+	redoLineStack = stack<stack<string>>();
+	redoFilePositionStack = stack<stack<int>>();
+	redoCase = stack<string>();
+}
+
+void UndoLogic::clearAll()
+{
+	undoLineStack = stack<stack<string>>();
+	undoFilePositionStack = stack<stack<int>>();
+	undoCase = stack<string>();
+	clearRedo();
+}
+
+void UndoLogic::checkFile(string fileName)
+{
+	if (this->fileName != fileName) {
+		this->fileName = fileName;
+		clearAll();
+	}
+}
+
+void UndoLogic::storeUndo(string fileName)
+{
+	checkFile(fileName);
+	clearRedo();
+	undoCase.push(ADD_CASE);
+	
+	FileLogic fileHandler(fileName);
+	int position = fileHandler.getSize() - 1;
+	string line = fileHandler.getLineFromPositionNumber(position);
+	
+	stack<string> addString;
+	addString.push(line);
+	stack<int> positionStack;
+	positionStack.push(position);
+	
+	undoLineStack.push(addString);
+	undoFilePositionStack.push(positionStack);
+}
+
+void UndoLogic::storeUndo(string fileName, string line, int position)
+{
+	checkFile(fileName);
+	clearRedo();
+	undoCase.push(MODIFY_CASE);
+	
+	stack<string> lineEntry;
+	lineEntry.push(line);
+	undoLineStack.push(lineEntry);
+
+	stack<int> linePosition;
+	linePosition.push(position);
+	undoFilePositionStack.push(linePosition);
+
+}
+
+void UndoLogic::storeUndo(string fileName, string commandType, stack<string> lines, stack<int> filePositions)
+{
+	checkFile(fileName);
+	if (commandType == DELETE_CASE) {
+		clearRedo();
+		undoCase.push(DELETE_CASE);
+		undoLineStack.push(lines);
+		undoFilePositionStack.push(filePositions);
+	}
+	else if (commandType == MODIFY_CASE) {
+		clearRedo();
+		undoCase.push(MODIFY_CASE);
+		undoLineStack.push(lines);
+		undoFilePositionStack.push(filePositions);
+	}
+}
+
+void UndoLogic::undo(string fileName)
+{
+	checkFile(fileName);
+	if (!isUndoEmpty()) {
+		string caseType = undoCase.top();
+		undoCase.pop();
+		redoCase.push(caseType);
+
+		if (caseType == ADD_CASE) {
+			modify(fileName, UNDO, ADD_CASE);
+		}
+		else if (caseType == MODIFY_CASE) {
+			modify(fileName, UNDO, MODIFY_CASE);
+		}
+		else if (caseType == DELETE_CASE) {
+			modify(fileName, UNDO, DELETE_CASE);
+		}
+	}
+}
+
+void UndoLogic::redo(string fileName)
+{
+	checkFile(fileName);
+	if (!isRedoEmpty()) {
+		string caseType = redoCase.top();
+		redoCase.pop();
+		undoCase.push(caseType);
+
+		if (caseType == ADD_CASE) {
+			modify(fileName, REDO, ADD_CASE);
+		}
+		else if (caseType == MODIFY_CASE) {
+			modify(fileName, REDO, MODIFY_CASE);
+		}
+		else if (caseType == DELETE_CASE) {
+			modify(fileName, REDO, DELETE_CASE);
+		}
+	}
+}
+
+void UndoLogic::modify(string fileName, string action, string commandType)
+{
+	stack<stack<string>> * fromLineStack;
+	stack<stack<int>> * fromFilePositionStack;
+	stack<stack<string>> * toLineStack;
+	stack<stack<int>> * toFilePositionStack;
+
+	if (action == UNDO) {
+		fromLineStack = &undoLineStack;
+		fromFilePositionStack = &undoFilePositionStack;
+		toLineStack = &redoLineStack;
+		toFilePositionStack = &redoFilePositionStack;
+	}
+	else {
+		fromLineStack = &redoLineStack;
+		fromFilePositionStack = &redoFilePositionStack;
+		toLineStack = &undoLineStack;
+		toFilePositionStack = &undoFilePositionStack;
+	}
+
+	FileLogic fileHandler(fileName);
+	stack<string> lines = fromLineStack->top();
+	fromLineStack->pop();
+	stack<int> positions = fromFilePositionStack->top();
+	fromFilePositionStack->pop();
+
+	stack<string> oldLinesStore;
+	stack<int> positionsStore;
+
+	while (!lines.empty() && !positions.empty()) {
+		string line = lines.top();
+		lines.pop();
+		int position = positions.top();
+		positions.pop();
+		positionsStore.push(position);
+		if (commandType == MODIFY_CASE || 
+		(commandType == DELETE_CASE && action == REDO) ||
+		(commandType == ADD_CASE && action == UNDO)) {
+			string oldLine = fileHandler.getLineFromPositionNumber(position);
+			oldLinesStore.push(oldLine);
+			fileHandler.deleteLine(position);
+		}
+		if (commandType == MODIFY_CASE || 
+		(commandType == DELETE_CASE && action == UNDO) ||
+		(commandType == ADD_CASE && action == REDO)) {
+			if (commandType == DELETE_CASE || commandType == ADD_CASE) {
+				oldLinesStore.push(line);
+			}
+			fileHandler.addToPositionNumber(position, line);
+		}
+	}
+	toLineStack->push(oldLinesStore);
+	toFilePositionStack->push(positionsStore);
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\UndoLogic.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\UndoLogic.h
+	 */
+
+#pragma once
+#ifndef UNDO_LOGIC
+#define UNDO_LOGIC
+
+#include "stack"
+#include "FileLogic.h"
+
+#define ADD_CASE \
+	"add"
+#define DELETE_CASE \
+	"delete"
+#define MODIFY_CASE \
+	"modify"
+#define UNDO \
+	"undo"
+#define REDO \
+	"redo"
+
+class UndoLogic
+{
+private:
+	static UndoLogic* _instance;
+	string fileName;
+
+	stack <stack<string>> undoLineStack;
+	stack <stack<int>> undoFilePositionStack;
+	stack <string> undoCase;
+
+	stack <stack<string>> redoLineStack;
+	stack <stack<int>> redoFilePositionStack;
+	stack <string> redoCase;
+
+	void clearRedo();
+	void clearAll();
+	void checkFile(string fileName);
+	void modify(string fileName, string action, string commandType);
+
+protected:
+	UndoLogic();
+	~UndoLogic();
+	
+public:
+	static UndoLogic* instance();
+	static void reset();
+	bool isUndoEmpty();
+	bool isRedoEmpty();
+
+	// add case
+	void storeUndo(string fileName);
+	// edit case
+	void storeUndo(string fileName, string line, int position);
+	// delete case/complete case
+	void storeUndo(string fileName, string commandType, stack<string> lines, stack<int> filePositions);
+
+	
+	void undo(string fileName);
+	void redo(string fileName);
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\UndoLogic.h
+
+
+
+
+
