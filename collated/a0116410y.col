@@ -36,35 +36,6 @@ void CComboBox::textChanged(QString edit)
 
 
 	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccombobox.h
-	 */
-
-#ifndef CCOMBOBOX_H
-#define CCOMBOBOX_H
-
-#include <QComboBox>
-#include <QGroupBox>
-
-class CComboBox : public QComboBox
-{
-    Q_OBJECT
-public:
-    CComboBox();
-    CComboBox(QGroupBox *par);
-public slots:
-    void textChanged(QString edit);
-
-};
-
-#endif // CCOMBOBOX_H
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccombobox.h
-
-
-
-
-
-	/**
 	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccompleter.cpp
 	 */
 
@@ -95,41 +66,6 @@ QString CCompleter::word()
 }
 
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccompleter.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccompleter.h
-	 */
-
-#ifndef CCOMPLETER_H
-#define CCOMPLETER_H
-
-#include <QString>
-#include <QStringList>
-#include <QStringListModel>
-#include <QCompleter>
-
-class CCompleter : public QCompleter
-{
-    Q_OBJECT
-public:
-    CCompleter();
-    CCompleter(const QStringList& words, QObject * parent);
-    QString word();
-	void update(QStringList suggestions);
-private:
-    QStringList m_list;
-    QStringListModel m_model;
-    QString m_word;
-
-};
-
-#endif // CCOMPLETER_H
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccompleter.h
 
 
 
@@ -276,57 +212,6 @@ void CLineEdit::moveToNextEntry()
 
 
 	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\clineedit.h
-	 */
-
-#ifndef CLINEEDIT_H
-#define CLINEEDIT_H
-
-#include "ccompleter.h"
-#include <QKeyEvent>
-#include <QLineEdit>
-
-using namespace std;
-
-class CLineEdit: public QLineEdit
-{
-    Q_OBJECT
-public:
-    CLineEdit(QWidget *parent = 0);
-    ~CLineEdit();
-
-    void setCompleter(CCompleter *c);
-    CCompleter *completer() const;
-
-protected:
-    void keyPressEvent(QKeyEvent *e);
-	void moveToNextEntry();
-
-private slots:
-	void insertCompletion(const QString& completion);
-    void sendToParser();
-	void updateCompleter(QStringList suggestions);
-	void updateLineText(string text);
-
-signals:
-	void toSetText(const QString & text);
-	void emitFeedback(QString feedback, bool isEnterPressed);
-	void sendText(string text);
-	void emitSuggestionSelected(string selection, string lineText);
-
-private:
-    CCompleter *c;
-};
-
-#endif // CLINEEDIT_H
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\clineedit.h
-
-
-
-
-
-	/**
 	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\cmenubar.cpp
 	 */
 
@@ -372,43 +257,6 @@ void CMenuBar::mouseReleaseEvent(QMouseEvent *event)
 }
 
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\cmenubar.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\cmenubar.h
-	 */
-
-#ifndef CMENUBAR_H
-#define CMENUBAR_H
-
-#include <QLabel>
-
-class QPoint;
-class QMouseEvent;
-class QWidget;
-
-class CMenuBar : public QLabel
-{
-public:
-    CMenuBar();
-    CMenuBar(QWidget *par);
-
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-
-private:
-    QPoint offset;
-    bool moving;
-};
-
-#endif // CMENUBAR_H
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\cmenubar.h
 
 
 
@@ -549,89 +397,6 @@ QString CTable::wrapLongString(QString string)
 	return tempString;
 }
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ctable.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ctable.h
-	 */
-
-#ifndef CTABLE_H
-#define CTABLE_H
-
-#include <QTableWidget>
-#include <QStringList>
-#include <QItemSelectionModel>
-#include <vector>
-#include <iostream>
-
-#define NUMBER_FIELD \
-	0
-#define NUMBER_HEADER \
-	"Number"
-#define NUMBER_COLUMN_WIDTH \
-	51
-#define TODO_FIELD \
-	1
-#define TODO_HEADER \
-	"To-Do"
-#define TODO_COLUMN_WIDTH \
-	222
-#define CATEGORY_FIELD \
-	2
-#define CATEGORY_HEADER \
-	"Category"
-#define CATEGORY_COLUMN_WIDTH \
-	120
-#define START_TIME_FIELD \
-	3
-#define START_TIME_HEADER \
-	"Start"
-#define START_TIME_COLUMN_WIDTH \
-	118
-#define END_TIME_FIELD \
-	4
-#define END_TIME_HEADER \
-	"Deadline/End"
-#define END_TIME_COLUMN_WIDTH \
-	118
-#define COMPLETE_FIELD \
-	5
-#define COMPLETE_HEADER \
-	"Complete?"
-#define COMPLETE_COLUMN_WIDTH \
-	63
-
-using namespace std;
-
-class CTable : public QTableWidget
-{
-    Q_OBJECT
-public:
-    CTable();
-    CTable(QWidget *par);
-	
-
-private:
-	void setTableFormat();
-	void setTableHeaders();
-    void initialiseHighlight();
-    void keyPressEvent(QKeyEvent *event);
-	QString wrapLongString(QString string);
-
-public slots:
-	void createTableData(vector<vector<string>> listData);
-private slots:
-    void selectRowSlot(const QModelIndex & selected, const QModelIndex & deselected);
-
-};
-
-
-#endif // CTABLE_H
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ctable.h
 
 
 
@@ -832,98 +597,6 @@ void MainWindow::determineCommandLabel(const QString& text)
 }
 
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\mainwindow.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\mainwindow.h
-	 */
-
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
-
-#include <QMainWindow>
-#include "ProgramController.h"
-
-#define COMMAND_LIST \
-	"Commands: home, all, add, edit, delete, complete, uncomplete, undo, redo, search, clip, slot"
-#define ADD_LABEL_FORMAT \
-	"add [<name>][<date (day/DDMMYY)>][<time (deadline: HHMM /timed: HHMM-HHMM>][<category>]"
-#define EDIT_LABEL_FORMAT \
-	"edit <number> [<name>][<date (day/DDMMYY)>][<time (deadline: HHMM /timed: HHMM-HHMM>][<category>]"
-#define DELETE_LABEL_FORMAT \
-	"delete <number> / delete <from> to <to>"
-#define COMPLETE_LABEL_FORMAT \
-	"complete <number> / complete <from> to <to>"
-#define UNCOMPLETE_LABEL_FORMAT \
-	"uncomplete <number> / uncomplete <from> to <to>"
-#define SEARCH_LABEL_FORMAT \
-	"search <keywords>"
-#define CLIP_LABEL_FORMAT \
-	"clip <number>"
-#define SLOT_LABEL_FORMAT \
-	"slot [<date (day/DDMMYY)>][<desired time: HHMM-HHMM>][<desired duration: HHMM>]"
-#define EMPTY_TODAY_TODO \
-	"Nothing to complete today."
-
-
-namespace Ui {
-class MainWindow;
-}
-
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
-
-public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-
-private:
-    Ui::MainWindow *ui;
-	ProgramController control;
-	void updateTableData();
-	void updateConsoleOutput();
-	void initiateLineEditConnections();
-	void initiateTableWidgetConnections();
-	void initiateProgressBarConnections();
-	void initiateConsoleOutConnections();
-	void initiateCommandLabelConnections();
-
-
-protected:
-	void keyPressEvent(QKeyEvent *e);
-
-private slots:
-	void sendInputToController(string text);
-	/*
-	* Gets keyword from the controller.  
-	*/
-	void getSuggestionResponse(string selection, string lineText);
-	/*
-	* sends feedback for every keystroke.
-	*/
-	void sendFeedbackToController(QString text, bool isEnterPressed);
-	void getProgressBarValueAdd();
-	void determineCommandLabel(const QString& text);
-
-signals:
-	void sendTableData(vector<vector<string>> data);
-	void sendToSuggestionBox(QStringList suggestions);
-	void sendSuggestionContentsToCompleter(QStringList list);
-	void sendToLineEditAutoComplete(string text);
-	void sendMaxToProgressBar(int maximum);
-	void sendValToProgressBar(int value);	
-	void sendToConsoleOutput(const QString&);
-	void setCommandLabel(const QString&);
-
-};
-
-#endif // MAINWINDOW_H
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\mainwindow.h
 
 
 
@@ -1217,78 +890,6 @@ vector<string> ParsedDataDeployer::returnTestVector()
 	return testVectorStore;
 }
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ParsedDataDeployer.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ParsedDataDeployer.h
-	 */
-
-#pragma once
-#ifndef PARSE_DATA_DEPLOYER
-#define PARSE_DATA_DEPLOYER
-
-#include "ParsedDataPackage.h"
-
-#define COMPLETED_ADD \
-	"Add performed successfully."
-#define COMPLETED_EDIT \
-	"Edit performed successfully."
-#define COMPLETED_DELETE \
-	"Delete performed successfully."
-#define COMPLETED_UNDO \
-	"Undo performed successfully."
-#define COMPLETED_REDO \
-	"Redo performed successfully."
-#define COMPLETED_COMPLETE \
-	"Complete performed successfully."
-#define COMPLETED_UNCOMPLETE \
-	"Uncomplete performed successfully."
-#define FAILED_UNDO \
-	"Nothing to Undo."
-#define FAILED_REDO \
-	"Nothing to Redo."
-#define SEARCH_RESULTS(number) \
-	"Search returns " + number + " result(s)."
-
-
-class ParsedDataDeployer
-{
-private:
-	string consoleString;
-	string fileName = "";
-
-	vector<string> testVectorStore;
-	bool isTestMode = false;
-
-	const int COMPLETE = 1;
-	const int UNCOMPLETE = 0;
-public:
-	ParsedDataDeployer(string fileName);
-	ParsedDataDeployer(vector<string> testVector);
-	~ParsedDataDeployer();
-	void executeAdd(ParsedDataPackage addPackage);
-	void executeDelete(ParsedDataPackage deletePackage, string date, vector<string> keywords, int displayCase);
-	void executeEdit(ParsedDataPackage editPackage, string date, vector<string> keywords, int displayCase);
-	vector<string> executeSearch(string fileName);
-	void executeUndo();
-	void executeRedo();
-	void executeComplete(ParsedDataPackage completePackage, string date, vector<string> keywords, int displayCase);
-	void executeUncomplete(ParsedDataPackage uncompletePackage, string date, vector<string> keywords, int displayCase);
-	vector<vector<string>> getDisplayEvents(string date, vector<string> keywords, int displayCase);
-	
-	string executeFormatContentsToLineEdit(int position, string date, vector<string> keywords, int displayCase);
-	pair <string, string> executeGetEarliestFreeSlot(ParsedDataPackage freeSlotPackage);
-	pair<int, int> executeGetTodayCompletionStat(string todayDate);
-	string returnConsoleString();
-	void clearConsoleString();
-
-	vector<string> returnTestVector();
-};
-#endif
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ParsedDataDeployer.h
 
 
 
@@ -1696,157 +1297,6 @@ string ProgramController::getTodayDateInString()
 
 
 	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ProgramController.h
-	 */
-
-#pragma once
-#ifndef PROGRAM_CONTROLLER
-#define PROGRAM_CONTROLLER
-
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <string>
-#include <sstream>
-#include <vector>
-#include <fstream>
-#include "ParsedDataDeployer.h"
-#include "CommandAndArgumentParser.h"
-#include "AddParser.h"
-#include "DeleteParser.h"
-#include "EditParser.h"
-#include "SearchParser.h"
-#include "ParsedDataPackage.h"
-
-#define WELCOME_MESSAGE \
-	"Welcome. Please pick a command."
-#define DISPLAY_ALL_CASE \
-	-1
-#define DISPLAY_HOME_CASE \
-	0
-#define DISPLAY_KEYWORD_CASE \
-	1
-#define HOME_COMMAND \
-	"home"
-#define ALL_COMMAND \
-	"all"
-#define ADD_COMMAND \
-	"add"
-#define ADD_APPEND \
-	"add "
-#define EDIT_COMMAND \
-	"edit"
-#define DELETE_COMMAND \
-	"delete"
-#define SEARCH_COMMAND \
-	"search"
-#define UNDO_COMMAND \
-	"undo"
-#define REDO_COMMAND \
-	"redo"
-#define COMPLETE_COMMAND \
-	"complete"
-#define UNCOMPLETE_COMMAND \
-	"uncomplete"
-#define SLOT_COMMAND \
-	"slot"
-#define CLIP_COMMAND \
-	"clip"
-#define SLOT_FORMAT \
-	"slot [][][]"
-#define ADD_FORMAT(name, date, time, category) \
-	"add [" + name + "][" + date + "][" + time + "][" + category + "]"
-#define NO_SLOTS_AVAILABLE \
-	"No free slots in this time-frame."
-#define SLOTS_AVAILABLE(date, time) \
-	"Earliest free slot found: " +date + " " + time 
-#define CLIP_ERROR \
-	"No instance of selection is available for clipping."
-#define SUCCESS_CLIP(position) \
-	"Number " + position + " has been clipped to the input box."
-#define SELECT_KEYWORD \
-	"Matching keywords are shown."
-#define DISPLAY_CHANGE \
-	"Display has been changed according to selection."
-
-class ProgramController
-{
-private:
-	fstream file;
-	bool isTestMode;
-
-	string fileName;
-	string displayDate;
-	vector<string> searchKeywords;
-	int displayCase = 0;
-	
-	string consoleString;
-	
-	string command;
-	string arguments;
-	ParsedDataPackage dataPackage;
-
-	ParsedDataDeployer deployer;
-
-	string getTodayDateInString();
-
-	void executeHomeCommand();
-	void executeAllCommand();
-	void executeAddCommand();
-	void executeEditCommand();
-	void executeDeleteCommand();
-	void executeSearchCommand();
-	void executeUndoCommand();
-	void executeRedoCommand();
-	void executeCompleteCommand();
-	void executeUncompleteCommand();
-	void executeAddNaturalParsing(string input);
-
-	string executeAddFormatLineUpdater();
-	string executeSlotFormatLineUpdater();
-	string executeEditLineUpdater(string inputText);
-	string executeClipLineUpdater(string arguments);
-	string executeSlotLineUpdater(string arguments);
-
-public:
-	ProgramController(string filename);
-	ProgramController(vector<string> testVector);
-	~ProgramController();
-
-	/*
-	* Main Entry Point of Program. Executes command entry.
-	*/
-	void executeEntry(string input);
-	/*
-	* Returns search result for suggestion box input.
-	*/
-	vector<string> populateSuggestionBox(string input);
-	/*
-	* Populates keywords vector string and changes display case to search case.
-	*/
-	void executeSuggestionSelection(string selection, string lineText);
-	vector<vector<string>> refreshTableDisplay();
-	vector<vector<string>> displayTable(string date);
-	/*
-	* Updates the input box with new string
-	*/
-	string updateLineText(string inputText, bool isEnterPressed);
-	void ConnectToCommandFeedback(string input);
-	pair<int, int> getCompletedStatToday();
-
-	vector<string> returnTestVector();
-	string getConsoleString();
-	void clearConsoleString();
-};
-
-#endif
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ProgramController.h
-
-
-
-
-
-	/**
 	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileController.cpp
 	 */
 
@@ -1912,48 +1362,6 @@ string FileController::declareFileAccessError()
 	return BAD_ACCESS;
 }
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileController.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileController.h
-	 */
-
-#pragma once
-#ifndef FILE_CONTROLLER
-#define FILE_CONTROLLER
-
-#include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
-
-#define BAD_ACCESS \
-	"Error. File cannot be accessed."
-
-using namespace std;
-
-class FileController
-{
-protected:
-	FileController();
-	~FileController();
-
-public:
-	//Checks if file is open.
-	static bool checkFile(string fileName);
-	//Copies file contents to memory in a vector.
-	static vector<string> parseFileToMemoryVector(string fileName);
-	//Re-writes file as copy of the vector input.
-	static bool cloneMemoryVectorToFile(string fileName, vector<string> memVector);
-	static string declareFileAccessError();
-};
-
-#endif
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileController.h
 
 
 
@@ -2062,71 +1470,6 @@ string FileEntryFormatter::editAttributedEntryFromLineEntry(string attribute, st
 
 
 	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileEntryFormatter.h
-	 */
-
-#pragma once
-#ifndef FILE_ENTRY_FORMATTER
-#define FILE_ENTRY_FORMATTER
-
-#include <string>
-#include <iostream>
-
-#define OPENING_ATTR(attribute) \
-	"<" + attribute + ">"
-#define CLOSING_ATTR(attribute) \
-	"</" + attribute + ">"
-
-using namespace std;
-
-class FileEntryFormatter
-{
-
-private:
-	static size_t getAttributedEntryPosition(string attribute, string lineEntry);
-	static size_t getAttributeEntrySize(string attribute, string lineEntry);
-
-public:
-	FileEntryFormatter();
-	~FileEntryFormatter();
-
-	//Methods below deal with entry formatting.
-	/*
-	*Encloses given entry to the given attribute
-	*Returns a string containing the attributed entry
-	*/
-	static string createAttributedEntry(string attribute, string entry);
-	/*
-	*Gets entry of the given attribute found in lineEntry
-	*Returns a string containing the entry. If no attribute matching
-	*string attribute is found, return empty string.
-	*/
-	static string getAttributeEntry(string attribute, string lineEntry);
-	/*
-	*Appends attributed entry to lineEntry
-	*Returns the line with the attributed entry appended
-	*/
-	static string addAttributedEntryToLineEntry(string attributedEntry, string lineEntry);
-	/*
-	*Deletes attributed entry to lineEntry
-	*Returns the line with the attributed entry deleted
-	*/
-	static string deleteAttributedEntryFromLineEntry(string attribute, string lineEntry);
-	/*
-	*Edits attributed entry in lineEntry to that of newAttributeEntry
-	*Returns the line with the attributed entry edited
-	*/
-	static string editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry);
-};
-
-#endif
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileEntryFormatter.h
-
-
-
-
-
-	/**
 	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\MemoryController.cpp
 	 */
 
@@ -2193,50 +1536,6 @@ bool MemoryController::deleteLineEntry(int position)
 
 
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\MemoryController.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\MemoryController.h
-	 */
-
-#pragma once
-#ifndef MEMORY_CONTROLLER
-#define MEMORY_CONTROLLER
-
-#include <string>
-#include <vector>
-#include <iostream>
-
-
-
-using namespace std;
-
-class MemoryController
-{
-private:
-	vector<string> vectorInMemory;
-
-public:
-	MemoryController();
-	~MemoryController();
-	vector<string> getVector();
-	int getVectorSize();
-	void setVector(vector<string> newVector);
-	string getLineEntry(int position);
-	void appendLineEntry(string lineEntry);
-	void insertLineEntry(int position, string line);
-	bool deleteLineEntry(int position);
-	
-
-};
-
-#endif
-
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\MemoryController.h
 
 
 
@@ -2351,62 +1650,6 @@ void AddLogic::execute(map<string,string> lineEntries)
 	}
 }
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\AddLogic.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\AddLogic.h
-	 */
-
-#pragma once
-#ifndef ADD_LOGIC
-#define ADD_LOGIC
-
-#include "BaseClassLogic.h"
-
-#define ADD_LOGIC_TIME_DATE_ERROR \
-	"Please enter a valid DDMMYY date and HHMM time!"
-#define ADD_LOGIC_MISSING_ERROR \
-	"Please enter at least a name, a date, a start time or an end time!"
-
-class AddLogic :
-	public BaseClassLogic
-{
-private:
-	string lineEntry;
-	void appendToLineEntry(string attribute, string entry);
-	
-	/*
-	*Determines the type of the event to be added if it is either
-	*a deadline, timed or float task
-	*/
-	void determineType();
-	/*
-	*Writes the complete attribute with a no entry into the event to be added
-	*/
-	void addCompleteEntry();
-	/*
-	*It is to be accessed before entry is appended to file to ensure that all entries are valid.
-	*Throws an exception if it fails.
-	*/
-	void validChecks();
-
-public:
-	AddLogic(string fileName);
-	AddLogic(vector<string> testVector);
-	~AddLogic();
-
-	//This method must only be used in automated Testing purposes.
-	string getLineEntry();
-	
-	void execute(map<string, string> lineEntries);
-};
-
-#endif
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\AddLogic.h
 
 
 
@@ -2908,168 +2151,6 @@ bool BaseClassLogic::isParameterStringEmpty(string parameter)
 
 
 	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\BaseClassLogic.h
-	 */
-
-#pragma once
-#ifndef BASE_CLASS_LOGIC
-#define BASE_CLASS_LOGIC
-
-#include "FileLogic.h"
-#include "TimeLogic.h"
-#include <stack>
-#include <map>
-#include "assert.h"
-
-#define CREATION_ATTRIBUTE \
-	"CreationDate"
-#define NAME_ATTRIBUTE \
-	"name"
-#define DATE_ATTRIBUTE \
-	"date"
-#define START_ATTRIBUTE \
-	"start"
-#define END_ATTRIBUTE \
-	"end"
-#define CATEGORY_ATTRIBUTE \
-	"category"
-#define COMPLETE_ATTRIBUTE \
-	"complete"
-#define TYPE_ATTRIBUTE \
-	"type"
-#define FROM_POSITION \
-	"fromPos"
-#define TO_POSITION \
-	"toPos"
-
-#define DEADLINE_TASK_TYPE \
-	"deadline"
-#define TIMED_TASK_TYPE \
-	"timed"
-#define FLOAT_TASK_TYPE \
-	"float"
-#define TASK_NOT_COMPLETE \
-	"no"
-#define TASK_COMPLETE \
-	"yes"
-#define START_OF_DAY_TIME \
-	"00:00"
-#define END_OF_DAY_TIME \
-	"23:59"
-
-
-class BaseClassLogic
-{
-private:
-	FileLogic fileHandler;
-	string date;
-	vector<string> keywords;
-	int displayCase;
-
-	/*These are the private sorting methods applicable to all Logic specific methods.
-	These sorting methods provide the algorithm that will provide the fixed
-	sort of to-dos for the user interface, which is different from the sort
-	in the file. */	
-	void getListOfEventsHome(string fromDate);
-
-	/*These are the private sorting helper methods applicable to all Logic specific methods.*/
-	TimeLogic getPriorityDateTime(string line);
-	void addNonFloatEventToEntry(int iteration);
-	bool checkKeywordCriteria(string line, vector<string> keywords);
-	bool checkIfTimedTaskWithinTimeKeyword(string line, string timeKeyword);
-
-	/*These are the private sorting helper variables applicable to all Logic specific methods.*/
-	vector<string> sortedLineEntries; //This stores the sorted entries as determined by the sorting algorithm
-	vector<int> sortedLineFilePositions; // This stores the filePositions of each entry in lineEntries respectively.
-
-protected:
-	BaseClassLogic(string fileName);
-	BaseClassLogic(string fileName, string date, vector<string> keywords, int displayCase);
-	BaseClassLogic(vector<string> testVector);
-	BaseClassLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
-	virtual ~BaseClassLogic();
-
-	bool isTestMode = false;
-	void toLog(string log);
-
-	/*These are the interface methods for the FileLogic class.
-	  Consult FileLogic.h for more information about these methods. */
-	string getLineFromPositionNumber(int position);
-	void appendToFile(string lineEntry);
-	void addToPositionNumber(int position, string lineEntry);
-	void editLine(int position, string newLineEntry);
-	void deleteLine(int position);
-	string createAttributedEntry(string attribute, string entry);
-	string getAttributeEntry(string attribute, string lineEntry);
-	string addAttributedEntryToLineEntry(string attributedEntry, string lineEntry);
-	string deleteAttributedEntryFromLineEntry(string attribute, string lineEntry);
-	string editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry);
-
-	/*These are the interface methods for the TimeLogic class.
-	  Consult TimeLogic.h for more information about these methods. */
-	TimeLogic createTimeLogic(string date, string time);
-	bool getTimeFormatCheck(TimeLogic obj);
-	string getStringDate(TimeLogic obj);
-	string getStringTime(TimeLogic obj);
-	string returnPlusOne(TimeLogic obj);
-	bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
-	bool isTimeBeforeNow(TimeLogic time1);
-	string getTimeNowInString();
-	TimeLogic addHours(TimeLogic obj, int hours, int min);
-
-	/*These are the protected sorting methods applicable to all Logic specific methods.
-	  These sorting methods provide the algorithm that will provide the fixed
-	  sort of to-dos for the user interface, which is different from the sort
-	  in the file. */
-	void getListOfEventsHaving(vector<string> keywords);
-	void getAllEntries();
-	void updateSortedEntries();
-
-	/* These methods are protected helper functions applicable to all Logic specific methods.*/
-	bool isParameterStringEmpty(string parameter);
-	bool isDateAndTimeCorrect(string lineEntry);
-	string getDate();
-
-	stack<string> OldLineEntriesForUndo;
-	stack<int> oldLinePosforUndo;
-
-public:
-	/*These are the public interface methods for the FileLogic class.
-	  These methods are the only necessary methods for automated testing purposes.
-	  Consult FileLogic.h or this file for more information about these methods. */
-	int getEntriesSize();
-	vector<string> getEntriesVector();
-	vector<string> getSortedLineEntries();
-	vector<int> getSortedLinePositions();
-
-	/*These are the virtual methods for BaseClassLogic child classes. These should not
-	be accessed without the use of the child class's method. Should that occur,
-	assertion failure will occur.*/
-	virtual void execute(map<string,string> lineEntries);
-	virtual void execute(map<string, int> fromToPositions);
-	virtual void execute(map<string, int> fromToPositions, int executionCase);
-	virtual void execute(map<string, int> position, map<string, string> lineEntries);
-	virtual vector<vector<string>> displayEvents();
-
-	virtual vector<string> createKeywords(string input);
-	virtual string formatContentsToLineEdit(int position);
-	virtual pair <string, string> getEarliestFreeSlot(map<string, string> fromToTime, map<string, int> duration);
-	virtual pair <int, int> getTodayCompletionStat(string todayDate);
-
-	/*These methods is to access the old line entries and positions that have been
-	modified for Undo Logic storage and later retrieval*/
-	stack<string> getLinesForUndo();
-	stack<int> getPosForUndo();
-};
-
-#endif
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\BaseClassLogic.h
-
-
-
-
-
-	/**
 	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\CompleteLogic.cpp
 	 */
 
@@ -3162,48 +2243,6 @@ void CompleteLogic::execute(map<string, int> fromToPositions, int executionCase)
 
 
 	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\CompleteLogic.h
-	 */
-
-#pragma once
-#ifndef COMPLETE_LOGIC
-#define COMPLETE_LOGIC
-
-#include "BaseClassLogic.h"
-
-#define SLOT_IN_EXCESS \
-	"Chosen number(s) out of bounds"
-
-class CompleteLogic :
-	public BaseClassLogic
-{
-
-private:
-	void editCompletion(int fromPosition, int toPosition, bool complete);
-	void checkFromToValidity(int fromPosition, int toPosition, int size);
-	void storeOldEntryForUndo(int filePosition);
-	const int COMPLETE = 1;
-	const int UNCOMPLETE = 0;
-public:
-	CompleteLogic(string fileName, string date, vector<string> keywords, int displayCase);
-	CompleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
-	~CompleteLogic();
-
-	void execute(map<string, int> fromToPositions, int executionCase);
-	
-	stack<string> getLinesForUndo();
-	stack<int> getPosForUndo();
-
-};
-#endif
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\CompleteLogic.h
-
-
-
-
-
-	/**
 	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DeleteLogic.cpp
 	 */
 
@@ -3278,48 +2317,6 @@ void DeleteLogic::storeOldEntryForUndo(int filePosition)
 	OldLineEntriesForUndo.push(line);
 }
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DeleteLogic.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DeleteLogic.h
-	 */
-
-#pragma once
-#ifndef DELETE_LOGIC
-#define DELETE_LOGIC
-
-#include "BaseClassLogic.h"
-
-#define SLOT_IN_EXCESS \
-	"Chosen number(s) out of bounds"
-
-class DeleteLogic :
-	public BaseClassLogic
-{
-private:
-	void checkFromToValidity(int fromPosition, int toPosition, int size);
-	/*
-	* Readjusts determined file positions when an entry is deleted to prevent wrong
-	* deletions and overflow. Returns a vector<string> containing new file positions.
-	*/
-	vector<int> reAdjustPos(vector<int> pos, int deletedPos);
-	void storeOldEntryForUndo(int filePosition);
-
-public:
-	DeleteLogic(string fileName, string date, vector<string> keywords, int displayCase);
-	DeleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
-	~DeleteLogic();
-
-	void execute(map<string, int> fromToPositions);
-};
-
-#endif
-
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DeleteLogic.h
 
 
 
@@ -3451,60 +2448,6 @@ string DisplayLogic::formatContentsToLineEdit(int position)
 
 
 	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DisplayLogic.h
-	 */
-
-#pragma once
-#ifndef DISPLAY_LOGIC
-#define DISPLAY_LOGIC
-
-#include "BaseClassLogic.h"
-#include <iostream>
-
-#define NO_START_STRING \
-	"Do by ->"
-#define FLOAT_START_STRING \
-	"-"
-#define FLOAT_END_STRING \
-	"-"
-#define TODAY \
-	"Today, "
-#define LAPSED \
-	"Lapsed"
-#define UNKNOWN \
-	"???"
-#define STRUCT_PARAM_FORMAT(name, date, time, category) \
-	"[" + name + "][" + date + "][" + time + "][" + category + "]"
-#define TIME_DELIMETER \
-	"-"
-
-using namespace std;
-
-class DisplayLogic
-	: public BaseClassLogic
-{
-private:
-	vector<string> putToVectorEventDatails(string line);
-
-public:
-	DisplayLogic(string fileName, string date, vector<string> keywords, int displayCase);
-	DisplayLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
-	~DisplayLogic();
-
-	vector<vector<string>> displayEvents();
-	string formatContentsToLineEdit(int position);
-	
-};
-
-#endif 
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DisplayLogic.h
-
-
-
-
-
-	/**
 	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DL_Algorithm.cpp
 	 */
 
@@ -3594,48 +2537,6 @@ int DL_Algorithm::findDLCost(string word, string dictWord)
 }
 
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DL_Algorithm.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DL_Algorithm.h
-	 */
-
-#pragma once
-
-//Damerau_Levenshtein Algorithm class was adapted from 
-// http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance
-
-#ifndef Damerau_Levenshtein_Algorithm
-#define Damerau_Levenshtein_Algorithm
-
-#define DELETE_COST \
-	5
-#define INSERT_COST \
-	0
-#define REPLACE_COST \
-	4
-#define SWAP_COST \
-	3
-
-#include <iostream>
-#include <algorithm>
-
-using namespace std;
-
-class DL_Algorithm
-{
-public:
-	DL_Algorithm();
-	~DL_Algorithm();
-	int findDLCost(string word, string dictWord);
-};
-
-#endif
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DL_Algorithm.h
 
 
 
@@ -3755,61 +2656,6 @@ void EditLogic::execute(map<string, int> position, map<string, string> lineEntri
 	}
 }
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\EditLogic.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\EditLogic.h
-	 */
-
-#pragma once
-#ifndef EDIT_LOGIC
-#define EDIT_LOGIC
-
-#include "BaseClassLogic.h"
-
-#define EDIT_LOGIC_TIME_DATE_ERROR \
-	"Please enter a valid DDMMYY date and HHMM time!"
-#define EDIT_LOGIC_MISSING_ERROR \
-	"Please enter at least a name, a date, a start time or an end time!"
-#define EDIT_SLOT_EXCESS_ERROR \
-	"Edit Failed. Selected number is out of bounds."
-
-class EditLogic :
-	public BaseClassLogic
-{
-private:
-	string lineEntry;
-
-	/*
-	*Re-Determines the type of the event to be added if it is either
-	*a deadline, timed or float task. This should only be run after all entries are edited.
-	*/
-	void redetermineType();
-	/*
-	*Resets the completion to Not completed
-	*/
-	void resetCompletion();
-	void editValidChecks();
-	void checkPosValidity(int position, int size);
-	void editEntries(map<string, string> lineEntries);
-
-public:
-	EditLogic(string fileName, string date, vector<string> keywords, int displayCase);
-	EditLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
-	~EditLogic();
-
-	void execute(map<string, int> position, map<string, string> lineEntries);
-	
-	string getLineEntry();
-};
-
-#endif
-
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\EditLogic.h
 
 
 
@@ -3954,67 +2800,6 @@ string FileLogic::editAttributedEntryFromLineEntry(string attribute, string newA
 	return FileEntryFormatter::editAttributedEntryFromLineEntry(attribute, newAttributeEntry, lineEntry);
 }
 	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\FileLogic.cpp
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\FileLogic.h
-	 */
-
-#pragma once
-#ifndef FILE_LOGIC
-#define FILE_LOGIC
-
-#include "FileEntryFormatter.h"
-#include "FileController.h"
-#include "MemoryController.h"
-
-#define FILE_ACCESS_ERROR \
-	"File cannot be accessed"
-
-class FileLogic
-{
-private:
-	
-	string fileName;
-	MemoryController memoryHandler;
-
-	bool isTestMode = false;
-
-public:
-
-	FileLogic(string fileName);
-	FileLogic(vector<string> testVector);
-	~FileLogic();
-
-	void fileAccess();
-	void changeFile(string fileName);
-	string getFileName();
-	
-	//These are floating file logic functions that accesses IO functions
-	int getSize();
-	vector<string> getVector();
-	string getLineFromPositionNumber(int position);
-	void appendToFile(string lineEntry);
-	void addToPositionNumber(int position, string lineEntry);
-	void editLine(int position, string newLineEntry);
-	void deleteLine(int position);
-
-	/*These are the interface methods for the FileEntryFormatter class.
-	  Consult FileEntryFormatter.h for more information about these methods. */
-	static string createAttributedEntry(string attribute, string entry);
-	static string getAttributeEntry(string attribute, string lineEntry);
-	static string addAttributedEntryToLineEntry(string attributedEntry, string lineEntry);
-	static string deleteAttributedEntryFromLineEntry(string attribute, string lineEntry);
-	static string editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry);
-};
-
-#endif
-
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\FileLogic.h
 
 
 
@@ -4287,85 +3072,6 @@ pair<int, int> SearchLogic::getTodayCompletionStat(string todayDate)
 
 
 	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\SearchLogic.h
-	 */
-
-#pragma once
-#ifndef SEARCH_LOGIC
-#define SEARCH_LOGIC
-
-#include "BaseClassLogic.h"
-#include "DL_Algorithm.h"
-
-#define SUGGESTIONS_LIMIT \
-	20
-#define MIMUMUM_LENGTH \
-	2
-#define NONDATETIMEMAXCOST \
-	10
-#define DATETIMEMAXCOST \
-	0
-
-class SearchLogic :
-	public BaseClassLogic
-{
-
-private:
-	vector<string> keywords;
-	vector<int> keywordPriority;
-
-	int getSimilarityMatch(string keyword, string type, string entry);
-	/*
-	* Checks if timed task is within searched date and time
-	*/
-	bool checkTimedTaskEligibility(string input, string line);
-	/*
-	* Determines how the search suggestion box will be ordered according
-	* to keyword matches and diff costs by Levenshtein algorithm
-	*/
-	void determinePriority(string keyword, int diffCost);
-
-	void checkCategoryMatch(string input, string line);
-	void checkNameMatch(string input, string line);
-	void checkDateMatch(string input, string line);
-	void checkEndTimeMatch(string input, string line);
-	void checkTimedTaskMatch(string input, string line);
-	void insertToKeywordVector(string input, string keyword, int diffCost);
-	
-public:
-	
-	SearchLogic(string fileName);
-	SearchLogic(vector<string> testVector);
-	~SearchLogic();
-	/*
-	* Creates keywords and returns vector containing such that near matches input.
-	*/
-	vector<string> createKeywords(string input);
-	/*
-	* Responsible for finding the earliest free slot according to the duration and
-	* free time present. Returns a pair of strings which contain date and duration
-	* of earliest free slot.
-	*/
-	pair<string,string> getEarliestFreeSlot(map<string,string> fromToTime, map<string, int> duration);
-	/*
-	* Responsible for determining completion of today's task.. Returns a pair of 
-	* integers which contain the number of completed tasks against 
-	* tasks that should be done according to todayDate
-	*/	
-	pair<int, int> getTodayCompletionStat(string todayDate);
-
-};
-
-#endif
-
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\SearchLogic.h
-
-
-
-
-
-	/**
 	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\TimeLogic.cpp
 	 */
 
@@ -4606,76 +3312,6 @@ string TimeLogic::getTimeNowInString()
 
 
 	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\TimeLogic.h
-	 */
-
-#pragma once
-#ifndef TIME_LOGIC
-#define TIME_LOGIC
-
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <time.h>
-#include <ctime>
-#include <iostream>
-#include <list>
-
-using namespace std;
-
-class TimeLogic
-{
-private:
-	bool timeFormatCheck = true;
-	bool isPlusOne = false;
-
-	string stringDate;
-	string stringTime;
-	int year, month, day, hour, min;
-	
-	//Set-Up TimeLogic Functions
-	void convertStringToTimeLogic(string dateString, string timeString);
-	void convertAndInsertDate(string date);
-	void convertAndInsertTime(string time);
-	/*
-	* Checks Date Validity. NOTE THAT ANY YEAR BEFORE 2005 IS CONSIDERED INVALID.
-	*/
-	bool isDateValid(int day, int mon, int year);
-	bool isTimeValid(int hour, int min);
-	/*
-	* Corrects date if the input time contains "+1"
-	*/
-	void checkAndCorrectPlusOne();
-	string addOneDay(string date);
-
-public:
-	TimeLogic(string date, string time); //time should be in "dd/mm/yyyy" & "HH:MM" format. NO EXCEPTIONS.
-	~TimeLogic();
-	bool getTimeFormatCheck();
-	string returnPlusOne();
-	string getStringDate();
-	string getStringTime();
-	void addHours(int hours, int mins);
-
-	//These are functions which controller and logic can access staticlly
-	/*
-	* Compares two Time Logics and returns if time 1 is earlier than time 2. Having same
-	* time integers is considered earlier for time parsing reasons.
-	*/
-	static bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
-	static bool isTimeBeforeNow(TimeLogic time1);
-	static string getTimeNowInString();
-};
-
-#endif
-
-
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\TimeLogic.h
-
-
-
-
-
-	/**
 	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\UndoLogic.cpp
 	 */
 
@@ -4892,71 +3528,815 @@ void UndoLogic::modify(string fileName, string action, string commandType)
 
 
 	/**
-	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\UndoLogic.h
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\LogicTestAdd.cpp
 	 */
 
-#pragma once
-#ifndef UNDO_LOGIC
-#define UNDO_LOGIC
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "AddLogic.h"
 
-#include "stack"
-#include "FileLogic.h"
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-#define ADD_CASE \
-	"add"
-#define DELETE_CASE \
-	"delete"
-#define MODIFY_CASE \
-	"modify"
-#define UNDO \
-	"undo"
-#define REDO \
-	"redo"
-
-class UndoLogic
+namespace t091c_test
 {
-private:
-	static UndoLogic* _instance;
-	string fileName;
+	TEST_CLASS(LogicTestAdd)
+	{
+	public:
+		
+		TEST_METHOD(ADD_TIMED)
+		{
+			vector<string> testVector;
+			string expected1 = "<name>test1</name><date>05/11/2014</date><start>00:00</start><end>23:59</end><category>test2</category><complete>no</complete><type>timed</type>";
+			map<string, string> test1;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, "05/11/2014"));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, "00:00"));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, "23:59"));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test2"));
+			AddLogic tester(testVector);
+			tester.execute(test1);
+			Assert::AreEqual(tester.getLineEntry(), expected1);
+		}
+		TEST_METHOD(ADD_DEADLINE)
+		{
+			vector<string> testVector;
+			string expected1 = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>";
+			map<string, string> test1;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, "05/11/2014"));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, ""));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, "13:00"));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test1"));
+			AddLogic tester(testVector);
+			tester.execute(test1);
+			Assert::AreEqual(tester.getLineEntry(), expected1);
+		}
+		TEST_METHOD(ADD_DEADLINE_NO_TIME)
+		{
+			vector<string> testVector;
+			string expected1 = "<name>test1</name><date>05/11/2014</date><start></start><end>23:59</end><category>test1</category><complete>no</complete><type>deadline</type>";
+			map<string, string> test1;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, "05/11/2014"));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, ""));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, ""));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test1"));
+			AddLogic tester(testVector);
+			tester.execute(test1);
+			Assert::AreEqual(tester.getLineEntry(), expected1);
+		}
+		TEST_METHOD(ADD_FLOAT)
+		{
+			vector<string> testVector;
+			string expected1 = "<name>test1</name><date></date><start></start><end></end><category>test1</category><complete>no</complete><type>float</type>";
+			map<string, string> test1;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, ""));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, ""));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, ""));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test1"));
+			AddLogic tester(testVector);
+			tester.execute(test1);
+			Assert::AreEqual(tester.getLineEntry(), expected1);
+		}
+		TEST_METHOD(ADD_WRONG_TIME)
+		{
+			vector<string> testVector;
+			map<string, string> test1;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, "05/11/2014"));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, ""));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, "24:00"));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test1"));
+			AddLogic tester(testVector);
+			try {
+				tester.execute(test1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+			test1[END_ATTRIBUTE] = "23:60";
+			try {
+				tester.execute(test1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+		}
+		TEST_METHOD(ADD_WRONG_DATE)
+		{
+			vector<string> testVector;
+			map<string, string> test1;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, "31/11/2014"));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, ""));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, ""));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test1"));
+			AddLogic tester(testVector);
+			try {
+				tester.execute(test1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+			test1[DATE_ATTRIBUTE] = "30/13/2014";
+			try {
+				tester.execute(test1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+		}
+	};
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\LogicTestAdd.cpp
 
-	stack <stack<string>> undoLineStack;
-	stack <stack<int>> undoFilePositionStack;
-	stack <string> undoCase;
 
-	stack <stack<string>> redoLineStack;
-	stack <stack<int>> redoFilePositionStack;
-	stack <string> redoCase;
 
-	void clearRedo();
-	void clearAll();
-	void checkFile(string fileName);
-	void modify(string fileName, string action, string commandType);
 
-protected:
-	UndoLogic();
-	~UndoLogic();
-	
-public:
-	static UndoLogic* instance();
-	static void reset();
-	bool isUndoEmpty();
-	bool isRedoEmpty();
 
-	// add case
-	void storeUndo(string fileName);
-	// edit case
-	void storeUndo(string fileName, string line, int position);
-	// delete case/complete case
-	void storeUndo(string fileName, string commandType, stack<string> lines, stack<int> filePositions);
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\LogicTestComplete.cpp
+	 */
 
-	
-	void undo(string fileName);
-	void redo(string fileName);
-};
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "CompleteLogic.h"
 
-#endif
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\UndoLogic.h
+namespace t091c_test
+{
+	TEST_CLASS(LogicTestComplete)
+	{
+	public:
+		
+		TEST_METHOD(COMPLETE_ONE_ENTRY)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			map<string, int> test1Pos;
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 1));
+			test1Pos.insert(pair<string, int>(TO_POSITION, 1));
+			CompleteLogic tester(testVector, "01/11/2014", keywords, displayCase);
+			tester.execute(test1Pos, 1);
+			string expected = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>";
+			Assert::AreEqual(expected, tester.getEntriesVector()[0]);
+		}
+		TEST_METHOD(COMPLETE_MULTIPLE_ENTRIES)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			map<string, int> test1Pos;
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 1));
+			test1Pos.insert(pair<string, int>(TO_POSITION, 2));
+			CompleteLogic tester(testVector, "01/11/2014", keywords, displayCase);
+			tester.execute(test1Pos, 1);
+			string expected1 = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>";
+			string expected2 = "<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>";
+			Assert::AreEqual(expected1, tester.getEntriesVector()[0]);
+			Assert::AreEqual(expected2, tester.getEntriesVector()[1]);
+		}
+		TEST_METHOD(COMPLETE_OUT_OF_BOUNDS)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			map<string, int> test1Pos;
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 0));
+			test1Pos.insert(pair<string, int>(TO_POSITION, 2));
+			CompleteLogic tester(testVector, "01/11/2014", keywords, displayCase);
+			try {
+				tester.execute(test1Pos, 1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+			test1Pos[FROM_POSITION] = 1;
+			test1Pos[TO_POSITION] = 3;
+			try {
+				tester.execute(test1Pos, 1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+		}
+
+	};
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\LogicTestComplete.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\LogicTestDelete.cpp
+	 */
+
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "DeleteLogic.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace t091c_test
+{
+	TEST_CLASS(LogicTestDelete)
+	{
+	public:
+		
+		TEST_METHOD(DELETE_ONE_ENTRY)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			map<string, int> test1Pos;
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 1));
+			test1Pos.insert(pair<string, int>(TO_POSITION, 1));
+			DeleteLogic tester(testVector, "01/11/2014", keywords, displayCase);
+			tester.execute(test1Pos);
+			Assert::IsTrue(tester.getEntriesVector().size() == 0);
+		}
+		TEST_METHOD(DELETE_ONE_ENTRY_OUT_OF_BOUNDS)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+			map<string, int> test1Pos;
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 0));
+			test1Pos.insert(pair<string, int>(TO_POSITION, 0));
+			DeleteLogic tester(testVector, "01/11/2014", keywords, displayCase);
+			try {
+				tester.execute(test1Pos);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+			test1Pos[TO_POSITION] = 5;
+			try {
+				tester.execute(test1Pos);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+		}
+		TEST_METHOD(DELETE_MULTIPLE_ENTRIES)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+			map<string, int> test1Pos;
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 1));
+			test1Pos.insert(pair<string, int>(TO_POSITION, 4));
+			DeleteLogic tester(testVector, "01/11/2014", keywords, displayCase);
+			tester.execute(test1Pos);
+			Assert::IsTrue(tester.getEntriesVector().size() == 0);
+		}
+		TEST_METHOD(DELETE_MULTIPLE_ENTRIES_OUT_OF_BOUNDS)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+			map<string, int> test1Pos;
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 0));
+			test1Pos.insert(pair<string, int>(TO_POSITION, 4));
+			DeleteLogic tester(testVector, "01/11/2014", keywords, displayCase);
+			try {
+				tester.execute(test1Pos);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+			test1Pos[FROM_POSITION] = 1;
+			test1Pos[TO_POSITION] = 5;
+			try {
+				tester.execute(test1Pos);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+		}
+	};
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\LogicTestDelete.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\LogicTestEdit.cpp
+	 */
+
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "EditLogic.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace t091c_test
+{
+	TEST_CLASS(LogicTestEdit)
+	{
+	public:
+
+		TEST_METHOD(EDIT_CONTENT_CHANGE)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>01/11/2014</date><start>00:00</start><end>23:59</end><category>test2</category><complete>no</complete><type>timed</type>");
+			string expected1 = "<name>test1</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>";
+			map<string, string> test1;
+			map<string, int> test1Pos;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, "05/11/2014"));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, "13:00"));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, "15:00"));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test2"));
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 1));
+			EditLogic tester(testVector,"01/11/2015", keywords, displayCase);
+			tester.execute(test1Pos, test1);
+			Assert::AreEqual(tester.getEntriesVector()[0], expected1);
+		}
+		TEST_METHOD(EDIT_CONTENT_TYPE_CHANGE)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>01/11/2014</date><start></start><end>23:59</end><category>test2</category><complete>no</complete><type>deadline</type>");
+			string expected1 = "<name>test1</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>";
+			map<string, string> test1;
+			map<string, int> test1Pos;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, "05/11/2014"));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, "13:00"));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, "15:00"));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test2"));
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 1));
+			EditLogic tester(testVector, "01/11/2015", keywords, displayCase);
+			tester.execute(test1Pos, test1);
+			Assert::AreEqual(tester.getEntriesVector()[0], expected1);
+		}
+		TEST_METHOD(EDIT_CONTENT_OUT_OF_BOUNDS)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>01/11/2014</date><start></start><end>23:59</end><category>test2</category><complete>no</complete><type>deadline</type>");
+			map<string, string> test1;
+			map<string, int> test1Pos;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, "05/11/2014"));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, "13:00"));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, "15:00"));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test2"));
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 0));
+			EditLogic tester(testVector, "01/11/2015", keywords, displayCase);
+			try {
+				tester.execute(test1Pos, test1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+			test1Pos[FROM_POSITION] = 2;
+			try {
+				tester.execute(test1Pos, test1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+		}
+		TEST_METHOD(EDIT_CONTENT_WRONG_DATE)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>01/11/2014</date><start></start><end>23:59</end><category>test2</category><complete>no</complete><type>deadline</type>");
+			map<string, string> test1;
+			map<string, int> test1Pos;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, "31/11/2014"));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, "13:00"));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, "15:00"));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test2"));
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 1));
+			EditLogic tester(testVector, "01/11/2014", keywords, displayCase);
+			try {
+				tester.execute(test1Pos, test1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+			test1[DATE_ATTRIBUTE] = "01/13/2014";
+			try {
+				tester.execute(test1Pos, test1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+		}
+		TEST_METHOD(EDIT_CONTENT_WRONG_TIME)
+		{
+			const vector<string> keywords;
+			const int displayCase = 0;
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>01/11/2014</date><start></start><end>23:59</end><category>test2</category><complete>no</complete><type>deadline</type>");
+			map<string, string> test1;
+			map<string, int> test1Pos;
+			test1.insert(pair<string, string>(NAME_ATTRIBUTE, "test1"));
+			test1.insert(pair<string, string>(DATE_ATTRIBUTE, "30/11/2014"));
+			test1.insert(pair<string, string>(START_ATTRIBUTE, ""));
+			test1.insert(pair<string, string>(END_ATTRIBUTE, "24:00"));
+			test1.insert(pair<string, string>(CATEGORY_ATTRIBUTE, "test2"));
+			test1Pos.insert(pair<string, int>(FROM_POSITION, 1));
+			EditLogic tester(testVector, "01/11/2014", keywords, displayCase);
+			try {
+				tester.execute(test1Pos, test1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+			test1[END_ATTRIBUTE] = "23:60";
+			try {
+				tester.execute(test1Pos, test1);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+		}
+	};
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\LogicTestEdit.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\LogicTestTime.cpp
+	 */
+
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "TimeLogic.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace t091c_test
+{
+	TEST_CLASS(LogicTestTime)
+	{
+	public:
+		
+		TEST_METHOD(TIME_COMPARE_CHECK)
+		{
+			TimeLogic time1test1("01/11/2014", "00:00");
+			TimeLogic time2test1("01/11/2014", "00:00+1");
+			Assert::IsTrue(TimeLogic::isFirstEarlierThanSecond(time1test1, time2test1));
+			TimeLogic time1test2("02/11/2014", "00:00");
+			TimeLogic time2test2("01/11/2014", "00:00+1");
+			Assert::IsTrue(TimeLogic::isFirstEarlierThanSecond(time1test2, time2test2));
+			TimeLogic time1test3("23/11/2014", "00:00");
+			TimeLogic time2test3("21/11/2014", "00:00+1");
+			Assert::IsFalse(TimeLogic::isFirstEarlierThanSecond(time1test3, time2test3));
+		}
+		TEST_METHOD(ADD_HOURS_CHECK)
+		{
+			TimeLogic time1test1("01/11/2014", "00:00");
+			time1test1.addHours(3, 33);
+			Assert::IsTrue(time1test1.getStringDate() == "01/11/2014");
+			Assert::IsTrue(time1test1.getStringTime() == "03:33");
+			TimeLogic time1test2("01/11/2014", "00:01");
+			time1test2.addHours(23, 59);
+			Assert::IsTrue(time1test2.getStringDate() == "02/11/2014");
+			Assert::IsTrue(time1test2.getStringTime() == "00:00");
+			TimeLogic time1test3("01/11/2014", "00:01+1");
+			time1test3.addHours(1, 0);
+			Assert::IsTrue(time1test3.getStringDate() == "02/11/2014");
+			Assert::IsTrue(time1test3.getStringTime() == "01:01");
+			TimeLogic time1test4("01/11/2014", "00:01+1");
+			time1test4.addHours(23, 59);
+			Assert::IsTrue(time1test4.getStringDate() == "02/11/2014");
+			Assert::IsTrue(time1test4.getStringTime() == "00:01");
+		}
+
+	};
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\LogicTestTime.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\UnitTestController.cpp
+	 */
+
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "SearchParser.h"
+#include "TimeParser.h"
+#include "ProgramController.h"
+#include "ParsedDataDeployer.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace t091c_test
+{
+	TEST_CLASS(UnitTestController)
+	{
+	public:
+		
+
+		TEST_METHOD(INTEGRATED_TESTING_ADD)
+		{
+			vector<string> testVector;
+			ProgramController test(testVector);
+			test.executeEntry("add [test1][051114][1300][test1]");
+			string testString1 = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString1, test.returnTestVector()[0]);
+
+			test.executeEntry("add [test2][051114][1300-1500][test2]");
+			string testString2 = "<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>";
+			Assert::AreEqual(testString2, test.returnTestVector()[1]);
+
+			test.executeEntry("add [test3][051114][][test3]");
+			string testString3 = "<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString3, test.returnTestVector()[2]);
+
+			test.executeEntry("add [test4][][][test4]");
+			string testString4 = "<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>";
+			Assert::AreEqual(testString4, test.returnTestVector()[3]);
+
+			test.executeEntry("add [test4][xxx][xxx][test4]");
+			size_t vectorSizeTest5 = 4;
+			Assert::AreEqual(vectorSizeTest5, test.returnTestVector().size());
+		}
+		TEST_METHOD(INTEGRATED_TESTING_EDIT)//to show different ways of editing
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+			
+			ProgramController test(testVector); //edit time
+			test.executeEntry("edit 1 [test1][051114][1100][test1]");
+			string testString1 = "<name>test1</name><date>05/11/2014</date><start></start><end>11:00</end><category>test1</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString1, test.returnTestVector()[0]);
+
+			test.executeEntry("edit 2 [test2][051114][1500][test2]");// edit deadline to timed
+			string testString2 = "<name>test2</name><date>05/11/2014</date><start></start><end>15:00</end><category>test2</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString2, test.returnTestVector()[1]);
+
+			test.executeEntry("edit 3 [test2][051114][1500-1700][test2]");//edit name, category and deadline to timed
+			string testString3 = "<name>test2</name><date>05/11/2014</date><start>15:00</start><end>17:00</end><category>test2</category><complete>no</complete><type>timed</type>";
+			Assert::AreEqual(testString3, test.returnTestVector()[2]);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_DELETE)//to show basic case that delete single line is working, and borderline cases where delete range exceeds task number range
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+
+			ProgramController test(testVector);
+			test.executeEntry("all");
+			test.executeEntry("delete 1");
+			size_t vectorSizeTest5 = 3;
+			Assert::AreEqual(vectorSizeTest5, test.returnTestVector().size());
+			test.executeEntry("delete 1 to 4");
+			size_t vectorSizeTest6 = 3;
+			Assert::AreEqual(vectorSizeTest6, test.returnTestVector().size());
+			test.executeEntry("delete 0 to 3");
+			size_t vectorSizeTest7 = 3;
+			Assert::AreEqual(vectorSizeTest7, test.returnTestVector().size());
+			test.executeEntry("delete 1 to 3");
+			size_t vectorSizeTest8 = 0;
+			Assert::AreEqual(vectorSizeTest8, test.returnTestVector().size());
+		}
+		TEST_METHOD(INTEGRATED_TESTING_COMPLETE)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+
+			ProgramController test(testVector);//test for single complete, mass complete and boundary cases
+			test.executeEntry("all");
+			test.executeEntry("complete 1");
+			string expected1 = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>";
+			Assert::AreEqual(expected1, test.returnTestVector()[0]);
+			test.executeEntry("complete 1 to 5");
+			Assert::AreEqual(testVector[1], test.returnTestVector()[1]);
+			Assert::AreEqual(testVector[2], test.returnTestVector()[2]);
+			Assert::AreEqual(testVector[3], test.returnTestVector()[3]);
+			test.executeEntry("complete 0 to 3");
+			Assert::AreEqual(testVector[1], test.returnTestVector()[1]);
+			Assert::AreEqual(testVector[2], test.returnTestVector()[2]);
+			Assert::AreEqual(testVector[3], test.returnTestVector()[3]);
+			test.executeEntry("complete 1 to 4");
+			string expected2 = "<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>";
+			string expected3 = "<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>";
+			string expected4 = "<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>";
+			Assert::AreEqual(expected2, test.returnTestVector()[1]);
+			Assert::AreEqual(expected3, test.returnTestVector()[2]);
+			Assert::AreEqual(expected4, test.returnTestVector()[3]);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_UNCOMPLETE)//test for single uncomplete, mass uncomplete and boundary cases
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
+
+			ProgramController test(testVector);
+			test.executeEntry("all");
+			test.executeEntry("uncomplete 1");
+			string expected1 = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(expected1, test.returnTestVector()[0]);
+			test.executeEntry("uncomplete 1 to 5");
+			Assert::AreEqual(testVector[1], test.returnTestVector()[1]);
+			Assert::AreEqual(testVector[2], test.returnTestVector()[2]);
+			Assert::AreEqual(testVector[3], test.returnTestVector()[3]);
+			test.executeEntry("uncomplete 0 to 3");
+			Assert::AreEqual(testVector[1], test.returnTestVector()[1]);
+			Assert::AreEqual(testVector[2], test.returnTestVector()[2]);
+			Assert::AreEqual(testVector[3], test.returnTestVector()[3]);
+			test.executeEntry("uncomplete 1 to 4");
+			string expected2 = "<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>";
+			string expected3 = "<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>";
+			string expected4 = "<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>";
+			Assert::AreEqual(expected2, test.returnTestVector()[1]);
+			Assert::AreEqual(expected3, test.returnTestVector()[2]);
+			Assert::AreEqual(expected4, test.returnTestVector()[3]);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_CLIP)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
+			ProgramController test(testVector);
+			test.executeEntry("all");
+			string lineText1 = test.updateLineText("clip 1", true);
+			string expected1 = "add [test1][051114][1300][test1]";
+			Assert::AreEqual(expected1, lineText1);
+			string lineText2 = test.updateLineText("clip 4", true);
+			string expected2 = "add [test4][][][test4]";
+			Assert::AreEqual(expected2, lineText2);
+			string lineText3 = test.updateLineText("clip 0", true);
+			string expected3 = "";
+			Assert::AreEqual(expected3, lineText3);
+			string lineText4 = test.updateLineText("clip 5", true);
+			string expected4 = "";
+			Assert::AreEqual(expected4, lineText4);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_SEARCH)//filter valid search results
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
+			ProgramController test(testVector);
+			vector<string> vector1 = test.populateSuggestionBox("search test");
+			Assert::IsTrue(vector1.size() == 4);
+			vector<string> vector2 = test.populateSuggestionBox("search xxxxxxx");
+			Assert::IsTrue(vector2.size() == 0);
+			vector<string> vector3 = test.populateSuggestionBox("search 051114");
+			Assert::IsTrue(vector3.size() == 1);
+			Assert::IsTrue(vector3[0] == "05/11/2014");
+			vector<string> vector4 = test.populateSuggestionBox("search 061114");
+			Assert::IsTrue(vector4.size() == 0);
+			vector<string> vector5 = test.populateSuggestionBox("search 1300");
+			Assert::IsTrue(vector5.size() == 1);
+			Assert::IsTrue(vector5[0] == "13:00");
+			vector<string> vector6 = test.populateSuggestionBox("search 1301");
+			Assert::IsTrue(vector6.size() == 1);
+			Assert::IsTrue(vector6[0] == "13:01");
+			vector<string> vector7 = test.populateSuggestionBox("search 1259");
+			Assert::IsTrue(vector7.size() == 0);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_SLOT)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
+			ProgramController test(testVector);
+			string lineText1 = test.updateLineText("slot [051114][1500-1700][0200]", true);
+			string expected1 = "add [][051114][1500-1700][]";
+			Assert::AreEqual(expected1, lineText1);
+			string lineText2 = test.updateLineText("slot [051114][1459-1700][0200]", true);
+			string expected2 = "add [][051114][1500-1700][]";
+			Assert::AreEqual(expected2, lineText2);
+			string lineText3 = test.updateLineText("slot [051114][1300-1500][0200]", true);
+			string expected3 = "";
+			Assert::AreEqual(expected3, lineText3);
+			string lineText4 = test.updateLineText("slot [051114][1100-1300][0200]", true);
+			string expected4 = "add [][051114][1100-1300][]";
+			Assert::AreEqual(expected4, lineText4);
+			string lineText5 = test.updateLineText("slot [051114][1200-1600][0200]", true);
+			string expected5 = "";
+			Assert::AreEqual(expected5, lineText5);
+			string lineText6 = test.updateLineText("slot [051114][1200-1700][0200]", true);
+			string expected6 = "add [][051114][1500-1700][]";
+			Assert::AreEqual(expected6, lineText6);
+			string lineText7 = test.updateLineText("slot [051114][1501-1700][0200]", true);//boundary case
+			string expected7 = "";
+			Assert::AreEqual(expected7, lineText7);
+			string lineText8 = test.updateLineText("slot [051114][1500-1501][0001]", true);//boundary case
+			string expected8 = "add [][051114][1500-1501][]";
+			Assert::AreEqual(expected8, lineText8);
+			string lineText9 = test.updateLineText("slot [051114][1700-1500][0200]", true);//flipped
+			string expected9 = "";
+			Assert::AreEqual(expected9, lineText9);
+			string lineText10 = test.updateLineText("slot [051114][0000-2359][1300]", true);//boundary case
+			string expected10 = "add [][051114][0000-1300][]";
+			Assert::AreEqual(expected10, lineText10);
+			string lineText11 = test.updateLineText("slot [051114][0000-2359][2359]", true);//boundary case
+			string expected11 = "";
+			Assert::AreEqual(expected11, lineText11);
+
+		}
+		TEST_METHOD(INTEGRATED_TESTING_DISPLAY_ALL_COMPLETED)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>yes</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>yes</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>yes</complete><type>float</type>");
+			ProgramController test(testVector);
+			vector<vector<string>> display1 = test.displayTable("05/11/2014");
+			size_t expected1 = 3;
+			Assert::AreEqual(display1.size(), expected1);
+			vector<vector<string>> display2 = test.displayTable("06/11/2014");
+			size_t expected2 = 0;
+			Assert::AreEqual(display2.size(), expected2);
+		}
+		TEST_METHOD(INTEGRATED_TESTING_DISPLAY_NONE_COMPLETED)
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+			ProgramController test(testVector);
+			vector<vector<string>> display1 = test.displayTable("05/11/2014");
+			size_t expected1 = 4;
+			Assert::AreEqual(display1.size(), expected1);
+			vector<vector<string>> display2 = test.displayTable("06/11/2014");
+			size_t expected2 = 4;
+			Assert::AreEqual(display2.size(), expected2);
+		}
+	};
+
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\UnitTestController.cpp
 
 
 
