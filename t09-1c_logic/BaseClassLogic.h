@@ -1,3 +1,4 @@
+//@author A0116410Y
 #pragma once
 #ifndef BASE_CLASS_LOGIC
 #define BASE_CLASS_LOGIC

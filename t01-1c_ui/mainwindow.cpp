@@ -1,3 +1,4 @@
+//@author A0116410Y
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qscrollbar.h"

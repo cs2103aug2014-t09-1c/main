@@ -1,3 +1,4 @@
+//@author A0116410Y
 #pragma once
 
 //Damerau_Levenshtein Algorithm class was adapted from 

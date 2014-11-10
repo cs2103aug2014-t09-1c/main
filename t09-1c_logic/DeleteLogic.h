@@ -1,3 +1,4 @@
+//@author A0116410Y
 #pragma once
 #ifndef DELETE_LOGIC
 #define DELETE_LOGIC

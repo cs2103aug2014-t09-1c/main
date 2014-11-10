@@ -1,3 +1,4 @@
+//@author A0116410Y
 #ifndef CTABLE_H
 #define CTABLE_H
 

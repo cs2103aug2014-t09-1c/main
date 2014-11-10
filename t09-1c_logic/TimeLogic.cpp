@@ -1,3 +1,4 @@
+//@author A0116410Y
 #include "stdafx.h"
 #include "TimeLogic.h"
 #include <sstream>

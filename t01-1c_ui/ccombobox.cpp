@@ -1,3 +1,4 @@
+//@author A0116410Y
 #include "ccombobox.h"
 #include <QLineEdit>
 
