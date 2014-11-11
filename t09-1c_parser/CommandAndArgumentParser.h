@@ -1,3 +1,4 @@
+//@author A0111718M
 #pragma once
 #ifndef COMMANDANDARGUMENT_PARSER
 #define COMMANDANDARGUMENT_PARSER
@@ -19,6 +20,10 @@ private:
 
 	void setCommand(string input);
 	void setArguments(string input);
+
+	/*
+	* Clean up arguments by removing leading white space.
+	*/
 	string argumentStringParser(string argument);
 	bool isParameterStringEmpty(string parameter);
 

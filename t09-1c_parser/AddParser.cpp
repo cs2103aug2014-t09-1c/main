@@ -1,3 +1,4 @@
+//@author A0111718M
 #include "stdafx.h"
 #include "AddParser.h"
 
@@ -103,7 +104,6 @@ ParsedDataPackage AddParser::parseAndReturn(string parseEntry)
 	}
 }
 
-//@ERIC A0111718M
 ParsedDataPackage AddParser::parseNLAndReturn(string parseEntry)
 {
 	try {
@@ -121,7 +121,6 @@ ParsedDataPackage AddParser::parseNLAndReturn(string parseEntry)
 	}
 }
 
-//@ERIC A0111718M
 string AddParser::extractCategoryNL(string arguments)
 {
 	string category = EMPTY_STRING;
@@ -138,7 +137,6 @@ string AddParser::extractCategoryNL(string arguments)
 	}
 }
 
-//@ERIC A0111718M
 string AddParser::removeCategoryNL(string arguments)
 {
 	string CategoryKeyword = CATEGORY_KEYWORD;
@@ -154,7 +152,6 @@ string AddParser::removeCategoryNL(string arguments)
 	}
 }
 
-//@ERIC A0111718M
 string AddParser::extractEventNL(string arguments)
 {
 	try {
@@ -167,7 +164,6 @@ string AddParser::extractEventNL(string arguments)
 	}
 }
 
-//@ERIC A0111718M
 string AddParser::extractDateNL(string arguments)
 {
 	try {
@@ -180,7 +176,6 @@ string AddParser::extractDateNL(string arguments)
 	}
 }
 
-//@ERIC A0111718M
 void AddParser::extractTimesNL(string arguments)
 {
 	try {
@@ -191,7 +186,6 @@ void AddParser::extractTimesNL(string arguments)
 	}
 }
 
-//@ERIC A0111718M
 void AddParser::syntaxSwapChecker(string arguments)
 {
 	try {

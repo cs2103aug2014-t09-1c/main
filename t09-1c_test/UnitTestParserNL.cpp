@@ -12,55 +12,107 @@ namespace t091c_test
 	{
 	public:
 		
-		TEST_METHOD(Event1)
+		TEST_METHOD(NL_PARSER_CHECK1) // Checks for deadline tasks.
 		{
-			AddParser add;
-			string event = add.extractEventNL("meeting with boss on 101014 at 1700");
-			string expectedEvent = "meeting with boss";
-			Assert::AreEqual(expectedEvent, event);
+			AddParser test;
+			string input = "meeting with boss on 101014 at 1700 @Important";
+			ParsedDataPackage output = test.parseNLAndReturn(input);
+			string testOutput1 = "meeting with boss";
+			string testOutput2 = "10/10/2014";
+			string testOutput3 = "17:00";
+			string testOutput4 = "Important";
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput4);
 		}
 
-		TEST_METHOD(Event2)
+		TEST_METHOD(NL_PARSER_CHECK2) // Checks for timed tasks.
 		{
-			AddParser add;
-			string event = add.extractEventNL("meeting with boss");
-			string expectedEvent = "meeting with boss";
-			Assert::AreEqual(expectedEvent, event);
+			AddParser test;
+			string input = "meeting with boss on 101014 from 1400 to 1500 @Important";
+			ParsedDataPackage output = test.parseNLAndReturn(input);
+			string testOutput1 = "meeting with boss";
+			string testOutput2 = "10/10/2014";
+			string testOutput3 = "14:00";
+			string testOutput4 = "15:00";
+			string testOutput5 = "Important";
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput5);
 		}
 
-		TEST_METHOD(Event3)
+		TEST_METHOD(NL_PARSER_CHECK3) // Checks for float tasks.
 		{
-			AddParser add;
-			string event = add.extractEventNL("meeting with boss on 10101");
-			string expectedEvent = "meeting with boss on 10101";
-			Assert::AreEqual(expectedEvent, event);
+			AddParser test;
+			string input = "meeting with boss on the boat at certain day @Important";
+			ParsedDataPackage output = test.parseNLAndReturn(input);
+			string testOutput1 = "meeting with boss on the boat at certain day";
+			string testOutput2 = "";
+			string testOutput3 = "";
+			string testOutput4 = "";
+			string testOutput5 = "Important";
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput5);
 		}
 
-		TEST_METHOD(Event4)
+		TEST_METHOD(NL_PARSER_CHECK4) // Checks for date overload.
 		{
-			AddParser add;
-			string event = add.extractEventNL("meeting with boss on 1010124");
-			string expectedEvent = "meeting with boss on 1010124";
-			Assert::AreEqual(expectedEvent, event);
+			AddParser test;
+			string input = "meeting with boss on next sunday at 1400 @Important";
+			ParsedDataPackage output = test.parseNLAndReturn(input);
+			string testOutput1 = "meeting with boss";
+			string testOutput2 = "16/11/2014";
+			string testOutput3 = "";
+			string testOutput4 = "14:00";
+			string testOutput5 = "Important";
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput5);
 		}
 
-		TEST_METHOD(Event5)
+		TEST_METHOD(NL_PARSER_CHECK5) // Checks for time overload to next day.
 		{
-			AddParser add;
-			string event = add.extractEventNL("meeting with boss on 101014 on booya");
-			string expectedEvent = "meeting with boss on 101014 on booya";
-			Assert::AreEqual(expectedEvent, event);
+			AddParser test;
+			string input = "meeting with boss on 291114 from 2300 to 0200+1 @Important";
+			ParsedDataPackage output = test.parseNLAndReturn(input);
+			string testOutput1 = "meeting with boss";
+			string testOutput2 = "29/11/2014";
+			string testOutput3 = "23:00";
+			string testOutput4 = "02:00+1";
+			string testOutput5 = "Important";
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput5);
 		}
 
-		TEST_METHOD(Event6)
+		TEST_METHOD(NL_PARSER_CHECK6) // Checks for deadline tasks without time.
 		{
-			AddParser add;
-			string event = add.extractEventNL("on 101014 at 1700");
-			string expectedEvent = "on 101014 at 1700";
-			Assert::AreEqual(expectedEvent, event);
+			AddParser test;
+			string input = "meeting with boss on 291114 @Important";
+			ParsedDataPackage output = test.parseNLAndReturn(input);
+			string testOutput1 = "meeting with boss";
+			string testOutput2 = "29/11/2014";
+			string testOutput3 = "";
+			string testOutput4 = "";
+			string testOutput5 = "Important";
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput5);
 		}
 
-		TEST_METHOD(Event7)
+		TEST_METHOD(NL_PARSER_CHECK7) // Checks for no event exception.
 		{
 			AddParser add;
 			try {
@@ -71,6 +123,8 @@ namespace t091c_test
 				Assert::IsTrue(true && ex.what());
 			}
 		}
+
+	// Test examples.
 
 	// meeting with boss on 200515 at 1700
 	// on 101014 at 1700

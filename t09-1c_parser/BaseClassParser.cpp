@@ -1,3 +1,4 @@
+//@author A0111718M
 #include "stdafx.h"
 #include "BaseClassParser.h"
 #include <algorithm>
@@ -185,7 +186,6 @@ string BaseClassParser::getDate(string dateString)
 	}
 }
 
-//@ERIC A0111718M
 bool BaseClassParser::isDateParameterValid(string day)
 {
 	unordered_set<string> set = { "mon", "tues", "wed", "thurs", "fri", "sat", "sun",
@@ -204,7 +204,6 @@ bool BaseClassParser::isDateParameterValid(string day)
 	}
 }
 
-//@ERIC A0111718M
 bool BaseClassParser::isStringNext(string keyword)
 {
 	string lowerCaseKeyword = toLowerCaseString(keyword);
@@ -217,7 +216,6 @@ bool BaseClassParser::isStringNext(string keyword)
 	}
 }
 
-//@ERIC A0111718M
 string BaseClassParser::getEventNL(string arguments)
 {
 	string event = EMPTY_STRING;
@@ -280,7 +278,6 @@ string BaseClassParser::getEventNL(string arguments)
 	}
 }
 
-//@ERIC A0111718M
 string BaseClassParser::getDateNL(string arguments)
 {
 	string keyword = DATE_KEYWORD_ON;
@@ -324,7 +321,6 @@ string BaseClassParser::getDateNL(string arguments)
 	}
 }
 
-//@ERIC A0111718M
 void BaseClassParser::getAndStoreTimesNL(string arguments)
 {
 	string startTime = EMPTY_STRING;
@@ -385,7 +381,6 @@ void BaseClassParser::getAndStoreTimesNL(string arguments)
 	}
 }
 
-//@ERIC A0111718M
 void BaseClassParser::checkForSyntaxSwap(string arguments)
 {
 	string keyword1 = DATE_KEYWORD_ON;

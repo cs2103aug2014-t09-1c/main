@@ -1,3 +1,4 @@
+//@author A0111718M
 #pragma once
 #ifndef BASE_CLASS_PARSER
 #define BASE_CLASS_PARSER
@@ -84,10 +85,24 @@ protected:
 	bool isParameterStringANumber(string parameter);
 	string removeWhiteSpace(string parameter);
 
+	/*
+	* Original date is returned if there is a format error.
+	*/
 	string parseDayOfWeek(string date);
+
+	/*
+	* Return date in DD/MM/YYYY format
+	*/
 	string formatDate(string date);
 
+	/*
+	* Get and store times in HH:MM format. If no time is detected, it will store an empty string.
+	*/
 	void getAndStoreTimes(string timeString);
+
+	/*
+	* Original date is returned if there is a format error.
+	*/
 	string getDate(string dateString);
 
 	void insertAttribute(string attribute, string entry);
@@ -97,8 +112,20 @@ protected:
 	bool isStringNext(string keyword);
 	string getEventNL(string arguments);
 	string getDateNL(string arguments);
+
+	/*
+	* Get and store times in HH:MM format. If no time is detected, it will store an empty string.
+	*/
 	void getAndStoreTimesNL(string arguments);
-	void checkForSyntaxSwap(string arguments); \
+
+	/*
+	* Throws an exception if keywords for Natural Language Parsing is not inputted in proper format.
+	*/
+	void checkForSyntaxSwap(string arguments);
+
+	/*
+	* This variable checks if Natural Language Parser detects a float input.
+	*/
 	int eventSize;
 
 public:
