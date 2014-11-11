@@ -1,0 +1,602 @@
+//@author: a0108494y
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ProgramController.cpp
+	 */
+
+void ProgramController::executeEntry(string input)
+{
+	clearConsoleString();
+	CommandAndArgumentParser inputParse(input);
+
+	command = inputParse.getCommand();
+	arguments = inputParse.getArguments();
+
+	if (command == HOME_COMMAND) {
+		executeHomeCommand();
+	}
+	else if (command == ALL_COMMAND) {
+		executeAllCommand();
+	}
+	else if (command == ADD_COMMAND) {
+		executeAddCommand();
+	}
+	else if (command == EDIT_COMMAND){
+		executeEditCommand();
+	}
+	else if (command == DELETE_COMMAND){
+		executeDeleteCommand();
+	}
+	else if (command == SEARCH_COMMAND){
+		executeSearchCommand();
+	}
+	else if (command == UNDO_COMMAND){
+		executeUndoCommand();
+	}
+	else if (command == REDO_COMMAND){
+		executeRedoCommand();
+	}
+	else if (command == COMPLETE_COMMAND){
+		executeCompleteCommand();
+	}
+	else if (command == UNCOMPLETE_COMMAND){
+		executeUncompleteCommand();
+	}
+	else if (command == SLOT_COMMAND) {
+		//This will be handled by updateLineText(). This will ensure exception does not occur.
+	}
+	else if (command == CLIP_COMMAND) {
+		updateLineText(input, true);
+	}
+	else {
+		executeAddNaturalParsing(input);
+	}
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ProgramController.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\CompleteParser.cpp
+	 */
+
+#include "stdafx.h"
+#include "CompleteParser.h"
+
+CompleteParser::CompleteParser() : BaseClassParser()
+{
+}
+
+CompleteParser::~CompleteParser()
+{
+}
+
+ParsedDataPackage CompleteParser::parseAndReturn(string parseInput)
+{
+	string inputWithWhiteSpaceRemoved = removeWhiteSpace(parseInput);
+	string inputToLowerCase = toLowerCaseString(inputWithWhiteSpaceRemoved);
+	string delimeter = COMPLETE_PARSE_KEYWORD_TO;
+
+	if (inputToLowerCase.find(delimeter) != string::npos) {
+		string firstLineNumber = inputToLowerCase.substr(0, inputToLowerCase.find(delimeter));
+
+		if (isParameterStringANumber(firstLineNumber)) {
+			insertAttribute(FROM_POSITION, stoi(firstLineNumber));
+		}
+		else {
+			throw runtime_error(COMPLETE_PARSER_ERROR);
+		}
+
+		string secondLineNumber = inputToLowerCase;
+		secondLineNumber.erase(0, inputToLowerCase.find(delimeter) + delimeter.length());
+
+		if (isParameterStringANumber(secondLineNumber)) {
+			insertAttribute(TO_POSITION, stoi(secondLineNumber));
+		}
+		else {
+			throw runtime_error(COMPLETE_PARSER_ERROR);
+		}
+
+		return parsedData;
+	}
+	else if (isParameterStringANumber(inputWithWhiteSpaceRemoved)) {
+		insertAttribute(FROM_POSITION, stoi(inputWithWhiteSpaceRemoved));
+		insertAttribute(TO_POSITION, stoi(inputWithWhiteSpaceRemoved));
+
+		return parsedData;
+	}
+	else {
+		throw runtime_error(COMPLETE_PARSER_ERROR);
+	}
+}
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\CompleteParser.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\SearchParser.cpp
+	 */
+
+#include "stdafx.h"
+#include "SearchParser.h"
+
+// Syntax: search searchcategory item 
+//e.g. search date 121012, search name annual concert, search category meeting
+
+
+SearchParser::SearchParser() : BaseClassParser()
+{
+}
+
+SearchParser::~SearchParser()
+{
+}
+
+string SearchParser::extractLeadingBracketContent(string arguments)
+{
+	string contents = EMPTY_STRING;
+	size_t startingPosition = arguments.find(DELIMETER_START);
+	size_t endingPosition = arguments.find(DELIMETER_END);
+
+	if (startingPosition == string::npos || endingPosition == string::npos) {
+		return contents;
+	}
+	else {
+		contents = arguments.substr(startingPosition + 1, endingPosition - startingPosition - 1);
+
+		return contents;
+	}
+}
+
+string SearchParser::nextArguments(string argument)
+{
+	string delimiter = DELIMETER_END;
+	argument.erase(0, argument.find(delimiter) + 1);
+
+	return argument;
+}
+
+string SearchParser::extractDate(string iterArguments)
+{
+	try{
+		string date = extractLeadingBracketContent(iterArguments);
+		string resultDate = getDate(date);
+
+		return resultDate;
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+
+void SearchParser::extractTime(string iterArguments)
+{
+	try {
+		string time = extractLeadingBracketContent(iterArguments);
+		checkTimeisRangeFormat(time);
+		getAndStoreTimes(time);
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+
+string SearchParser::parseSearchArgs(string parseEntry)
+{
+	string checkInput = parseDayOfWeek(parseEntry);
+
+	if (isParameterStringANumber(checkInput) && checkInput.length() == 4) {
+		checkInput.insert(2, TIME_INSERT_COLON);
+	}
+
+	return checkInput;
+}
+
+void SearchParser::checkTimeisRangeFormat(string entry)
+{
+	if (entry.size() < 9) {
+		throw runtime_error(FREE_SLOT_RANGE_ERROR);
+	}
+}
+
+void SearchParser::checkDurationisValid(string entry)
+{
+	string entryWhiteSpaceRemoved = removeWhiteSpace(entry);
+	if (!isParameterStringANumber(entryWhiteSpaceRemoved) && entryWhiteSpaceRemoved.size() != 4) {
+		throw runtime_error(FREE_SLOT_DURATION_ERROR);
+	}
+}
+
+void SearchParser::getDuration(string entry)
+{
+	const int maxHourDuration = 23;
+	const int maxMinDuration = 59;
+	const int HHMMLength = 2;
+
+	try {
+		string duration = extractLeadingBracketContent(entry);
+		checkDurationisValid(duration);
+		int hourDuration = stoi(duration.substr(0, HHMMLength));
+		int minDuration = stoi(duration.substr(2, HHMMLength));
+		if (hourDuration > maxHourDuration || minDuration > maxMinDuration) {
+			throw runtime_error(FREE_SLOT_LONG_DURATION_ERROR);
+		}
+		insertAttribute(FROM_POSITION, hourDuration);
+		insertAttribute(TO_POSITION, minDuration);
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+
+ParsedDataPackage SearchParser::parsefreeSlotCheck(string entry)
+{
+	try{
+		insertAttribute(DATE_ATTRIBUTE,extractDate(entry));
+		entry = nextArguments(entry);
+		extractTime(entry);
+		entry = nextArguments(entry);
+		getDuration(entry);
+		return parsedData;
+	}
+	catch (const exception& ex) {
+		throw runtime_error(ex.what());
+	}
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\SearchParser.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\UnitTestController.cpp
+	 */
+
+		TEST_METHOD(INTEGRATED_TESTING_ADD)
+		{
+			vector<string> testVector;
+			ProgramController test(testVector);
+			test.executeEntry("add [test1][051114][1300][test1]");
+			string testString1 = "<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString1, test.returnTestVector()[0]);
+
+			test.executeEntry("add [test2][051114][1300-1500][test2]");
+			string testString2 = "<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>";
+			Assert::AreEqual(testString2, test.returnTestVector()[1]);
+
+			test.executeEntry("add [test3][051114][][test3]");
+			string testString3 = "<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString3, test.returnTestVector()[2]);
+
+			test.executeEntry("add [test4][][][test4]");
+			string testString4 = "<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>";
+			Assert::AreEqual(testString4, test.returnTestVector()[3]);
+
+			test.executeEntry("add [test4][xxx][xxx][test4]");
+			size_t vectorSizeTest5 = 4;
+			Assert::AreEqual(vectorSizeTest5, test.returnTestVector().size());
+		}
+		TEST_METHOD(INTEGRATED_TESTING_EDIT)//to show different ways of editing
+		{
+			vector<string> testVector;
+			testVector.push_back("<name>test1</name><date>05/11/2014</date><start></start><end>13:00</end><category>test1</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test2</name><date>05/11/2014</date><start>13:00</start><end>15:00</end><category>test2</category><complete>no</complete><type>timed</type>");
+			testVector.push_back("<name>test3</name><date>05/11/2014</date><start></start><end>23:59</end><category>test3</category><complete>no</complete><type>deadline</type>");
+			testVector.push_back("<name>test4</name><date></date><start></start><end></end><category>test4</category><complete>no</complete><type>float</type>");
+			
+			ProgramController test(testVector); //edit time
+			test.executeEntry("edit 1 [test1][051114][1100][test1]");
+			string testString1 = "<name>test1</name><date>05/11/2014</date><start></start><end>11:00</end><category>test1</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString1, test.returnTestVector()[0]);
+
+			test.executeEntry("edit 2 [test2][051114][1500][test2]");// edit deadline to timed
+			string testString2 = "<name>test2</name><date>05/11/2014</date><start></start><end>15:00</end><category>test2</category><complete>no</complete><type>deadline</type>";
+			Assert::AreEqual(testString2, test.returnTestVector()[1]);
+
+			test.executeEntry("edit 3 [test2][051114][1500-1700][test2]");//edit name, category and deadline to timed
+			string testString3 = "<name>test2</name><date>05/11/2014</date><start>15:00</start><end>17:00</end><category>test2</category><complete>no</complete><type>timed</type>";
+			Assert::AreEqual(testString3, test.returnTestVector()[2]);
+		}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\UnitTestController.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\UnitTestController.cpp
+	 */
+
+			string lineText7 = test.updateLineText("slot [051114][1501-1700][0200]", true);//boundary case
+			string expected7 = "";
+			Assert::AreEqual(expected7, lineText7);
+			string lineText8 = test.updateLineText("slot [051114][1500-1501][0001]", true);//boundary case
+			string expected8 = "add [][051114][1500-1501][]";
+			Assert::AreEqual(expected8, lineText8);
+			string lineText9 = test.updateLineText("slot [051114][1700-1500][0200]", true);//flipped
+			string expected9 = "";
+			Assert::AreEqual(expected9, lineText9);
+			string lineText10 = test.updateLineText("slot [051114][0000-2359][1300]", true);//boundary case
+			string expected10 = "add [][051114][0000-1300][]";
+			Assert::AreEqual(expected10, lineText10);
+			string lineText11 = test.updateLineText("slot [051114][0000-2359][2359]", true);//boundary case
+			string expected11 = "";
+			Assert::AreEqual(expected11, lineText11);
+
+		}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\UnitTestController.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\UnitTestEditP.cpp
+	 */
+
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "ParsedDataPackage.h"
+#include "EditParser.h"
+#include "TimeParser.h"
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace t091c_test
+{
+	TEST_CLASS(UNIT_TEST_EDIT_PARSER)
+	{
+	public:
+		
+		TEST_METHOD(EDIT_PARSER_CHECK1)
+		{
+			EditParser test;
+			string input = "1 [Exam][291114][1100][Important]";
+			ParsedDataPackage output = test.parseAndReturn(input);
+			int testOutput1 = 1;
+			string testOutput2 = "Exam";
+			string testOutput3 = "29/11/2014";
+			string testOutput4 = "11:00";
+			string testOutput5 = "Important";
+			Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput5);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK2)
+		{
+			EditParser test;
+			string input = "2 [Mock Exam][301214][1100-1300][Not Important]";
+			ParsedDataPackage output = test.parseAndReturn(input);
+			int testOutput1 = 2;
+			string testOutput2 = "Mock Exam";
+			string testOutput3 = "30/12/2014";
+			string testOutput4 = "11:00";
+			string testOutput5 = "13:00";
+			string testOutput6 = "Not Important";
+			Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK3)
+		{
+			EditParser test;
+			string input = "3 [Exam][][][]";
+			ParsedDataPackage output = test.parseAndReturn(input);
+			int testOutput1 = 3;
+			string testOutput2 = "Exam";
+			string testOutput3 = "";
+			string testOutput4 = "";
+			string testOutput5 = "";
+			string testOutput6 = "";
+			Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK4)
+		{
+			EditParser test;
+			string input = "4 [Exam][291114][][]";
+			ParsedDataPackage output = test.parseAndReturn(input);
+			int testOutput1 = 4;
+			string testOutput2 = "Exam";
+			string testOutput3 = "29/11/2014";
+			string testOutput4 = "";
+			string testOutput5 = "";
+			string testOutput6 = "";
+			Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK5)
+		{
+			EditParser test;
+			string input = "5 [Exam][][][Important]";
+			ParsedDataPackage output = test.parseAndReturn(input);
+			int testOutput1 = 5;
+			string testOutput2 = "Exam";
+			string testOutput3 = "";
+			string testOutput4 = "";
+			string testOutput5 = "";
+			string testOutput6 = "Important";
+			Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK6)
+		{
+			EditParser test;
+			string input = "6 [Exam][291114][1300][]";
+			ParsedDataPackage output = test.parseAndReturn(input);
+			int testOutput1 = 6;
+			string testOutput2 = "Exam";
+			string testOutput3 = "29/11/2014";
+			string testOutput4 = "";
+			string testOutput5 = "13:00";
+			string testOutput6 = "";
+			Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK7)
+		{
+			EditParser test;
+			string input = "7 [Exam][291114][][Important]";
+			ParsedDataPackage output = test.parseAndReturn(input);
+			int testOutput1 = 7;
+			string testOutput2 = "Exam";
+			string testOutput3 = "29/11/2014";
+			string testOutput4 = "";
+			string testOutput5 = "";
+			string testOutput6 = "Important";
+			Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+			Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+			Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+			Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+			Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+			Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK8)
+		{
+			EditParser test;
+			string consoleString;
+			string input = "8 [Exam][29111][][]";
+			try{
+				ParsedDataPackage output = test.parseAndReturn(input);
+				int testOutput1 = 8;
+				string testOutput2 = "Exam";
+				string testOutput3 = "";
+				string testOutput4 = "";
+				string testOutput5 = "";
+				string testOutput6 = "";
+
+				Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+				Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+				Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+				Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+				Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+				Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+			}
+			catch (const exception& ex){
+				consoleString = ex.what();
+			}
+			string expectedMessage = "Please enter a valid DDMMYY date!";
+			Assert::AreEqual(expectedMessage, consoleString);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK9)
+		{
+			EditParser test;
+			string consoleString;
+			string input = "9 [Exam][mond][][]";
+			try{
+				ParsedDataPackage output = test.parseAndReturn(input);
+				int testOutput1 = 9;
+				string testOutput2 = "Exam";
+				string testOutput3 = "";
+				string testOutput4 = "";
+				string testOutput5 = "";
+				string testOutput6 = "";
+
+				Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+				Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+				Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+				Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+				Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+				Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+			}
+			catch (const exception& ex){
+				consoleString = ex.what();
+			}
+			string expectedMessage = "Please enter a valid date or day of the week!";
+			Assert::AreEqual(expectedMessage, consoleString);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK10)
+		{
+			EditParser test;
+			string consoleString;
+			
+			string input = "10 [Exam][monday][130][]";
+			string parsedDay = TimeParser::parseDayOfWeek("monday");
+			try{
+				ParsedDataPackage output = test.parseAndReturn(input);
+				int testOutput1 = 10;
+				string testOutput2 = "Exam";
+				string testOutput3 = parsedDay;
+				string testOutput4 = "";
+				string testOutput5 = "";
+				string testOutput6 = "";
+
+				Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+				Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+				Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+				Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+				Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+				Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+			}
+			catch (const exception& ex){
+				consoleString = ex.what();
+			}
+			string expectedMessage = "Please enter a valid time format!";
+			Assert::AreEqual(expectedMessage, consoleString);
+		}
+		TEST_METHOD(EDIT_PARSER_CHECK11)
+		{
+			EditParser test;
+			string consoleString;
+
+			string input = "11 [Exam][monday][1300-150][]";
+			string parsedDay = TimeParser::parseDayOfWeek("monday");
+			try{
+				ParsedDataPackage output = test.parseAndReturn(input);
+				int testOutput1 = 11;
+				string testOutput2 = "Exam";
+				string testOutput3 = parsedDay;
+				string testOutput4 = "";
+				string testOutput5 = "";
+				string testOutput6 = "";
+
+				Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput1);
+				Assert::AreEqual(output.getLineEntries()[NAME_ATTRIBUTE], testOutput2);
+				Assert::AreEqual(output.getLineEntries()[DATE_ATTRIBUTE], testOutput3);
+				Assert::AreEqual(output.getLineEntries()[START_ATTRIBUTE], testOutput4);
+				Assert::AreEqual(output.getLineEntries()[END_ATTRIBUTE], testOutput5);
+				Assert::AreEqual(output.getLineEntries()[CATEGORY_ATTRIBUTE], testOutput6);
+			}
+			catch (const exception& ex){
+				consoleString = ex.what();
+			}
+			string expectedMessage = "Please enter a valid HHMM-HHMM start-end time format!";
+			Assert::AreEqual(expectedMessage, consoleString);
+		}
+		
+	};
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\UnitTestEditP.cpp
+
+
+
+
+
