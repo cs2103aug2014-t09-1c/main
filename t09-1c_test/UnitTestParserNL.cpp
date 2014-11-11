@@ -1,8 +1,7 @@
+//@author A0111718M
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "AddParser.h"
-#include "ParsedDataPackage.h"
-#include "TimeParser.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
