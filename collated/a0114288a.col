@@ -1,0 +1,334 @@
+//@author: a0114288a
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\DeleteParser.cpp
+	 */
+
+#include "stdafx.h"
+#include "DeleteParser.h"
+
+DeleteParser::DeleteParser() : BaseClassParser()
+{
+}
+
+DeleteParser::~DeleteParser()
+{
+}
+
+ParsedDataPackage DeleteParser::parseAndReturn(string parseInput)
+{
+	string inputWhiteSpaceRemoved = removeWhiteSpace(parseInput);
+	string inputtoLowerCase = toLowerCaseString(inputWhiteSpaceRemoved);
+	string delimeter = DELETE_PARSE_KEYWORD_TO;
+
+	if (inputtoLowerCase.find(delimeter) != string::npos) {
+		string firstLineNumber = inputtoLowerCase.substr(0, inputtoLowerCase.find(delimeter));
+
+		if (isParameterStringANumber(firstLineNumber)) {
+			insertAttribute(FROM_POSITION, stoi(firstLineNumber));
+		}
+		else {
+			throw runtime_error(DELETE_PARSER_ERROR);
+		}
+
+		string secondLineNumber = inputtoLowerCase;
+		secondLineNumber.erase(0, inputtoLowerCase.find(delimeter) + delimeter.length());
+
+		if (isParameterStringANumber(secondLineNumber)) {
+			insertAttribute(TO_POSITION, stoi(secondLineNumber));
+		}
+		else {
+			throw runtime_error(DELETE_PARSER_ERROR);
+		}
+
+		return parsedData;
+	}
+	else if (isParameterStringANumber(inputWhiteSpaceRemoved)) {
+		insertAttribute(FROM_POSITION, stoi(inputWhiteSpaceRemoved));
+		insertAttribute(TO_POSITION, stoi(inputWhiteSpaceRemoved));
+
+		return parsedData;
+	}
+	else {
+		throw runtime_error(DELETE_PARSER_ERROR);
+	}
+}
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\DeleteParser.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\TimeParser.cpp
+	 */
+
+#include "stdafx.h"
+#include "TimeParser.h"
+#include <sstream>
+#include <algorithm>
+
+const vector<string> longDays = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" };
+const vector<string> shortDays = { "sun", "mon", "tue", "wed", "thu", "fri", "sat" };
+
+TimeParser::TimeParser()
+{
+}
+
+TimeParser::~TimeParser()
+{
+}
+
+struct tm * TimeParser::timeIterator(struct tm* day, int daysToAdd)
+{
+	day->tm_mday += daysToAdd;
+	time_t next = mktime(day);
+	struct tm * newDay = localtime(&next);
+
+	return newDay;
+}
+
+int TimeParser::determineDaysToAdd(string day, bool isNextPresent)
+{
+	time_t t = time(0);   // get time now
+	struct tm * now = localtime(&t);
+	int todayDayIndex = now->tm_wday;
+	
+	if (day == "today") {
+		return 0;
+	}
+	else if (day == "tomorrow") {
+		return 1;
+	}
+	else {
+		int dayIndex = determineDayIndex(day);
+		int toAdd = ((dayIndex - todayDayIndex) + longDays.size()) % longDays.size();
+
+		if (dayIndex == -1) {
+			return -1;
+		}
+
+		if (toAdd == 0 ||((todayDayIndex <= dayIndex) && isNextPresent)) {
+			toAdd += 7;
+		}
+
+		return toAdd;
+	}
+}
+
+int TimeParser::determineDayIndex(string day)
+{
+	int index = -1;
+	index = findMatchingStringIndex(day, longDays);
+
+	if (index == -1) {
+		index = findMatchingStringIndex(day, shortDays);
+	}
+
+	return index;
+}
+
+string TimeParser::printDate(struct tm* date)
+{
+	char buffer[80];
+	strftime(buffer, 80, "%d/%m/%Y", date);
+	string out = buffer;
+
+	return out;
+}
+
+string TimeParser::parseDayOfWeek(string date)
+{
+	string dateToModify = date;
+	bool isNext = false;
+	dateToModify = toLowerCaseString(dateToModify);
+
+	if (dateToModify.substr(0, 5) == "next ") {
+		isNext = true;
+		dateToModify.erase(0, 5);
+	}
+
+	int toAdd = determineDaysToAdd(dateToModify, isNext);
+
+	if (toAdd > -1) {
+		time_t t = time(0);   // get time now
+		struct tm * time = localtime(&t);
+		time = timeIterator(time, toAdd);
+
+		return printDate(time);
+	}
+	else {
+		return date;
+	}
+}
+
+string TimeParser::formatDate(string date)
+{
+	const int critical2DigitYear = 50;
+	int inputYear = stoi(date.substr(4, 2));
+	date.insert(2, "/");
+	date.insert(5, "/");
+
+	time_t t = time(0);   // get time now
+	struct tm * time = localtime(&t);
+	int year = time->tm_year + 1900;
+	int addCentury = ((year - ((year / 100) * 100) > critical2DigitYear) && (year - ((year / 100) * 100) - critical2DigitYear) > inputYear) ? 1 : 0;
+	string hundredsyear = to_string(year / 100 + addCentury);
+	date.insert(6, hundredsyear);
+
+	return date;
+}
+
+string TimeParser::toLowerCaseString(string input)
+{
+	transform(input.begin(), input.end(), input.begin(), ::tolower);
+
+	return input;
+}
+
+int TimeParser::findMatchingStringIndex(string str, vector<string> lst)
+{
+	int index = -1;
+	int lstSize = lst.size();
+
+	for (int i = 0; i < lstSize; ++i) {
+		if (lst[i] == str) {
+			index = i;
+			break;
+		}
+	}
+
+	return index;
+}
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\TimeParser.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\unittest1.cpp
+	 */
+
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "AddLogic.h"
+#include "FileEntryFormatter.h"
+#include "DL_Algorithm.h"
+#include "ProgramController.h"
+#include "SearchLogic.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace t091c_test
+{		
+	TEST_CLASS(FORMATTER_CHECK)
+	{
+	public:
+		
+		TEST_METHOD(FORMATTER_DELETE_DETERMINE_CHECK)
+		{
+			string entry = "<name>check</name><date>10/10/2014</date>";
+			string output = FileEntryFormatter::deleteAttributedEntryFromLineEntry("date", entry);
+			string expected = "<name>check</name>";
+			Assert::AreEqual(output, expected);
+			entry = "<name>check</name><date>10/10/2014</date>";
+			output = FileEntryFormatter::deleteAttributedEntryFromLineEntry("name", entry);
+			expected = "<date>10/10/2014</date>";
+			Assert::AreEqual(output, expected);
+		}
+		TEST_METHOD(FORMATTER_EDIT_DETERMINE_CHECK)
+		{
+			string entry = "<name>check</name><date>10/10/2014</date>";
+			string output = FileEntryFormatter::editAttributedEntryFromLineEntry("date", "10/11/2014", entry);
+			string expected = "<name>check</name><date>10/11/2014</date>";
+			Assert::AreEqual(output, expected);
+			entry = "<name>check</name><date>10/10/2014</date>";
+			output = FileEntryFormatter::editAttributedEntryFromLineEntry("name", "check2", entry);
+			expected = "<name>check2</name><date>10/10/2014</date>";
+			Assert::AreEqual(output, expected);
+		}
+		TEST_METHOD(FORMATTER_GET_DETERMINE_CHECK)
+		{
+			string entry = "<name>check</name><date>10/10/2014</date>";
+			string output = FileEntryFormatter::getAttributeEntry("date", entry);
+			string expected = "10/10/2014";
+			Assert::AreEqual(output, expected);
+			entry = "<name>check</name><date>10/10/2014</date>";
+			output = FileEntryFormatter::getAttributeEntry("name", entry);
+			expected = "check";
+			Assert::AreEqual(output, expected);
+		}
+
+		TEST_METHOD(DAMERAU_DETERMINE_CHECK)
+		{
+			DL_Algorithm check;
+			Assert::AreEqual(check.findDLCost("hello", "hell"), 5);
+			Assert::AreEqual(check.findDLCost("hello", "hlel"), 10);
+			Assert::AreEqual(check.findDLCost("hello", "good hellol"), 0);
+			Assert::AreEqual(check.findDLCost("", "hell"), 0);
+			Assert::AreEqual(check.findDLCost("god", "dog"), 8);
+			Assert::AreEqual(check.findDLCost("190914", "19/09/2014"), 0);
+			Assert::AreEqual(check.findDLCost("170914", "19/09/2014"), 4);
+		}
+	};
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\unittest1.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\UnitTestDeleteP.cpp
+	 */
+
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "DeleteParser.h"
+#include "ParsedDataPackage.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace t091c_test
+{
+	TEST_CLASS(UnitTest2)
+	{
+	public:
+		
+		TEST_METHOD(DELETE_PARSER_ONE_ENTRY)//correct
+		{
+			DeleteParser test;
+			string input = "10";
+			ParsedDataPackage output = test.parseAndReturn(input);
+			int testOutput = 10;
+			Assert::AreEqual(output.getStartEndPositions()[FROM_POSITION], testOutput);
+			Assert::AreEqual(output.getStartEndPositions()[TO_POSITION], testOutput);
+		}
+
+		TEST_METHOD(DELETE_PARSER_PARSE_FAIL)
+		{
+			DeleteParser test;
+			string input = "abc";
+			try {
+				ParsedDataPackage output = test.parseAndReturn(input);
+				Assert::IsTrue(false);
+			}
+			catch (const exception& ex) {
+				Assert::IsTrue(true && ex.what());
+			}
+		}
+		
+
+	};
+}
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_test\UnitTestDeleteP.cpp
+
+
+
+
+
