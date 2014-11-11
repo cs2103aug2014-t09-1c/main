@@ -1,0 +1,148 @@
+//@author: a0108494y
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\CompleteParser.h
+	 */
+
+#pragma once
+#ifndef COMPLETE_PARSER
+#define COMPLETE_PARSER
+
+#include "BaseClassParser.h"
+
+// Complete Syntax: complete 2
+
+#define COMPLETE_PARSER_ERROR \
+	"Please enter valid <from> and <to> line numbers"
+
+using namespace std;
+
+class CompleteParser :
+	public BaseClassParser
+{
+public:
+	CompleteParser();
+	~CompleteParser();
+
+	ParsedDataPackage parseAndReturn(string parseInput);
+	
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\CompleteParser.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\EditParser.h
+	 */
+
+#pragma once
+#ifndef EDIT_PARSER
+#define EDIT_PARSER
+
+#include "BaseClassParser.h"
+
+#define EDIT_PARSER_ERROR \
+	"Please enter the correct syntax for Edit."
+
+using namespace std;
+
+class EditParser :
+	public BaseClassParser
+{
+private:
+	string extractLeadingBracketContent(string arguments);
+	string nextArguments(string arguments);
+	string extractDate(string arguments);
+	void extractTime(string arguments);
+	void getPositionNumber(string input);
+
+public:
+	EditParser();
+	~EditParser();
+
+	ParsedDataPackage parseAndReturn(string parseInput);
+
+	int convertToPosition(string argument);
+
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\EditParser.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\SearchParser.h
+	 */
+
+#pragma once
+#ifndef SEARCH_PARSER
+#define SEARCH_PARSER
+
+#include "BaseClassParser.h"
+
+// Syntax: [eventName]<start><end><rating><@category> - timed
+// Syntax: [eventName]<deadline><rating><@category> - deadline
+// Syntax: [eventName]<rating><@category> - float
+// Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
+// eg. Watch movie tomorrow / Watch movie next tuesday 1700 / watch movie next tuesday 1300 to 1500
+// eg. Watch movie 191014 1700 to 1800
+
+#define SEARCH_PARSER_ERROR \
+	"Please enter the correct syntax for Search."
+#define SEARCH_PARSER_NO_DATE_ERROR \
+	"Please enter a date!"
+#define SEARCH_PARSER_6DIGIT_DATE_ERROR \
+	"Please enter a valid DDMMYY date!"
+#define SEARCH_PARSER_DAY_OF_WEEK_ERROR \
+	"Please enter a valid day of the week!"
+#define SEARCH_PARSER_NO_TYPE_ERROR \
+	"Please enter a type of \"name\", \"date\" or \"category!\""
+#define FREE_SLOT_RANGE_ERROR \
+	"Range time must be in HHMM-HHMM format"
+#define FREE_SLOT_DURATION_ERROR \
+	"Duration must be in HHMM format (max 2359)"
+#define FREE_SLOT_LONG_DURATION_ERROR \
+	"Free Slot Search only works for a max duration of 2359."
+
+using namespace std;
+
+class SearchParser :
+	public BaseClassParser
+{
+private:
+	string extractLeadingBracketContent(string arguments);
+	string nextArguments(string arguments);
+	string extractDate(string arguments);
+	void extractTime(string arguments);
+	void checkTimeisRangeFormat(string input);
+	void checkDurationisValid(string input);
+	void getDuration(string input);
+
+public:
+	SearchParser();
+	~SearchParser();
+
+	string parseSearchArgs(string parseInput);
+	ParsedDataPackage parsefreeSlotCheck(string parseInput);
+
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\SearchParser.h
+
+
+
+
+

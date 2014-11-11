@@ -1,0 +1,274 @@
+//@author: a0111718m
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\AddParser.h
+	 */
+
+#pragma once
+#ifndef ADD_PARSER
+#define ADD_PARSER
+
+#include "BaseClassParser.h"
+
+// Syntax: [eventName][date][start-end][category] - timed
+// Syntax: [eventName][date][deadline][category] - deadline
+// Syntax: [eventName][][][category] - float
+// category is to be made optional. 
+// ie syntax can just be  [eventName][][][]
+
+// Allowed overloads: event ((next)day of week or date) HHMM / event date HHMM to HHMM
+// eg. Watch movie on tomorrow / Watch movie on next tuesday at 1700 / watch movie on next tuesday from 1300 to 1500
+// eg. Watch movie on 1910140 from 1700 to 1800
+
+// Natural Language: Date overload [OK], time (eg. 1800+1) [OK]
+// 
+// NL Category:
+// Parsed first and removed from arguments to cater for float events.
+//
+// NL Event:
+// Parsed in a way depended on keyword " on " from NL Date.
+// Without " on ", automatically parsed as float event. With " on ", checks for valid Date format.
+//
+// NL Date:
+// Must be after keyword " on ". (eg. Watch movie on tomorrow at 1700.)
+// Invalid format after keyword " on " will be treated as a float event. (eg. Sitting on the roof top)
+// 
+// NL Time:
+// Must be after keyword(s) " at " for deadline, (" from ", " to ") for timed.
+// Invalid format after keyword(s) will return error.
+
+
+class AddParser :
+	public BaseClassParser
+{
+private:
+	string extractLeadingBracketContent(string arguments);
+	string nextArguments(string arguments);
+	string extractDate(string arguments);
+	void extractTime(string arguments);
+
+public:
+	AddParser();
+	~AddParser();
+
+	ParsedDataPackage parseAndReturn(string parseInput);
+	ParsedDataPackage parseNLAndReturn(string parseInput);
+
+	// Natural Language Parsing
+	string extractCategoryNL(string arguments);
+	string removeCategoryNL(string arguments);
+	string extractEventNL(string arguments);
+	string extractDateNL(string arguments);
+	void extractTimesNL(string arguments);
+	void syntaxSwapChecker(string arguments);
+
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\AddParser.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\BaseClassParser.h
+	 */
+
+#pragma once
+#ifndef BASE_CLASS_PARSER
+#define BASE_CLASS_PARSER
+
+#include "ParsedDataPackage.h"
+#include "TimeParser.h"
+
+#define CREATION_ATTRIBUTE \
+	"CreationDate"
+#define NAME_ATTRIBUTE \
+	"name"
+#define DATE_ATTRIBUTE \
+	"date"
+#define START_ATTRIBUTE \
+	"start"
+#define END_ATTRIBUTE \
+	"end"
+#define CATEGORY_ATTRIBUTE \
+	"category"
+#define COMPLETE_ATTRIBUTE \
+	"complete"
+#define TYPE_ATTRIBUTE \
+	"type"
+#define FROM_POSITION \
+	"fromPos"
+#define TO_POSITION \
+	"toPos"
+#define DELIMETER_START \
+	"["
+#define DELIMETER_END \
+	"]"
+#define EMPTY_SPACE_CHAR \
+	" "
+#define EMPTY_STRING \
+	""
+#define TIME_INSERT_COLON \
+	":"
+#define TIME_KEYWORD_AT \
+	" at "
+#define TIME_KEYWORD_FROM \
+	" from "
+#define TIME_KEYWORD_TO \
+	" to "
+#define TIME_KEYWORD_DASH \
+	"-"
+#define TIME_KEYWORD_SECOND_DAY \
+	"+1"
+#define DATE_KEYWORD_NEXT \
+	"next"
+#define DATE_KEYWORD_ON \
+	" on "
+#define CATEGORY_KEYWORD \
+	"@"
+#define COMPLETE_PARSE_KEYWORD_TO \
+	"to"
+#define DELETE_PARSE_KEYWORD_TO \
+	"to"
+#define PARSER_6DIGIT_DATE_ERROR \
+	"Please enter a valid DDMMYY date!"
+#define PARSER_DAY_OF_WEEK_ERROR \
+	"Please enter a valid date or day of the week!"
+#define PARSER_START_END_TIME_ERROR \
+	"Please enter a valid HHMM-HHMM start-end time format!"
+#define PARSER_TIME_ERROR \
+	"Please enter a valid time format!"
+#define PARSER_NO_EVENT_ERROR \
+	"Please enter a valid event name."
+#define PARSER_DAY_OF_WEEK_ERROR \
+	"Please enter a valid date or day of the week!"
+#define PARSER_SYNTAX_ERROR \
+	"Please follow the correct syntax for QuickAdd!"
+
+
+class BaseClassParser
+{
+protected:
+	ParsedDataPackage parsedData;
+	BaseClassParser();
+	~BaseClassParser();
+
+	string toLowerCaseString(string input);
+	int findMatchingStringIndex(string str, vector<string> lst);
+	bool isParameterStringEmpty(string parameter);
+	bool isParameterStringANumber(string parameter);
+	string removeWhiteSpace(string parameter);
+
+	/*
+	* Original date is returned if there is a format error.
+	*/
+	string parseDayOfWeek(string date);
+
+	/*
+	* Return date in DD/MM/YYYY format
+	*/
+	string formatDate(string date);
+
+	/*
+	* Get and store times in HH:MM format. If no time is detected, it will store an empty string.
+	*/
+	void getAndStoreTimes(string timeString);
+
+	/*
+	* Original date is returned if there is a format error.
+	*/
+	string getDate(string dateString);
+
+	void insertAttribute(string attribute, string entry);
+	void insertAttribute(string attribute, int entry);
+
+	bool isDateParameterValid(string day);
+	bool isStringNext(string keyword);
+	string getEventNL(string arguments);
+	string getDateNL(string arguments);
+
+	/*
+	* Get and store times in HH:MM format. If no time is detected, it will store an empty string.
+	*/
+	void getAndStoreTimesNL(string arguments);
+
+	/*
+	* Throws an exception if keywords for Natural Language Parsing is not inputted in proper format.
+	*/
+	void checkForSyntaxSwap(string arguments);
+
+	/*
+	* This variable checks if Natural Language Parser detects a float input.
+	*/
+	int eventSize;
+
+public:
+	virtual ParsedDataPackage parseAndReturn(string parseInput);
+	virtual ParsedDataPackage parseNLAndReturn(string parseInput);
+	virtual string parseSearchArgs(string parseInput);
+	virtual int convertToPosition(string argument);
+	virtual ParsedDataPackage parsefreeSlotCheck(string input);
+
+};
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\BaseClassParser.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\CommandAndArgumentParser.h
+	 */
+
+#pragma once
+#ifndef COMMANDANDARGUMENT_PARSER
+#define COMMANDANDARGUMENT_PARSER
+
+#include "stdafx.h"
+#include <string>
+#include <sstream>
+
+#define EMPTY_STRING \
+	""
+
+using namespace std;
+
+class CommandAndArgumentParser
+{
+private:
+	string command;
+	string arguments;
+
+	void setCommand(string input);
+	void setArguments(string input);
+
+	/*
+	* Clean up arguments by removing leading white space.
+	*/
+	string argumentStringParser(string argument);
+	bool isParameterStringEmpty(string parameter);
+
+public:
+	CommandAndArgumentParser(string input);
+	~CommandAndArgumentParser();
+
+	string getCommand();
+	string getArguments();
+
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_parser\CommandAndArgumentParser.h
+
+
+
+
+

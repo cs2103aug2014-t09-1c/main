@@ -1,0 +1,1439 @@
+//@author: a0116410y
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccombobox.h
+	 */
+
+#ifndef CCOMBOBOX_H
+#define CCOMBOBOX_H
+
+#include <QComboBox>
+#include <QGroupBox>
+
+class CComboBox : public QComboBox
+{
+    Q_OBJECT
+public:
+    CComboBox();
+    CComboBox(QGroupBox *par);
+public slots:
+    void textChanged(QString edit);
+
+};
+
+#endif // CCOMBOBOX_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccombobox.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccompleter.h
+	 */
+
+#ifndef CCOMPLETER_H
+#define CCOMPLETER_H
+
+#include <QString>
+#include <QStringList>
+#include <QStringListModel>
+#include <QCompleter>
+
+class CCompleter : public QCompleter
+{
+    Q_OBJECT
+public:
+    CCompleter();
+    CCompleter(const QStringList& words, QObject * parent);
+    QString word();
+	void update(QStringList suggestions);
+private:
+    QStringList m_list;
+    QStringListModel m_model;
+    QString m_word;
+
+};
+
+#endif // CCOMPLETER_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ccompleter.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\clineedit.h
+	 */
+
+#ifndef CLINEEDIT_H
+#define CLINEEDIT_H
+
+#include "ccompleter.h"
+#include <QKeyEvent>
+#include <QLineEdit>
+
+using namespace std;
+
+class CLineEdit: public QLineEdit
+{
+    Q_OBJECT
+public:
+    CLineEdit(QWidget *parent = 0);
+    ~CLineEdit();
+
+    void setCompleter(CCompleter *c);
+    CCompleter *completer() const;
+
+protected:
+    void keyPressEvent(QKeyEvent *e);
+	void moveToNextEntry();
+
+private slots:
+	void insertCompletion(const QString& completion);
+    void sendToParser();
+	void updateCompleter(QStringList suggestions);
+	void updateLineText(string text);
+
+signals:
+	void toSetText(const QString & text);
+	void emitFeedback(QString feedback, bool isEnterPressed);
+	void sendText(string text);
+	void emitSuggestionSelected(string selection, string lineText);
+
+private:
+    CCompleter *c;
+};
+
+#endif // CLINEEDIT_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\clineedit.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\cmenubar.h
+	 */
+
+#ifndef CMENUBAR_H
+#define CMENUBAR_H
+
+#include <QLabel>
+
+class QPoint;
+class QMouseEvent;
+class QWidget;
+
+class CMenuBar : public QLabel
+{
+public:
+    CMenuBar();
+    CMenuBar(QWidget *par);
+
+protected:
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+
+private:
+    QPoint offset;
+    bool moving;
+};
+
+#endif // CMENUBAR_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\cmenubar.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ctable.h
+	 */
+
+#ifndef CTABLE_H
+#define CTABLE_H
+
+#include <QTableWidget>
+#include <QStringList>
+#include <QItemSelectionModel>
+#include <vector>
+#include <iostream>
+
+#define NUMBER_FIELD \
+	0
+#define NUMBER_HEADER \
+	"Number"
+#define NUMBER_COLUMN_WIDTH \
+	51
+#define TODO_FIELD \
+	1
+#define TODO_HEADER \
+	"To-Do"
+#define TODO_COLUMN_WIDTH \
+	222
+#define CATEGORY_FIELD \
+	2
+#define CATEGORY_HEADER \
+	"Category"
+#define CATEGORY_COLUMN_WIDTH \
+	120
+#define START_TIME_FIELD \
+	3
+#define START_TIME_HEADER \
+	"Start"
+#define START_TIME_COLUMN_WIDTH \
+	118
+#define END_TIME_FIELD \
+	4
+#define END_TIME_HEADER \
+	"Deadline/End"
+#define END_TIME_COLUMN_WIDTH \
+	118
+#define COMPLETE_FIELD \
+	5
+#define COMPLETE_HEADER \
+	"Complete?"
+#define COMPLETE_COLUMN_WIDTH \
+	63
+
+using namespace std;
+
+class CTable : public QTableWidget
+{
+    Q_OBJECT
+public:
+    CTable();
+    CTable(QWidget *par);
+	
+
+private:
+	void setTableFormat();
+	void setTableHeaders();
+    void initialiseHighlight();
+    void keyPressEvent(QKeyEvent *event);
+	QString wrapLongString(QString string);
+
+public slots:
+	void createTableData(vector<vector<string>> listData);
+private slots:
+    void selectRowSlot(const QModelIndex & selected, const QModelIndex & deselected);
+
+};
+
+
+#endif // CTABLE_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\ctable.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\mainwindow.h
+	 */
+
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+#include "ProgramController.h"
+
+#define COMMAND_LIST \
+	"Commands: home, all, add, edit, delete, complete, uncomplete, undo, redo, search, clip, slot"
+#define ADD_LABEL_FORMAT \
+	"add [<name>][<date (day/DDMMYY)>][<time (deadline: HHMM /timed: HHMM-HHMM>][<category>]"
+#define EDIT_LABEL_FORMAT \
+	"edit <number> [<name>][<date (day/DDMMYY)>][<time (deadline: HHMM /timed: HHMM-HHMM>][<category>]"
+#define DELETE_LABEL_FORMAT \
+	"delete <number> / delete <from> to <to>"
+#define COMPLETE_LABEL_FORMAT \
+	"complete <number> / complete <from> to <to>"
+#define UNCOMPLETE_LABEL_FORMAT \
+	"uncomplete <number> / uncomplete <from> to <to>"
+#define SEARCH_LABEL_FORMAT \
+	"search <keywords>"
+#define CLIP_LABEL_FORMAT \
+	"clip <number>"
+#define SLOT_LABEL_FORMAT \
+	"slot [<date (day/DDMMYY)>][<desired time: HHMM-HHMM>][<desired duration: HHMM>]"
+#define EMPTY_TODAY_TODO \
+	"Nothing to complete today."
+
+
+namespace Ui {
+class MainWindow;
+}
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+
+private:
+    Ui::MainWindow *ui;
+	ProgramController control;
+	void updateTableData();
+	void updateConsoleOutput();
+	void initiateLineEditConnections();
+	void initiateTableWidgetConnections();
+	void initiateProgressBarConnections();
+	void initiateConsoleOutConnections();
+	void initiateCommandLabelConnections();
+
+
+protected:
+	void keyPressEvent(QKeyEvent *e);
+
+private slots:
+	void sendInputToController(string text);
+	/*
+	* Gets keyword from the controller.  
+	*/
+	void getSuggestionResponse(string selection, string lineText);
+	/*
+	* sends feedback for every keystroke.
+	*/
+	void sendFeedbackToController(QString text, bool isEnterPressed);
+	void getProgressBarValueAdd();
+	void determineCommandLabel(const QString& text);
+
+signals:
+	void sendTableData(vector<vector<string>> data);
+	void sendToSuggestionBox(QStringList suggestions);
+	void sendSuggestionContentsToCompleter(QStringList list);
+	void sendToLineEditAutoComplete(string text);
+	void sendMaxToProgressBar(int maximum);
+	void sendValToProgressBar(int value);	
+	void sendToConsoleOutput(const QString&);
+	void setCommandLabel(const QString&);
+
+};
+
+#endif // MAINWINDOW_H
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t01-1c_ui\mainwindow.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ParsedDataDeployer.h
+	 */
+
+#pragma once
+#ifndef PARSE_DATA_DEPLOYER
+#define PARSE_DATA_DEPLOYER
+
+#include "ParsedDataPackage.h"
+
+#define COMPLETED_ADD \
+	"Add performed successfully."
+#define COMPLETED_EDIT \
+	"Edit performed successfully."
+#define COMPLETED_DELETE \
+	"Delete performed successfully."
+#define COMPLETED_UNDO \
+	"Undo performed successfully."
+#define COMPLETED_REDO \
+	"Redo performed successfully."
+#define COMPLETED_COMPLETE \
+	"Complete performed successfully."
+#define COMPLETED_UNCOMPLETE \
+	"Uncomplete performed successfully."
+#define FAILED_UNDO \
+	"Nothing to Undo."
+#define FAILED_REDO \
+	"Nothing to Redo."
+#define SEARCH_RESULTS(number) \
+	"Search returns " + number + " result(s)."
+
+
+class ParsedDataDeployer
+{
+private:
+	string consoleString;
+	string fileName = "";
+
+	vector<string> testVectorStore;
+	bool isTestMode = false;
+
+	const int COMPLETE = 1;
+	const int UNCOMPLETE = 0;
+public:
+	ParsedDataDeployer(string fileName);
+	ParsedDataDeployer(vector<string> testVector);
+	~ParsedDataDeployer();
+	void executeAdd(ParsedDataPackage addPackage);
+	void executeDelete(ParsedDataPackage deletePackage, string date, vector<string> keywords, int displayCase);
+	void executeEdit(ParsedDataPackage editPackage, string date, vector<string> keywords, int displayCase);
+	vector<string> executeSearch(string fileName);
+	void executeUndo();
+	void executeRedo();
+	void executeComplete(ParsedDataPackage completePackage, string date, vector<string> keywords, int displayCase);
+	void executeUncomplete(ParsedDataPackage uncompletePackage, string date, vector<string> keywords, int displayCase);
+	vector<vector<string>> getDisplayEvents(string date, vector<string> keywords, int displayCase);
+	
+	string executeFormatContentsToLineEdit(int position, string date, vector<string> keywords, int displayCase);
+	pair <string, string> executeGetEarliestFreeSlot(ParsedDataPackage freeSlotPackage);
+	pair<int, int> executeGetTodayCompletionStat(string todayDate);
+	string returnConsoleString();
+	void clearConsoleString();
+
+	vector<string> returnTestVector();
+};
+#endif
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ParsedDataDeployer.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ProgramController.h
+	 */
+
+#pragma once
+#ifndef PROGRAM_CONTROLLER
+#define PROGRAM_CONTROLLER
+
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <string>
+#include <sstream>
+#include <vector>
+#include <fstream>
+#include "ParsedDataDeployer.h"
+#include "CommandAndArgumentParser.h"
+#include "AddParser.h"
+#include "DeleteParser.h"
+#include "EditParser.h"
+#include "SearchParser.h"
+#include "ParsedDataPackage.h"
+
+#define WELCOME_MESSAGE \
+	"Welcome. Please pick a command."
+#define DISPLAY_ALL_CASE \
+	-1
+#define DISPLAY_HOME_CASE \
+	0
+#define DISPLAY_KEYWORD_CASE \
+	1
+#define HOME_COMMAND \
+	"home"
+#define ALL_COMMAND \
+	"all"
+#define ADD_COMMAND \
+	"add"
+#define ADD_APPEND \
+	"add "
+#define EDIT_COMMAND \
+	"edit"
+#define DELETE_COMMAND \
+	"delete"
+#define SEARCH_COMMAND \
+	"search"
+#define UNDO_COMMAND \
+	"undo"
+#define REDO_COMMAND \
+	"redo"
+#define COMPLETE_COMMAND \
+	"complete"
+#define UNCOMPLETE_COMMAND \
+	"uncomplete"
+#define SLOT_COMMAND \
+	"slot"
+#define CLIP_COMMAND \
+	"clip"
+#define SLOT_FORMAT \
+	"slot [][][]"
+#define ADD_FORMAT(name, date, time, category) \
+	"add [" + name + "][" + date + "][" + time + "][" + category + "]"
+#define NO_SLOTS_AVAILABLE \
+	"No free slots in this time-frame."
+#define SLOTS_AVAILABLE(date, time) \
+	"Earliest free slot found: " +date + " " + time 
+#define CLIP_ERROR \
+	"No instance of selection is available for clipping."
+#define SUCCESS_CLIP(position) \
+	"Number " + position + " has been clipped to the input box."
+#define SELECT_KEYWORD \
+	"Matching keywords are shown."
+#define DISPLAY_CHANGE \
+	"Display has been changed according to selection."
+
+class ProgramController
+{
+private:
+	fstream file;
+	bool isTestMode;
+
+	string fileName;
+	string displayDate;
+	vector<string> searchKeywords;
+	int displayCase = 0;
+	
+	string consoleString;
+	
+	string command;
+	string arguments;
+	ParsedDataPackage dataPackage;
+
+	ParsedDataDeployer deployer;
+
+	string getTodayDateInString();
+
+	void executeHomeCommand();
+	void executeAllCommand();
+	void executeAddCommand();
+	void executeEditCommand();
+	void executeDeleteCommand();
+	void executeSearchCommand();
+	void executeUndoCommand();
+	void executeRedoCommand();
+	void executeCompleteCommand();
+	void executeUncompleteCommand();
+	void executeAddNaturalParsing(string input);
+
+	string executeAddFormatLineUpdater();
+	string executeSlotFormatLineUpdater();
+	string executeEditLineUpdater(string inputText);
+	string executeClipLineUpdater(string arguments);
+	string executeSlotLineUpdater(string arguments);
+
+public:
+	ProgramController(string filename);
+	ProgramController(vector<string> testVector);
+	~ProgramController();
+
+	/*
+	* Main Entry Point of Program. Executes command entry.
+	*/
+	void executeEntry(string input);
+	/*
+	* Returns search result for suggestion box input.
+	*/
+	vector<string> populateSuggestionBox(string input);
+	/*
+	* Populates keywords vector string and changes display case to search case.
+	*/
+	void executeSuggestionSelection(string selection, string lineText);
+	vector<vector<string>> refreshTableDisplay();
+	vector<vector<string>> displayTable(string date);
+	/*
+	* Updates the input box with new string
+	*/
+	string updateLineText(string inputText, bool isEnterPressed);
+	void ConnectToCommandFeedback(string input);
+	pair<int, int> getCompletedStatToday();
+
+	vector<string> returnTestVector();
+	string getConsoleString();
+	void clearConsoleString();
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c\ProgramController.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileController.h
+	 */
+
+#pragma once
+#ifndef FILE_CONTROLLER
+#define FILE_CONTROLLER
+
+#include <string>
+#include <vector>
+#include <iostream>
+#include <fstream>
+
+#define BAD_ACCESS \
+	"Error. File cannot be accessed."
+
+using namespace std;
+
+class FileController
+{
+protected:
+	FileController();
+	~FileController();
+
+public:
+	//Checks if file is open.
+	static bool checkFile(string fileName);
+	//Copies file contents to memory in a vector.
+	static vector<string> parseFileToMemoryVector(string fileName);
+	//Re-writes file as copy of the vector input.
+	static bool cloneMemoryVectorToFile(string fileName, vector<string> memVector);
+	static string declareFileAccessError();
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileController.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileEntryFormatter.h
+	 */
+
+#pragma once
+#ifndef FILE_ENTRY_FORMATTER
+#define FILE_ENTRY_FORMATTER
+
+#include <string>
+#include <iostream>
+
+#define OPENING_ATTR(attribute) \
+	"<" + attribute + ">"
+#define CLOSING_ATTR(attribute) \
+	"</" + attribute + ">"
+
+using namespace std;
+
+class FileEntryFormatter
+{
+
+private:
+	static size_t getAttributedEntryPosition(string attribute, string lineEntry);
+	static size_t getAttributeEntrySize(string attribute, string lineEntry);
+
+public:
+	FileEntryFormatter();
+	~FileEntryFormatter();
+
+	//Methods below deal with entry formatting.
+	/*
+	*Encloses given entry to the given attribute
+	*Returns a string containing the attributed entry
+	*/
+	static string createAttributedEntry(string attribute, string entry);
+	/*
+	*Gets entry of the given attribute found in lineEntry
+	*Returns a string containing the entry. If no attribute matching
+	*string attribute is found, return empty string.
+	*/
+	static string getAttributeEntry(string attribute, string lineEntry);
+	/*
+	*Appends attributed entry to lineEntry
+	*Returns the line with the attributed entry appended
+	*/
+	static string addAttributedEntryToLineEntry(string attributedEntry, string lineEntry);
+	/*
+	*Deletes attributed entry to lineEntry
+	*Returns the line with the attributed entry deleted
+	*/
+	static string deleteAttributedEntryFromLineEntry(string attribute, string lineEntry);
+	/*
+	*Edits attributed entry in lineEntry to that of newAttributeEntry
+	*Returns the line with the attributed entry edited
+	*/
+	static string editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry);
+};
+
+#endif
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\FileEntryFormatter.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\MemoryController.h
+	 */
+
+#pragma once
+#ifndef MEMORY_CONTROLLER
+#define MEMORY_CONTROLLER
+
+#include <string>
+#include <vector>
+#include <iostream>
+
+
+
+using namespace std;
+
+class MemoryController
+{
+private:
+	vector<string> vectorInMemory;
+
+public:
+	MemoryController();
+	~MemoryController();
+	vector<string> getVector();
+	int getVectorSize();
+	void setVector(vector<string> newVector);
+	string getLineEntry(int position);
+	void appendLineEntry(string lineEntry);
+	void insertLineEntry(int position, string line);
+	bool deleteLineEntry(int position);
+	
+
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_fileAccess\MemoryController.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\AddLogic.h
+	 */
+
+#pragma once
+#ifndef ADD_LOGIC
+#define ADD_LOGIC
+
+#include "BaseClassLogic.h"
+
+#define ADD_LOGIC_TIME_DATE_ERROR \
+	"Please enter a valid DDMMYY date and HHMM time!"
+#define ADD_LOGIC_MISSING_ERROR \
+	"Please enter at least a name, a date, a start time or an end time!"
+
+class AddLogic :
+	public BaseClassLogic
+{
+private:
+	string lineEntry;
+	void appendToLineEntry(string attribute, string entry);
+	
+	/*
+	*Determines the type of the event to be added if it is either
+	*a deadline, timed or float task
+	*/
+	void determineType();
+	/*
+	*Writes the complete attribute with a no entry into the event to be added
+	*/
+	void addCompleteEntry();
+	/*
+	*It is to be accessed before entry is appended to file to ensure that all entries are valid.
+	*Throws an exception if it fails.
+	*/
+	void validChecks();
+
+public:
+	AddLogic(string fileName);
+	AddLogic(vector<string> testVector);
+	~AddLogic();
+
+	//This method must only be used in automated Testing purposes.
+	string getLineEntry();
+	
+	void execute(map<string, string> lineEntries);
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\AddLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\BaseClassLogic.h
+	 */
+
+#pragma once
+#ifndef BASE_CLASS_LOGIC
+#define BASE_CLASS_LOGIC
+
+#include "FileLogic.h"
+#include "TimeLogic.h"
+#include <stack>
+#include <map>
+#include "assert.h"
+
+#define CREATION_ATTRIBUTE \
+	"CreationDate"
+#define NAME_ATTRIBUTE \
+	"name"
+#define DATE_ATTRIBUTE \
+	"date"
+#define START_ATTRIBUTE \
+	"start"
+#define END_ATTRIBUTE \
+	"end"
+#define CATEGORY_ATTRIBUTE \
+	"category"
+#define COMPLETE_ATTRIBUTE \
+	"complete"
+#define TYPE_ATTRIBUTE \
+	"type"
+#define FROM_POSITION \
+	"fromPos"
+#define TO_POSITION \
+	"toPos"
+
+#define DEADLINE_TASK_TYPE \
+	"deadline"
+#define TIMED_TASK_TYPE \
+	"timed"
+#define FLOAT_TASK_TYPE \
+	"float"
+#define TASK_NOT_COMPLETE \
+	"no"
+#define TASK_COMPLETE \
+	"yes"
+#define START_OF_DAY_TIME \
+	"00:00"
+#define END_OF_DAY_TIME \
+	"23:59"
+
+
+class BaseClassLogic
+{
+private:
+	FileLogic fileHandler;
+	string date;
+	vector<string> keywords;
+	int displayCase;
+
+	/*These are the private sorting methods applicable to all Logic specific methods.
+	These sorting methods provide the algorithm that will provide the fixed
+	sort of to-dos for the user interface, which is different from the sort
+	in the file. */	
+	void getListOfEventsHome(string fromDate);
+
+	/*These are the private sorting helper methods applicable to all Logic specific methods.*/
+	TimeLogic getPriorityDateTime(string line);
+	void addNonFloatEventToEntry(int iteration);
+	bool checkKeywordCriteria(string line, vector<string> keywords);
+	bool checkIfTimedTaskWithinTimeKeyword(string line, string timeKeyword);
+
+	/*These are the private sorting helper variables applicable to all Logic specific methods.*/
+	vector<string> sortedLineEntries; //This stores the sorted entries as determined by the sorting algorithm
+	vector<int> sortedLineFilePositions; // This stores the filePositions of each entry in lineEntries respectively.
+
+protected:
+	BaseClassLogic(string fileName);
+	BaseClassLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	BaseClassLogic(vector<string> testVector);
+	BaseClassLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
+	virtual ~BaseClassLogic();
+
+	bool isTestMode = false;
+	void toLog(string log);
+
+	/*These are the interface methods for the FileLogic class.
+	  Consult FileLogic.h for more information about these methods. */
+	string getLineFromPositionNumber(int position);
+	void appendToFile(string lineEntry);
+	void addToPositionNumber(int position, string lineEntry);
+	void editLine(int position, string newLineEntry);
+	void deleteLine(int position);
+	string createAttributedEntry(string attribute, string entry);
+	string getAttributeEntry(string attribute, string lineEntry);
+	string addAttributedEntryToLineEntry(string attributedEntry, string lineEntry);
+	string deleteAttributedEntryFromLineEntry(string attribute, string lineEntry);
+	string editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry);
+
+	/*These are the interface methods for the TimeLogic class.
+	  Consult TimeLogic.h for more information about these methods. */
+	TimeLogic createTimeLogic(string date, string time);
+	bool getTimeFormatCheck(TimeLogic obj);
+	string getStringDate(TimeLogic obj);
+	string getStringTime(TimeLogic obj);
+	string returnPlusOne(TimeLogic obj);
+	bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
+	bool isTimeBeforeNow(TimeLogic time1);
+	string getTimeNowInString();
+	TimeLogic addHours(TimeLogic obj, int hours, int min);
+
+	/*These are the protected sorting methods applicable to all Logic specific methods.
+	  These sorting methods provide the algorithm that will provide the fixed
+	  sort of to-dos for the user interface, which is different from the sort
+	  in the file. */
+	void getListOfEventsHaving(vector<string> keywords);
+	void getAllEntries();
+	void updateSortedEntries();
+
+	/* These methods are protected helper functions applicable to all Logic specific methods.*/
+	bool isParameterStringEmpty(string parameter);
+	bool isDateAndTimeCorrect(string lineEntry);
+	string getDate();
+
+	stack<string> OldLineEntriesForUndo;
+	stack<int> oldLinePosforUndo;
+
+public:
+	/*These are the public interface methods for the FileLogic class.
+	  These methods are the only necessary methods for automated testing purposes.
+	  Consult FileLogic.h or this file for more information about these methods. */
+	int getEntriesSize();
+	vector<string> getEntriesVector();
+	vector<string> getSortedLineEntries();
+	vector<int> getSortedLinePositions();
+
+	/*These are the virtual methods for BaseClassLogic child classes. These should not
+	be accessed without the use of the child class's method. Should that occur,
+	assertion failure will occur.*/
+	virtual void execute(map<string,string> lineEntries);
+	virtual void execute(map<string, int> fromToPositions);
+	virtual void execute(map<string, int> fromToPositions, int executionCase);
+	virtual void execute(map<string, int> position, map<string, string> lineEntries);
+	virtual vector<vector<string>> displayEvents();
+
+	virtual vector<string> createKeywords(string input);
+	virtual string formatContentsToLineEdit(int position);
+	virtual pair <string, string> getEarliestFreeSlot(map<string, string> fromToTime, map<string, int> duration);
+	virtual pair <int, int> getTodayCompletionStat(string todayDate);
+
+	/*These methods is to access the old line entries and positions that have been
+	modified for Undo Logic storage and later retrieval*/
+	stack<string> getLinesForUndo();
+	stack<int> getPosForUndo();
+};
+
+#endif
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\BaseClassLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\CompleteLogic.h
+	 */
+
+#pragma once
+#ifndef COMPLETE_LOGIC
+#define COMPLETE_LOGIC
+
+#include "BaseClassLogic.h"
+
+#define SLOT_IN_EXCESS \
+	"Chosen number(s) out of bounds"
+
+class CompleteLogic :
+	public BaseClassLogic
+{
+
+private:
+	void editCompletion(int fromPosition, int toPosition, bool complete);
+	void checkFromToValidity(int fromPosition, int toPosition, int size);
+	void storeOldEntryForUndo(int filePosition);
+	const int COMPLETE = 1;
+	const int UNCOMPLETE = 0;
+public:
+	CompleteLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	CompleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
+	~CompleteLogic();
+
+	void execute(map<string, int> fromToPositions, int executionCase);
+	
+	stack<string> getLinesForUndo();
+	stack<int> getPosForUndo();
+
+};
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\CompleteLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DeleteLogic.h
+	 */
+
+#pragma once
+#ifndef DELETE_LOGIC
+#define DELETE_LOGIC
+
+#include "BaseClassLogic.h"
+
+#define SLOT_IN_EXCESS \
+	"Chosen number(s) out of bounds"
+
+class DeleteLogic :
+	public BaseClassLogic
+{
+private:
+	void checkFromToValidity(int fromPosition, int toPosition, int size);
+	/*
+	* Readjusts determined file positions when an entry is deleted to prevent wrong
+	* deletions and overflow. Returns a vector<string> containing new file positions.
+	*/
+	vector<int> reAdjustPos(vector<int> pos, int deletedPos);
+	void storeOldEntryForUndo(int filePosition);
+
+public:
+	DeleteLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	DeleteLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
+	~DeleteLogic();
+
+	void execute(map<string, int> fromToPositions);
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DeleteLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DisplayLogic.h
+	 */
+
+#pragma once
+#ifndef DISPLAY_LOGIC
+#define DISPLAY_LOGIC
+
+#include "BaseClassLogic.h"
+#include <iostream>
+
+#define NO_START_STRING \
+	"Do by ->"
+#define FLOAT_START_STRING \
+	"-"
+#define FLOAT_END_STRING \
+	"-"
+#define TODAY \
+	"Today, "
+#define LAPSED \
+	"Lapsed"
+#define UNKNOWN \
+	"???"
+#define STRUCT_PARAM_FORMAT(name, date, time, category) \
+	"[" + name + "][" + date + "][" + time + "][" + category + "]"
+#define TIME_DELIMETER \
+	"-"
+
+using namespace std;
+
+class DisplayLogic
+	: public BaseClassLogic
+{
+private:
+	vector<string> putToVectorEventDatails(string line);
+
+public:
+	DisplayLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	DisplayLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
+	~DisplayLogic();
+
+	vector<vector<string>> displayEvents();
+	string formatContentsToLineEdit(int position);
+	
+};
+
+#endif 
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DisplayLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DL_Algorithm.h
+	 */
+
+#pragma once
+
+//Damerau_Levenshtein Algorithm class was adapted from 
+// http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance
+
+#ifndef Damerau_Levenshtein_Algorithm
+#define Damerau_Levenshtein_Algorithm
+
+#define DELETE_COST \
+	5
+#define INSERT_COST \
+	0
+#define REPLACE_COST \
+	4
+#define SWAP_COST \
+	3
+
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+class DL_Algorithm
+{
+public:
+	DL_Algorithm();
+	~DL_Algorithm();
+	int findDLCost(string word, string dictWord);
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\DL_Algorithm.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\EditLogic.h
+	 */
+
+#pragma once
+#ifndef EDIT_LOGIC
+#define EDIT_LOGIC
+
+#include "BaseClassLogic.h"
+
+#define EDIT_LOGIC_TIME_DATE_ERROR \
+	"Please enter a valid DDMMYY date and HHMM time!"
+#define EDIT_LOGIC_MISSING_ERROR \
+	"Please enter at least a name, a date, a start time or an end time!"
+#define EDIT_SLOT_EXCESS_ERROR \
+	"Edit Failed. Selected number is out of bounds."
+
+class EditLogic :
+	public BaseClassLogic
+{
+private:
+	string lineEntry;
+
+	/*
+	*Re-Determines the type of the event to be added if it is either
+	*a deadline, timed or float task. This should only be run after all entries are edited.
+	*/
+	void redetermineType();
+	/*
+	*Resets the completion to Not completed
+	*/
+	void resetCompletion();
+	void editValidChecks();
+	void checkPosValidity(int position, int size);
+	void editEntries(map<string, string> lineEntries);
+
+public:
+	EditLogic(string fileName, string date, vector<string> keywords, int displayCase);
+	EditLogic(vector<string> testVector, string date, vector<string> keywords, int displayCase);
+	~EditLogic();
+
+	void execute(map<string, int> position, map<string, string> lineEntries);
+	
+	string getLineEntry();
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\EditLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\FileLogic.h
+	 */
+
+#pragma once
+#ifndef FILE_LOGIC
+#define FILE_LOGIC
+
+#include "FileEntryFormatter.h"
+#include "FileController.h"
+#include "MemoryController.h"
+
+#define FILE_ACCESS_ERROR \
+	"File cannot be accessed"
+
+class FileLogic
+{
+private:
+	
+	string fileName;
+	MemoryController memoryHandler;
+
+	bool isTestMode = false;
+
+public:
+
+	FileLogic(string fileName);
+	FileLogic(vector<string> testVector);
+	~FileLogic();
+
+	void fileAccess();
+	void changeFile(string fileName);
+	string getFileName();
+	
+	//These are floating file logic functions that accesses IO functions
+	int getSize();
+	vector<string> getVector();
+	string getLineFromPositionNumber(int position);
+	void appendToFile(string lineEntry);
+	void addToPositionNumber(int position, string lineEntry);
+	void editLine(int position, string newLineEntry);
+	void deleteLine(int position);
+
+	/*These are the interface methods for the FileEntryFormatter class.
+	  Consult FileEntryFormatter.h for more information about these methods. */
+	static string createAttributedEntry(string attribute, string entry);
+	static string getAttributeEntry(string attribute, string lineEntry);
+	static string addAttributedEntryToLineEntry(string attributedEntry, string lineEntry);
+	static string deleteAttributedEntryFromLineEntry(string attribute, string lineEntry);
+	static string editAttributedEntryFromLineEntry(string attribute, string newAttributeEntry, string lineEntry);
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\FileLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\SearchLogic.h
+	 */
+
+#pragma once
+#ifndef SEARCH_LOGIC
+#define SEARCH_LOGIC
+
+#include "BaseClassLogic.h"
+#include "DL_Algorithm.h"
+
+#define SUGGESTIONS_LIMIT \
+	20
+#define MIMUMUM_LENGTH \
+	2
+#define NONDATETIMEMAXCOST \
+	10
+#define DATETIMEMAXCOST \
+	0
+
+class SearchLogic :
+	public BaseClassLogic
+{
+
+private:
+	vector<string> keywords;
+	vector<int> keywordPriority;
+
+	int getSimilarityMatch(string keyword, string type, string entry);
+	/*
+	* Checks if timed task is within searched date and time
+	*/
+	bool checkTimedTaskEligibility(string input, string line);
+	/*
+	* Determines how the search suggestion box will be ordered according
+	* to keyword matches and diff costs by Levenshtein algorithm
+	*/
+	void determinePriority(string keyword, int diffCost);
+
+	void checkCategoryMatch(string input, string line);
+	void checkNameMatch(string input, string line);
+	void checkDateMatch(string input, string line);
+	void checkEndTimeMatch(string input, string line);
+	void checkTimedTaskMatch(string input, string line);
+	void insertToKeywordVector(string input, string keyword, int diffCost);
+	
+public:
+	
+	SearchLogic(string fileName);
+	SearchLogic(vector<string> testVector);
+	~SearchLogic();
+	/*
+	* Creates keywords and returns vector containing such that near matches input.
+	*/
+	vector<string> createKeywords(string input);
+	/*
+	* Responsible for finding the earliest free slot according to the duration and
+	* free time present. Returns a pair of strings which contain date and duration
+	* of earliest free slot.
+	*/
+	pair<string,string> getEarliestFreeSlot(map<string,string> fromToTime, map<string, int> duration);
+	/*
+	* Responsible for determining completion of today's task.. Returns a pair of 
+	* integers which contain the number of completed tasks against 
+	* tasks that should be done according to todayDate
+	*/	
+	pair<int, int> getTodayCompletionStat(string todayDate);
+
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\SearchLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\TimeLogic.h
+	 */
+
+#pragma once
+#ifndef TIME_LOGIC
+#define TIME_LOGIC
+
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <time.h>
+#include <ctime>
+#include <iostream>
+#include <list>
+
+using namespace std;
+
+class TimeLogic
+{
+private:
+	bool timeFormatCheck = true;
+	bool isPlusOne = false;
+
+	string stringDate;
+	string stringTime;
+	int year, month, day, hour, min;
+	
+	//Set-Up TimeLogic Functions
+	void convertStringToTimeLogic(string dateString, string timeString);
+	void convertAndInsertDate(string date);
+	void convertAndInsertTime(string time);
+	/*
+	* Checks Date Validity. NOTE THAT ANY YEAR BEFORE 2005 IS CONSIDERED INVALID.
+	*/
+	bool isDateValid(int day, int mon, int year);
+	bool isTimeValid(int hour, int min);
+	/*
+	* Corrects date if the input time contains "+1"
+	*/
+	void checkAndCorrectPlusOne();
+	string addOneDay(string date);
+
+public:
+	TimeLogic(string date, string time); //time should be in "dd/mm/yyyy" & "HH:MM" format. NO EXCEPTIONS.
+	~TimeLogic();
+	bool getTimeFormatCheck();
+	string returnPlusOne();
+	string getStringDate();
+	string getStringTime();
+	void addHours(int hours, int mins);
+
+	//These are functions which controller and logic can access staticlly
+	/*
+	* Compares two Time Logics and returns if time 1 is earlier than time 2. Having same
+	* time integers is considered earlier for time parsing reasons.
+	*/
+	static bool isFirstEarlierThanSecond(TimeLogic time1, TimeLogic time2);
+	static bool isTimeBeforeNow(TimeLogic time1);
+	static string getTimeNowInString();
+};
+
+#endif
+
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\TimeLogic.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\UndoLogic.h
+	 */
+
+#pragma once
+#ifndef UNDO_LOGIC
+#define UNDO_LOGIC
+
+#include "stack"
+#include "FileLogic.h"
+
+#define ADD_CASE \
+	"add"
+#define DELETE_CASE \
+	"delete"
+#define MODIFY_CASE \
+	"modify"
+#define UNDO \
+	"undo"
+#define REDO \
+	"redo"
+
+class UndoLogic
+{
+private:
+	static UndoLogic* _instance;
+	string fileName;
+
+	stack <stack<string>> undoLineStack;
+	stack <stack<int>> undoFilePositionStack;
+	stack <string> undoCase;
+
+	stack <stack<string>> redoLineStack;
+	stack <stack<int>> redoFilePositionStack;
+	stack <string> redoCase;
+
+	void clearRedo();
+	void clearAll();
+	void checkFile(string fileName);
+	void modify(string fileName, string action, string commandType);
+
+protected:
+	UndoLogic();
+	~UndoLogic();
+	
+public:
+	static UndoLogic* instance();
+	static void reset();
+	bool isUndoEmpty();
+	bool isRedoEmpty();
+
+	// add case
+	void storeUndo(string fileName);
+	// edit case
+	void storeUndo(string fileName, string line, int position);
+	// delete case/complete case
+	void storeUndo(string fileName, string commandType, stack<string> lines, stack<int> filePositions);
+
+	
+	void undo(string fileName);
+	void redo(string fileName);
+};
+
+#endif
+
+	// End of segment: C:\Users\Marshall\Documents\Visual Studio 2013\Projects\t09-1c\t09-1c_logic\UndoLogic.h
+
+
+
+
+
