@@ -14,7 +14,7 @@ namespace t091c_test
 	{
 	public:
 		
-
+		//@author A0108494Y
 		TEST_METHOD(INTEGRATED_TESTING_ADD)
 		{
 			vector<string> testVector;
@@ -60,6 +60,7 @@ namespace t091c_test
 			string testString3 = "<name>test2</name><date>05/11/2014</date><start>15:00</start><end>17:00</end><category>test2</category><complete>no</complete><type>timed</type>";
 			Assert::AreEqual(testString3, test.returnTestVector()[2]);
 		}
+		//@author A0116410Y
 		TEST_METHOD(INTEGRATED_TESTING_DELETE)//to show basic case that delete single line is working, and borderline cases where delete range exceeds task number range
 		{
 			vector<string> testVector;
@@ -215,6 +216,7 @@ namespace t091c_test
 			string lineText6 = test.updateLineText("slot [051114][1200-1700][0200]", true);
 			string expected6 = "add [][051114][1500-1700][]";
 			Assert::AreEqual(expected6, lineText6);
+			//@author A0108494Y
 			string lineText7 = test.updateLineText("slot [051114][1501-1700][0200]", true);//boundary case
 			string expected7 = "";
 			Assert::AreEqual(expected7, lineText7);
@@ -232,6 +234,7 @@ namespace t091c_test
 			Assert::AreEqual(expected11, lineText11);
 
 		}
+		//@author A0116410Y
 		TEST_METHOD(INTEGRATED_TESTING_DISPLAY_ALL_COMPLETED)
 		{
 			vector<string> testVector;

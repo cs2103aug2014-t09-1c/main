@@ -31,7 +31,7 @@ ProgramController::~ProgramController()
 		file.close();
 	}
 }
-
+//@author A0108494Y
 void ProgramController::executeEntry(string input)
 {
 	clearConsoleString();
@@ -80,7 +80,7 @@ void ProgramController::executeEntry(string input)
 		executeAddNaturalParsing(input);
 	}
 }
-
+//@author A0116410Y
 void ProgramController::executeHomeCommand()
 {
 	displayCase = DISPLAY_HOME_CASE;
